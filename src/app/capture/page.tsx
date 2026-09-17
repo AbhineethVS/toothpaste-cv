@@ -265,6 +265,9 @@ export default function CapturePage() {
                     src={activeStep.exampleImage}
                     alt={`Example: ${activeStep.title}`}
                     className="absolute top-2 right-2 h-14 w-14 rounded-md border-2 border-white/80 object-cover shadow-md"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
                   />
                 )}
               </div>
