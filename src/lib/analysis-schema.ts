@@ -18,7 +18,7 @@ const FindingSchema = z.object({
   summary: z
     .string()
     .describe(
-      "One or two plain-language sentences a patient can understand, describing what was observed."
+      "ONE short plain-language sentence (max ~18 words) a patient can understand, describing what was observed. No filler, no hedging phrases -- just the observation."
     ),
 });
 export type Finding = z.infer<typeof FindingSchema>;
@@ -82,7 +82,7 @@ export const AnalysisSchema = z.object({
   overallSummary: z
     .string()
     .describe(
-      "A short, friendly, plain-language summary of the overall screening (2-4 sentences), for a patient with no dental background."
+      "A short, friendly, plain-language summary of the overall screening in AT MOST 2 sentences, for a patient with no dental background. Lead with the most important thing to know."
     ),
   findings: z.object({
     crowding: FindingSchema,

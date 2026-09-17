@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import type { AnalysisResult } from "@/lib/analysis-schema";
-import { Odontogram } from "@/components/Odontogram";
+import { DIAGNOSTIC_DEFS } from "@/lib/analysis-schema";
+import { QuadrantGrid } from "@/components/QuadrantGrid";
 import { ScoreCard } from "@/components/ScoreCard";
 
 type Status = "loading" | "error" | "done";
@@ -71,32 +72,36 @@ export default function ReportPage() {
     setAttempt((n) => n + 1);
   }
 
+  const flaggedCount = result
+    ? Object.values(result.findings).filter((finding) => finding.severity !== "none").length
+    : 0;
+
   return (
-    <div className="flex flex-1 flex-col items-center bg-zinc-50 dark:bg-black">
+    <div className="flex flex-1 flex-col items-center bg-surface-page">
       <main className="flex w-full max-w-2xl flex-1 flex-col px-6 py-10">
         <div className="flex items-center justify-between">
           <Link
             href="/capture"
-            className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            className="text-sm font-medium text-ink-muted transition-colors hover:text-ink-primary"
           >
             ← Back
           </Link>
-          <span className="text-sm font-medium text-zinc-500">Your screening report</span>
+          <span className="text-sm font-medium text-ink-muted">Your screening report</span>
         </div>
 
         {status === "loading" && (
           <div className="mt-20 flex flex-1 flex-col items-center justify-center text-center">
-            <div className="h-10 w-10 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-950 dark:border-zinc-700 dark:border-t-zinc-50" />
-            <p className="mt-6 text-sm text-zinc-500">Analyzing your photos — this takes a few seconds…</p>
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-border-subtle border-t-accent" />
+            <p className="mt-6 text-sm text-ink-muted">Analyzing your photos — this takes a few seconds…</p>
           </div>
         )}
 
         {status === "error" && (
           <div className="mt-20 flex flex-1 flex-col items-center justify-center text-center">
-            <p className="text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+            <p className="text-sm text-status-critical">{errorMessage}</p>
             <button
               onClick={handleRetry}
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+              className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink hover:opacity-90"
             >
               Try again
             </button>
@@ -105,36 +110,48 @@ export default function ReportPage() {
 
         {status === "done" && result && (
           <>
-            <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-              <h1 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">Summary</h1>
-              <p className="mt-1.5 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                {result.overallSummary}
-              </p>
+            <div className="mt-8 flex items-center gap-5 rounded-2xl border border-border-subtle bg-surface-card p-5">
+              <div className="shrink-0 text-center">
+                <p className="text-4xl font-semibold tabular-nums text-ink-primary">
+                  {flaggedCount}
+                  <span className="text-lg text-ink-muted">/{DIAGNOSTIC_DEFS.length}</span>
+                </p>
+                <p className="mt-1 text-xs text-ink-muted">flagged</p>
+              </div>
+              <div className="border-l border-border-subtle pl-5">
+                <p className="text-sm leading-6 text-ink-secondary">{result.overallSummary}</p>
+              </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-              <Odontogram findings={result.findings} />
+            <div className="mt-6 rounded-2xl border border-border-subtle bg-surface-card p-6">
+              <h2 className="mb-4 text-sm font-semibold text-ink-primary">By quadrant</h2>
+              <QuadrantGrid findings={result.findings} />
             </div>
 
             <div className="mt-6">
+              <h2 className="mb-3 text-sm font-semibold text-ink-primary">Findings</h2>
               <ScoreCard findings={result.findings} />
             </div>
 
             {photos && (
-              <div className="mt-6 grid grid-cols-5 gap-2">
+              <div className="mt-8 grid grid-cols-5 gap-2">
                 {photos.map((photo, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={CAPTURE_STEPS[i].id}
-                    src={photo}
-                    alt={CAPTURE_STEPS[i].title}
-                    className="aspect-square w-full rounded-lg object-cover"
-                  />
+                  <div key={CAPTURE_STEPS[i].id}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photo}
+                      alt={CAPTURE_STEPS[i].title}
+                      className="aspect-square w-full rounded-lg object-cover"
+                    />
+                    <p className="mt-1 truncate text-center text-[10px] text-ink-muted">
+                      {CAPTURE_STEPS[i].title}
+                    </p>
+                  </div>
                 ))}
               </div>
             )}
 
-            <p className="mt-8 text-center text-xs leading-5 text-zinc-400">
+            <p className="mt-8 text-center text-xs leading-5 text-ink-muted">
               This is a preliminary visual screening only, not a medical diagnosis. Please consult a
               licensed dentist for advice about your oral health.
             </p>

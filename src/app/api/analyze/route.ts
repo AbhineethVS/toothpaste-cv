@@ -13,7 +13,9 @@ For each of the following diagnostics, assess what is visible across the photos 
 
 ${DIAGNOSTIC_DEFS.map((d) => `- ${d.key}: ${d.label} — ${d.prompt}`).join("\n")}
 
-Use "none" severity when nothing notable is visible for that diagnostic. Be conservative: only use "notable" when something is clearly visible and would be worth a dentist's attention. Never state a definitive medical diagnosis — describe only what is visually observed, and frame findings as things to mention to a dentist rather than confirmed conditions. Keep every summary short, plain-language, and reassuring in tone where possible.`;
+Use "none" severity when nothing notable is visible for that diagnostic. Be conservative: only use "notable" when something is clearly visible and would be worth a dentist's attention. Never state a definitive medical diagnosis — describe only what is visually observed, and frame findings as things to mention to a dentist rather than confirmed conditions.
+
+Be terse. Every "summary" field is ONE short sentence, no more than ~18 words, stated plainly with no hedging filler ("may want to consider having a professional take a look at potentially..."). The overall summary is at most 2 sentences. This copy is read on a phone screen inside a small card — write for that, not for a report.`;
 
 export async function POST(request: NextRequest) {
   let body: unknown;

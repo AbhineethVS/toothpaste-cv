@@ -17,16 +17,16 @@ const STEPS = [
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center bg-zinc-50 dark:bg-black">
+    <div className="flex flex-1 flex-col items-center bg-surface-page">
       <main className="flex w-full max-w-2xl flex-1 flex-col items-center px-6 py-20 text-center sm:py-28">
-        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium tracking-wide text-emerald-800 uppercase dark:bg-emerald-950 dark:text-emerald-300">
+        <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium tracking-wide text-accent uppercase">
           Free · 2 minutes · No dentist required
         </span>
 
-        <h1 className="mt-6 text-4xl font-semibold tracking-tight text-zinc-950 sm:text-5xl dark:text-zinc-50">
+        <h1 className="mt-6 text-4xl font-semibold tracking-tight text-ink-primary sm:text-5xl">
           toothpaste.cv
         </h1>
-        <p className="mt-4 max-w-lg text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+        <p className="mt-4 max-w-lg text-lg leading-8 text-ink-secondary">
           A quick oral health screening from your phone. Five photos, one
           instant visual report — so you know if it&apos;s time to see a
           dentist.
@@ -34,7 +34,7 @@ export default function Home() {
 
         <Link
           href="/capture"
-          className="mt-10 inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-8 text-base font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+          className="mt-10 inline-flex h-12 items-center justify-center rounded-full bg-accent px-8 text-base font-medium text-accent-ink transition-opacity hover:opacity-90"
         >
           Start screening
         </Link>
@@ -43,22 +43,22 @@ export default function Home() {
           {STEPS.map((step, i) => (
             <li
               key={step.title}
-              className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950"
+              className="rounded-2xl border border-border-subtle bg-surface-card p-5"
             >
-              <span className="text-sm font-medium text-zinc-400">
+              <span className="text-sm font-medium text-ink-muted">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h2 className="mt-2 text-base font-semibold text-zinc-950 dark:text-zinc-50">
+              <h2 className="mt-2 text-base font-semibold text-ink-primary">
                 {step.title}
               </h2>
-              <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              <p className="mt-1 text-sm leading-6 text-ink-secondary">
                 {step.detail}
               </p>
             </li>
           ))}
         </ol>
 
-        <p className="mt-16 max-w-md text-xs leading-5 text-zinc-400">
+        <p className="mt-16 max-w-md text-xs leading-5 text-ink-muted">
           toothpaste.cv gives a preliminary visual screening only and is not a
           medical diagnosis. Always consult a licensed dentist for advice
           about your oral health.

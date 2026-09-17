@@ -120,16 +120,16 @@ export default function CapturePage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center bg-zinc-50 dark:bg-black">
+    <div className="flex flex-1 flex-col items-center bg-surface-page">
       <main className="flex w-full max-w-md flex-1 flex-col px-6 py-10">
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            className="text-sm font-medium text-ink-muted transition-colors hover:text-ink-primary"
           >
             ← Back
           </Link>
-          <span className="text-sm font-medium text-zinc-500">
+          <span className="text-sm font-medium text-ink-muted">
             Step {activeIndex + 1} of {CAPTURE_STEPS.length}
           </span>
         </div>
@@ -141,25 +141,25 @@ export default function CapturePage() {
               onClick={() => setActiveIndex(i)}
               className={`h-1.5 flex-1 rounded-full transition-colors ${
                 photos[i]
-                  ? "bg-emerald-500"
+                  ? "bg-status-good"
                   : i === activeIndex
-                    ? "bg-zinc-400"
-                    : "bg-zinc-200 dark:bg-zinc-800"
+                    ? "bg-accent"
+                    : "bg-border-subtle"
               }`}
               aria-label={`Go to ${step.title}`}
             />
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col items-center rounded-2xl border border-zinc-200 bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-950">
-          <h1 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
+        <div className="mt-8 flex flex-col items-center rounded-2xl border border-border-subtle bg-surface-card p-6 text-center">
+          <h1 className="text-lg font-semibold text-ink-primary">
             {activeStep.title}
           </h1>
-          <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 text-sm leading-6 text-ink-secondary">
             {activeStep.instruction}
           </p>
 
-          <div className="relative mt-5 aspect-square w-full max-w-xs overflow-hidden rounded-xl border border-dashed border-zinc-300 bg-zinc-950 dark:border-zinc-700">
+          <div className="relative mt-5 aspect-square w-full max-w-xs overflow-hidden rounded-xl border border-dashed border-border-subtle bg-zinc-950">
             <video
               ref={videoRef}
               muted
@@ -189,7 +189,7 @@ export default function CapturePage() {
           {currentPhoto ? (
             <button
               onClick={handleRetake}
-              className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+              className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90"
             >
               Retake photo
             </button>
@@ -197,7 +197,7 @@ export default function CapturePage() {
             <button
               onClick={handleCapture}
               disabled={cameraStatus !== "ready"}
-              className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+              className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               Capture
             </button>
@@ -213,12 +213,12 @@ export default function CapturePage() {
           <button
             onClick={() => uploadInputRef.current?.click()}
             disabled={isUploading}
-            className="mt-3 text-sm font-medium text-zinc-500 underline-offset-2 hover:underline disabled:opacity-50 dark:text-zinc-400"
+            className="mt-3 text-sm font-medium text-ink-muted underline-offset-2 hover:underline disabled:opacity-50"
           >
             {isUploading ? "Processing…" : "Upload photo instead"}
           </button>
           {uploadError && (
-            <p className="mt-3 text-sm text-red-600 dark:text-red-400">
+            <p className="mt-3 text-sm text-status-critical">
               {uploadError}
             </p>
           )}
@@ -230,9 +230,7 @@ export default function CapturePage() {
               key={step.id}
               onClick={() => setActiveIndex(i)}
               className={`h-14 w-14 overflow-hidden rounded-lg border-2 ${
-                i === activeIndex
-                  ? "border-zinc-950 dark:border-zinc-50"
-                  : "border-transparent"
+                i === activeIndex ? "border-accent" : "border-transparent"
               }`}
               aria-label={`Review ${step.title}`}
             >
@@ -244,7 +242,7 @@ export default function CapturePage() {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-zinc-100 text-xs text-zinc-400 dark:bg-zinc-900">
+                <div className="flex h-full w-full items-center justify-center bg-border-subtle text-xs text-ink-muted">
                   {i + 1}
                 </div>
               )}
@@ -255,7 +253,7 @@ export default function CapturePage() {
         {allCaptured && (
           <button
             onClick={handleContinue}
-            className="mt-8 inline-flex h-12 w-full items-center justify-center rounded-full bg-emerald-600 px-8 text-base font-medium text-white transition-colors hover:bg-emerald-500"
+            className="mt-8 inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-8 text-base font-medium text-accent-ink transition-opacity hover:opacity-90"
           >
             Continue to report
           </button>

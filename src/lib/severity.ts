@@ -1,3 +1,4 @@
+import { AlertTriangle, CheckCircle2, OctagonAlert, TriangleAlert } from "lucide-react";
 import type { Region, Severity } from "@/lib/analysis-schema";
 
 export const SEVERITY_RANK: Record<Severity, number> = {
@@ -14,18 +15,47 @@ export const SEVERITY_LABEL: Record<Severity, string> = {
   notable: "Notable",
 };
 
-export const SEVERITY_BG_CLASS: Record<Severity, string> = {
-  none: "bg-emerald-400",
-  mild: "bg-yellow-300",
-  moderate: "bg-orange-400",
-  notable: "bg-red-500",
+// Reserved status palette -- fixed hex, never themed. See dataviz skill palette.md.
+export const SEVERITY_HEX: Record<Severity, string> = {
+  none: "#0ca30c",
+  mild: "#fab219",
+  moderate: "#ec835a",
+  notable: "#d03b3b",
 };
 
 export const SEVERITY_TEXT_CLASS: Record<Severity, string> = {
-  none: "text-emerald-700 dark:text-emerald-400",
-  mild: "text-yellow-700 dark:text-yellow-400",
-  moderate: "text-orange-700 dark:text-orange-400",
-  notable: "text-red-700 dark:text-red-400",
+  none: "text-status-good",
+  mild: "text-status-warning",
+  moderate: "text-status-serious",
+  notable: "text-status-critical",
+};
+
+export const SEVERITY_BG_CLASS: Record<Severity, string> = {
+  none: "bg-status-good",
+  mild: "bg-status-warning",
+  moderate: "bg-status-serious",
+  notable: "bg-status-critical",
+};
+
+export const SEVERITY_WASH_CLASS: Record<Severity, string> = {
+  none: "bg-status-good/10",
+  mild: "bg-status-warning/10",
+  moderate: "bg-status-serious/15",
+  notable: "bg-status-critical/15",
+};
+
+export const SEVERITY_BORDER_CLASS: Record<Severity, string> = {
+  none: "border-status-good",
+  mild: "border-status-warning",
+  moderate: "border-status-serious",
+  notable: "border-status-critical",
+};
+
+export const SEVERITY_ICON: Record<Severity, typeof CheckCircle2> = {
+  none: CheckCircle2,
+  mild: AlertTriangle,
+  moderate: TriangleAlert,
+  notable: OctagonAlert,
 };
 
 export const REGION_LABEL: Record<Region, string> = {
