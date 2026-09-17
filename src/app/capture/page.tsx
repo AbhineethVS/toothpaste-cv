@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
-import { compressImage } from "@/lib/compress-image";
+import { captureVideoFrame, compressImage } from "@/lib/compress-image";
+
+type CameraStatus = "starting" | "ready" | "error";
 
 export default function CapturePage() {
   const router = useRouter();
@@ -12,32 +14,103 @@ export default function CapturePage() {
     Array(CAPTURE_STEPS.length).fill(null)
   );
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const activeStep = CAPTURE_STEPS[activeIndex];
+  const currentPhoto = photos[activeIndex];
   const allCaptured = photos.every((photo) => photo !== null);
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  useEffect(() => {
+    if (allCaptured) {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+      return;
+    }
+    if (streamRef.current) return;
+
+    let cancelled = false;
+
+    async function startCamera() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraStatus("error");
+        return;
+      }
+      setCameraStatus("starting");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
+          audio: false,
+        });
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play().catch(() => {});
+        }
+        setCameraStatus("ready");
+      } catch {
+        if (!cancelled) setCameraStatus("error");
+      }
+    }
+
+    startCamera();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [allCaptured]);
+
+  useEffect(() => {
+    return () => {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    };
+  }, []);
+
+  function storePhoto(dataUrl: string) {
+    setPhotos((prev) => {
+      const next = [...prev];
+      next[activeIndex] = dataUrl;
+      return next;
+    });
+    setActiveIndex((prev) => Math.min(prev + 1, CAPTURE_STEPS.length - 1));
+  }
+
+  function handleCapture() {
+    if (!videoRef.current) return;
+    storePhoto(captureVideoFrame(videoRef.current));
+  }
+
+  function handleRetake() {
+    setPhotos((prev) => {
+      const next = [...prev];
+      next[activeIndex] = null;
+      return next;
+    });
+  }
+
+  async function handleUploadChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
 
-    setIsProcessing(true);
-    setError(null);
+    setIsUploading(true);
+    setUploadError(null);
     try {
-      const dataUrl = await compressImage(file);
-      setPhotos((prev) => {
-        const next = [...prev];
-        next[activeIndex] = dataUrl;
-        return next;
-      });
-      setActiveIndex((prev) => Math.min(prev + 1, CAPTURE_STEPS.length - 1));
+      storePhoto(await compressImage(file));
     } catch {
-      setError("Couldn't process that photo. Please try again.");
+      setUploadError("Couldn't process that photo. Please try again.");
     } finally {
-      setIsProcessing(false);
+      setIsUploading(false);
     }
   }
 
@@ -86,40 +159,68 @@ export default function CapturePage() {
             {activeStep.instruction}
           </p>
 
-          <div className="mt-5 flex aspect-square w-full max-w-xs items-center justify-center overflow-hidden rounded-xl border border-dashed border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            {photos[activeIndex] ? (
+          <div className="relative mt-5 aspect-square w-full max-w-xs overflow-hidden rounded-xl border border-dashed border-zinc-300 bg-zinc-950 dark:border-zinc-700">
+            <video
+              ref={videoRef}
+              muted
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            {currentPhoto && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={photos[activeIndex]!}
+                src={currentPhoto}
                 alt={activeStep.title}
-                className="h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
-            ) : (
-              <span className="text-sm text-zinc-400">No photo yet</span>
+            )}
+            {!currentPhoto && cameraStatus === "starting" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80 text-sm text-zinc-300">
+                Starting camera…
+              </div>
+            )}
+            {!currentPhoto && cameraStatus === "error" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80 px-4 text-center text-sm text-zinc-300">
+                Camera unavailable. Use &quot;Upload photo instead&quot; below.
+              </div>
             )}
           </div>
 
+          {currentPhoto ? (
+            <button
+              onClick={handleRetake}
+              className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            >
+              Retake photo
+            </button>
+          ) : (
+            <button
+              onClick={handleCapture}
+              disabled={cameraStatus !== "ready"}
+              className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            >
+              Capture
+            </button>
+          )}
+
           <input
-            ref={fileInputRef}
+            ref={uploadInputRef}
             type="file"
             accept="image/*"
-            capture="user"
-            onChange={handleFileChange}
+            onChange={handleUploadChange}
             className="hidden"
           />
           <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isProcessing}
-            className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            onClick={() => uploadInputRef.current?.click()}
+            disabled={isUploading}
+            className="mt-3 text-sm font-medium text-zinc-500 underline-offset-2 hover:underline disabled:opacity-50 dark:text-zinc-400"
           >
-            {isProcessing
-              ? "Processing…"
-              : photos[activeIndex]
-                ? "Retake photo"
-                : "Take photo"}
+            {isUploading ? "Processing…" : "Upload photo instead"}
           </button>
-          {error && (
-            <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>
+          {uploadError && (
+            <p className="mt-3 text-sm text-red-600 dark:text-red-400">
+              {uploadError}
+            </p>
           )}
         </div>
 
