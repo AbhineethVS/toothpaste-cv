@@ -12,6 +12,8 @@ export interface CaptureStep {
   id: CaptureStepId;
   title: string;
   instruction: string;
+  /** Reference photo shown as a small corner thumbnail, e.g. `/examples/<id>.jpg` under `public/`. */
+  exampleImage?: string;
 }
 
 export const CAPTURE_STEPS: CaptureStep[] = [

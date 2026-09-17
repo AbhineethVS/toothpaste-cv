@@ -101,7 +101,7 @@ export function QuadrantSummary({ findings }: { findings: Findings }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-8">
         <div className="grid flex-1 gap-2">
           {cardFor("upper-right")}
           {cardFor("lower-right")}
