@@ -142,7 +142,6 @@ export default function CapturePage() {
       return next;
     });
     setActiveIndex((prev) => Math.min(prev + 1, CAPTURE_STEPS.length - 1));
-    setMode("camera");
   }
 
   function handleCapture() {
