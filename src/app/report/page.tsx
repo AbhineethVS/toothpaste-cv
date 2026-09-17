@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Download } from "lucide-react";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import type { AnalysisResult } from "@/lib/analysis-schema";
 import { StatRow } from "@/components/StatRow";
@@ -55,6 +56,9 @@ export default function ReportPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!photos) router.replace("/capture");
@@ -94,6 +98,49 @@ export default function ReportPage() {
     setAttempt((n) => n + 1);
   }
 
+  async function handleExportPdf() {
+    if (!reportRef.current) return;
+    setIsExporting(true);
+    setExportError(null);
+    try {
+      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+        import("html2canvas-pro"),
+        import("jspdf"),
+      ]);
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        backgroundColor: getComputedStyle(document.body).backgroundColor,
+        useCORS: true,
+      });
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save("toothpaste-cv-report.pdf");
+    } catch {
+      setExportError("Couldn't export the PDF. Please try again.");
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   return (
     <div className="flex flex-1 flex-col items-center bg-surface-page">
       <main className="flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-6">
@@ -104,8 +151,23 @@ export default function ReportPage() {
           >
             ← Back
           </Link>
-          <span className="text-sm font-medium text-ink-muted">Your screening report</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-ink-muted">Your screening report</span>
+            {status === "done" && result && (
+              <button
+                onClick={handleExportPdf}
+                disabled={isExporting}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle px-3 py-1.5 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary disabled:opacity-50"
+              >
+                <Download className="h-3.5 w-3.5" strokeWidth={2.25} />
+                {isExporting ? "Exporting…" : "Export PDF"}
+              </button>
+            )}
+          </div>
         </div>
+        {exportError && (
+          <p className="mt-2 text-right text-xs text-status-critical-text">{exportError}</p>
+        )}
 
         {status === "loading" && (
           <div className="flex flex-1 flex-col items-center justify-center py-32 text-center">
@@ -129,7 +191,7 @@ export default function ReportPage() {
         )}
 
         {status === "done" && result && photos && (
-          <>
+          <div ref={reportRef}>
             <p className="mt-5 max-w-3xl text-sm leading-6 text-ink-secondary">
               {result.overallSummary}
             </p>
@@ -164,7 +226,7 @@ export default function ReportPage() {
               This is a preliminary visual screening only, not a medical diagnosis. Please consult a
               licensed dentist for advice about your oral health.
             </p>
-          </>
+          </div>
         )}
       </main>
     </div>
