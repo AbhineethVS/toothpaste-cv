@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
+import { compressImage } from "@/lib/compress-image";
 
 export default function CapturePage() {
   const router = useRouter();
@@ -11,27 +12,33 @@ export default function CapturePage() {
     Array(CAPTURE_STEPS.length).fill(null)
   );
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const activeStep = CAPTURE_STEPS[activeIndex];
   const allCaptured = photos.every((photo) => photo !== null);
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
+    setIsProcessing(true);
+    setError(null);
+    try {
+      const dataUrl = await compressImage(file);
       setPhotos((prev) => {
         const next = [...prev];
         next[activeIndex] = dataUrl;
         return next;
       });
       setActiveIndex((prev) => Math.min(prev + 1, CAPTURE_STEPS.length - 1));
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      setError("Couldn't process that photo. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   }
 
   function handleContinue() {
@@ -102,10 +109,18 @@ export default function CapturePage() {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            disabled={isProcessing}
+            className="mt-5 inline-flex h-11 w-full max-w-xs items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
           >
-            {photos[activeIndex] ? "Retake photo" : "Take photo"}
+            {isProcessing
+              ? "Processing…"
+              : photos[activeIndex]
+                ? "Retake photo"
+                : "Take photo"}
           </button>
+          {error && (
+            <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>
+          )}
         </div>
 
         <div className="mt-6 flex justify-center gap-2">
