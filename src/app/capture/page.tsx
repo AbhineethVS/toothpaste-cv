@@ -218,7 +218,7 @@ export default function CapturePage() {
             {isUploading ? "Processing…" : "Upload photo instead"}
           </button>
           {uploadError && (
-            <p className="mt-3 text-sm text-status-critical">
+            <p className="mt-3 text-sm text-status-critical-text">
               {uploadError}
             </p>
           )}

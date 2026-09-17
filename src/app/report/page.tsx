@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import type { AnalysisResult } from "@/lib/analysis-schema";
-import { DIAGNOSTIC_DEFS } from "@/lib/analysis-schema";
-import { QuadrantGrid } from "@/components/QuadrantGrid";
-import { ScoreCard } from "@/components/ScoreCard";
+import { StatRow } from "@/components/StatRow";
+import { DentalMap } from "@/components/DentalMap";
+import { KeyFindings } from "@/components/KeyFindings";
+import { ClinicalImages } from "@/components/ClinicalImages";
+import { QuadrantSummary } from "@/components/QuadrantSummary";
 
 type Status = "loading" | "error" | "done";
 
@@ -24,6 +26,26 @@ function readStoredPhotos(): string[] | null {
     // fall through to null
   }
   return null;
+}
+
+function Panel({
+  title,
+  subtitle,
+  children,
+  centered = false,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  centered?: boolean;
+}) {
+  return (
+    <section className="flex h-full flex-col rounded-2xl border border-border-subtle bg-surface-card p-5">
+      <h2 className="text-sm font-semibold text-ink-primary">{title}</h2>
+      {subtitle && <p className="mt-0.5 text-xs text-ink-muted">{subtitle}</p>}
+      <div className={`mt-4 ${centered ? "flex flex-1 items-center" : ""}`}>{children}</div>
+    </section>
+  );
 }
 
 export default function ReportPage() {
@@ -72,13 +94,9 @@ export default function ReportPage() {
     setAttempt((n) => n + 1);
   }
 
-  const flaggedCount = result
-    ? Object.values(result.findings).filter((finding) => finding.severity !== "none").length
-    : 0;
-
   return (
     <div className="flex flex-1 flex-col items-center bg-surface-page">
-      <main className="flex w-full max-w-2xl flex-1 flex-col px-6 py-10">
+      <main className="flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-6">
         <div className="flex items-center justify-between">
           <Link
             href="/capture"
@@ -90,66 +108,57 @@ export default function ReportPage() {
         </div>
 
         {status === "loading" && (
-          <div className="mt-20 flex flex-1 flex-col items-center justify-center text-center">
+          <div className="flex flex-1 flex-col items-center justify-center py-32 text-center">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-border-subtle border-t-accent" />
-            <p className="mt-6 text-sm text-ink-muted">Analyzing your photos — this takes a few seconds…</p>
+            <p className="mt-6 text-sm text-ink-muted">
+              Analysing your photos — this takes a few seconds…
+            </p>
           </div>
         )}
 
         {status === "error" && (
-          <div className="mt-20 flex flex-1 flex-col items-center justify-center text-center">
-            <p className="text-sm text-status-critical">{errorMessage}</p>
+          <div className="flex flex-1 flex-col items-center justify-center py-32 text-center">
+            <p className="text-sm text-status-critical-text">{errorMessage}</p>
             <button
               onClick={handleRetry}
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink hover:opacity-90"
+              className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90"
             >
               Try again
             </button>
           </div>
         )}
 
-        {status === "done" && result && (
+        {status === "done" && result && photos && (
           <>
-            <div className="mt-8 flex items-center gap-5 rounded-2xl border border-border-subtle bg-surface-card p-5">
-              <div className="shrink-0 text-center">
-                <p className="text-4xl font-semibold tabular-nums text-ink-primary">
-                  {flaggedCount}
-                  <span className="text-lg text-ink-muted">/{DIAGNOSTIC_DEFS.length}</span>
-                </p>
-                <p className="mt-1 text-xs text-ink-muted">flagged</p>
-              </div>
-              <div className="border-l border-border-subtle pl-5">
-                <p className="text-sm leading-6 text-ink-secondary">{result.overallSummary}</p>
-              </div>
+            <p className="mt-5 max-w-3xl text-sm leading-6 text-ink-secondary">
+              {result.overallSummary}
+            </p>
+
+            <div className="mt-5">
+              <StatRow findings={result.findings} />
             </div>
 
-            <div className="mt-6 rounded-2xl border border-border-subtle bg-surface-card p-6">
-              <h2 className="mb-4 text-sm font-semibold text-ink-primary">By quadrant</h2>
-              <QuadrantGrid findings={result.findings} />
+            <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
+              <Panel title="Dental map" subtitle="Areas flagged across your photos">
+                <DentalMap findings={result.findings} />
+              </Panel>
+
+              <Panel title="Key findings" subtitle="Most serious first — tap a row for detail">
+                <KeyFindings findings={result.findings} />
+              </Panel>
             </div>
 
-            <div className="mt-6">
-              <h2 className="mb-3 text-sm font-semibold text-ink-primary">Findings</h2>
-              <ScoreCard findings={result.findings} />
-            </div>
+            <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+              <Panel title="Clinical images" subtitle={`AI analysed ${CAPTURE_STEPS.length} images`}>
+                <ClinicalImages findings={result.findings} photos={photos} />
+              </Panel>
 
-            {photos && (
-              <div className="mt-8 grid grid-cols-5 gap-2">
-                {photos.map((photo, i) => (
-                  <div key={CAPTURE_STEPS[i].id}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={photo}
-                      alt={CAPTURE_STEPS[i].title}
-                      className="aspect-square w-full rounded-lg object-cover"
-                    />
-                    <p className="mt-1 truncate text-center text-[10px] text-ink-muted">
-                      {CAPTURE_STEPS[i].title}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+              <Panel title="Quadrant summary" centered>
+                <div className="w-full">
+                  <QuadrantSummary findings={result.findings} />
+                </div>
+              </Panel>
+            </div>
 
             <p className="mt-8 text-center text-xs leading-5 text-ink-muted">
               This is a preliminary visual screening only, not a medical diagnosis. Please consult a

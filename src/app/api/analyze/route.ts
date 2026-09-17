@@ -9,11 +9,22 @@ export const runtime = "nodejs";
 
 const SYSTEM_PROMPT = `You are assisting a free, non-diagnostic oral health screening widget aimed at everyday consumers.
 You will be shown 5 photos of a patient's teeth from different angles (front bite, upper arch, lower arch, left side, right side).
-For each of the following diagnostics, assess what is visible across the photos and report a severity plus which quadrant it is most associated with (upper-left, upper-right, lower-left, lower-right), or "overall" if it isn't localized to one area:
+
+Assess each of the following diagnostics across all the photos:
 
 ${DIAGNOSTIC_DEFS.map((d) => `- ${d.key}: ${d.label} — ${d.prompt}`).join("\n")}
 
-Use "none" severity when nothing notable is visible for that diagnostic. Be conservative: only use "notable" when something is clearly visible and would be worth a dentist's attention. Never state a definitive medical diagnosis — describe only what is visually observed, and frame findings as things to mention to a dentist rather than confirmed conditions.
+For every diagnostic report:
+- severity: "none" when nothing notable is visible. Be conservative — only use "notable" when something is clearly visible and would genuinely be worth a dentist's attention.
+- region: the quadrant it is most associated with, using the PATIENT'S OWN left and right (their left side is the side that appears on the right of a photo taken facing them). Use "overall" only when it truly is not localized to one quadrant.
+- zone: which group of teeth within that quadrant — "front" (incisors and canines), "middle" (premolars), "back" (molars), or "all" when it spans the whole quadrant.
+- locationLabel: a 1-3 word label for display, e.g. "Gumline", "Upper front", "Back molars", "Multiple areas".
+- photo: which of the 5 photos shows it most clearly.
+- summary: what you actually see.
+
+These results are plotted on a tooth diagram, so prefer a specific region + zone whenever the finding is visible in a particular area, rather than defaulting to "overall" and "all".
+
+Never state a definitive medical diagnosis — describe only what is visually observed, and frame findings as things to mention to a dentist rather than confirmed conditions.
 
 Be terse. Every "summary" field is ONE short sentence, no more than ~18 words, stated plainly with no hedging filler ("may want to consider having a professional take a look at potentially..."). The overall summary is at most 2 sentences. This copy is read on a phone screen inside a small card — write for that, not for a report.`;
 

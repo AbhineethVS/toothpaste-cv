@@ -1,20 +1,43 @@
 import { z } from "zod";
+import { CAPTURE_STEP_IDS } from "@/lib/capture-steps";
 
 export const SEVERITIES = ["none", "mild", "moderate", "notable"] as const;
 export type Severity = (typeof SEVERITIES)[number];
 
-export const REGIONS = [
+export const ARCH_REGIONS = [
   "upper-left",
   "upper-right",
   "lower-left",
   "lower-right",
-  "overall",
 ] as const;
+export type ArchRegion = (typeof ARCH_REGIONS)[number];
+
+export const REGIONS = [...ARCH_REGIONS, "overall"] as const;
 export type Region = (typeof REGIONS)[number];
+
+export const ZONES = ["front", "middle", "back", "all"] as const;
+export type Zone = (typeof ZONES)[number];
 
 const FindingSchema = z.object({
   severity: z.enum(SEVERITIES),
-  region: z.enum(REGIONS),
+  region: z
+    .enum(REGIONS)
+    .describe(
+      "Which quadrant this is most associated with, using the PATIENT'S OWN left and right. Use 'overall' only when it genuinely is not localized to one quadrant."
+    ),
+  zone: z
+    .enum(ZONES)
+    .describe(
+      "Which group of teeth within that quadrant: 'front' (incisors and canines), 'middle' (premolars), 'back' (molars), or 'all' if it spans the whole quadrant."
+    ),
+  locationLabel: z
+    .string()
+    .describe(
+      "A 1-3 word location label for display, e.g. 'Gumline', 'Upper front', 'Back molars', 'Multiple areas'."
+    ),
+  photo: z
+    .enum(CAPTURE_STEP_IDS)
+    .describe("Which of the 5 photos shows this finding most clearly."),
   summary: z
     .string()
     .describe(
@@ -98,3 +121,4 @@ export const AnalysisSchema = z.object({
 });
 
 export type AnalysisResult = z.infer<typeof AnalysisSchema>;
+export type FindingKey = keyof AnalysisResult["findings"];

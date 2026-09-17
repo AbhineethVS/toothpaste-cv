@@ -1,9 +1,12 @@
-export type CaptureStepId =
-  | "front-bite"
-  | "upper-arch"
-  | "lower-arch"
-  | "left-buccal"
-  | "right-buccal";
+export const CAPTURE_STEP_IDS = [
+  "front-bite",
+  "upper-arch",
+  "lower-arch",
+  "left-buccal",
+  "right-buccal",
+] as const;
+
+export type CaptureStepId = (typeof CAPTURE_STEP_IDS)[number];
 
 export interface CaptureStep {
   id: CaptureStepId;

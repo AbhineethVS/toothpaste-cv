@@ -14,6 +14,21 @@
   --status-warning: #fab219;
   --status-serious: #ec835a;
   --status-critical: #d03b3b;
+
+  /*
+   * Status hues above are for marks (fills, dots, rings) and clear the 3:1
+   * mark rule. As small text they don't, so labels use these darker steps --
+   * each measured at or above 4.5:1 against this mode's surface.
+   */
+  --status-good-text: #006300;
+  --status-warning-text: #8a5c00;
+  --status-serious-text: #a8451f;
+  --status-critical-text: #d03b3b;
+
+  /* Dental map: teeth stay ivory in both modes so they still read as teeth. */
+  --tooth-base: #f3efe4;
+  --tooth-edge: rgba(11, 11, 11, 0.22);
+  --gum: #c9737f;
 }
 
 @theme inline {
@@ -29,6 +44,10 @@
   --color-status-warning: var(--status-warning);
   --color-status-serious: var(--status-serious);
   --color-status-critical: var(--status-critical);
+  --color-status-good-text: var(--status-good-text);
+  --color-status-warning-text: var(--status-warning-text);
+  --color-status-serious-text: var(--status-serious-text);
+  --color-status-critical-text: var(--status-critical-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -43,6 +62,15 @@
     --border-subtle: rgba(255, 255, 255, 0.1);
     --accent: #3987e5;
     --accent-ink: #ffffff;
+
+    --status-good-text: #0ca30c;
+    --status-warning-text: #fab219;
+    --status-serious-text: #ec835a;
+    --status-critical-text: #e66767;
+
+    --tooth-base: #e9e4d6;
+    --tooth-edge: rgba(0, 0, 0, 0.3);
+    --gum: #9e5763;
   }
 }
 

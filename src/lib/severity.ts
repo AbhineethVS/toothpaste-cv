@@ -8,6 +8,9 @@ export const SEVERITY_RANK: Record<Severity, number> = {
   notable: 3,
 };
 
+/** Legend order: least to most serious. */
+export const SEVERITIES_DISPLAY: Severity[] = ["none", "mild", "moderate", "notable"];
+
 export const SEVERITY_LABEL: Record<Severity, string> = {
   none: "No concern",
   mild: "Mild",
@@ -23,11 +26,12 @@ export const SEVERITY_HEX: Record<Severity, string> = {
   notable: "#d03b3b",
 };
 
+/** Text uses the darker per-mode steps; marks below use the pure status hues. */
 export const SEVERITY_TEXT_CLASS: Record<Severity, string> = {
-  none: "text-status-good",
-  mild: "text-status-warning",
-  moderate: "text-status-serious",
-  notable: "text-status-critical",
+  none: "text-status-good-text",
+  mild: "text-status-warning-text",
+  moderate: "text-status-serious-text",
+  notable: "text-status-critical-text",
 };
 
 export const SEVERITY_BG_CLASS: Record<Severity, string> = {
