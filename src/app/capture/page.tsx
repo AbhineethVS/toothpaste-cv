@@ -164,7 +164,7 @@ export default function CapturePage() {
               ref={videoRef}
               muted
               playsInline
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full -scale-x-100 object-cover"
             />
             {currentPhoto && (
               // eslint-disable-next-line @next/next/no-img-element
