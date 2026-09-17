@@ -50,6 +50,49 @@
   --color-status-critical-text: var(--status-critical-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Landing page only -- see .theme-obsidian below. Not used by capture/report. */
+  --color-lp-surface: var(--lp-surface);
+  --color-lp-surface-raised: var(--lp-surface-raised);
+  --color-lp-surface-card: var(--lp-surface-card);
+  --color-lp-surface-container: var(--lp-surface-container);
+  --color-lp-surface-container-high: var(--lp-surface-container-high);
+  --color-lp-surface-container-low: var(--lp-surface-container-low);
+  --color-lp-text-primary: var(--lp-text-primary);
+  --color-lp-text-secondary: var(--lp-text-secondary);
+  --color-lp-text-muted: var(--lp-text-muted);
+  --color-lp-primary: var(--lp-primary);
+  --color-lp-primary-container: var(--lp-primary-container);
+  --color-lp-on-primary-container: var(--lp-on-primary-container);
+  --color-lp-secondary: var(--lp-secondary);
+  --color-lp-tertiary: var(--lp-tertiary);
+  --color-lp-status-warning: var(--lp-status-warning);
+  --color-lp-status-danger: var(--lp-status-danger);
+  --color-lp-status-success: var(--lp-status-success);
+  --color-lp-border-subtle: var(--lp-border-subtle);
+  --font-lp-heading: var(--font-plus-jakarta);
+  --font-lp-body: var(--font-inter);
+}
+
+.theme-obsidian {
+  --lp-surface: #0f131c;
+  --lp-surface-raised: #0f141c;
+  --lp-surface-card: #131924;
+  --lp-surface-container: #1c2028;
+  --lp-surface-container-high: #262a33;
+  --lp-surface-container-low: #181c24;
+  --lp-text-primary: #f8fafc;
+  --lp-text-secondary: #94a3b8;
+  --lp-text-muted: #64748b;
+  --lp-primary: #60a5fa;
+  --lp-primary-container: #3b82f6;
+  --lp-on-primary-container: #ffffff;
+  --lp-secondary: #34d399;
+  --lp-tertiary: #22d3ee;
+  --lp-status-warning: #f59e0b;
+  --lp-status-danger: #ef4444;
+  --lp-status-success: #10b981;
+  --lp-border-subtle: rgba(255, 255, 255, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
