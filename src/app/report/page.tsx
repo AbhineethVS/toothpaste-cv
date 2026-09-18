@@ -209,20 +209,20 @@ export default function ReportPage() {
   }
 
   return (
-    <div className="theme-report flex min-h-screen flex-col bg-surface-page">
-      <header className="border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
-          <div>
+    <div className="theme-report flex min-h-screen w-full min-w-0 flex-col bg-surface-page">
+      <header className="w-full border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div className="min-w-0">
             <p className="text-lg font-bold tracking-tight text-ink-primary">
               toothpaste<span className="text-accent">.cv</span>
             </p>
             <p className="mt-0.5 text-xs text-ink-muted">Visual screening report</p>
           </div>
-          <div className="flex items-center gap-2.5">
-            <AuthButton className="hidden sm:inline-flex" />
+          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-2.5">
+            <AuthButton className="max-sm:hidden" />
             <Link
               href="/timeline"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-4 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary sm:px-4"
             >
               <Clock3 className="h-4 w-4" strokeWidth={2.25} />
               Timeline
@@ -231,7 +231,7 @@ export default function ReportPage() {
               <button
                 onClick={handleSaveTimeline}
                 disabled={isSavingTimeline || timelineStatus === "saved"}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-4 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary disabled:opacity-55"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary disabled:opacity-55 sm:px-4"
               >
                 <Save className="h-4 w-4" strokeWidth={2.25} />
                 {isSavingTimeline ? "Saving..." : timelineStatus === "saved" ? "Saved" : "Save"}
@@ -241,18 +241,20 @@ export default function ReportPage() {
               <button
                 onClick={handleExportPdf}
                 disabled={isExporting}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-4 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary disabled:opacity-50 sm:px-4"
               >
                 <Download className="h-4 w-4" strokeWidth={2.25} />
-                {isExporting ? "Exporting..." : "Download PDF"}
+                <span className="sm:hidden">{isExporting ? "..." : "PDF"}</span>
+                <span className="hidden sm:inline">{isExporting ? "Exporting..." : "Download PDF"}</span>
               </button>
             )}
             <Link
               href="/capture"
-              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90 sm:px-4"
             >
               <Plus className="h-4 w-4" strokeWidth={2.5} />
-              New screening
+              <span className="sm:hidden">New</span>
+              <span className="hidden sm:inline">New screening</span>
             </Link>
           </div>
         </div>
@@ -271,10 +273,10 @@ export default function ReportPage() {
         </p>
       )}
 
-      <div className="mx-auto flex w-full max-w-6xl flex-1">
+      <div className="mx-auto flex w-full min-w-0 max-w-6xl flex-1">
         <Sidebar analysisSeconds={analysisSeconds} />
 
-        <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-6">
+        <main className="w-full min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-6">
           {status === "loading" && (
             <div className="flex flex-1 flex-col items-center justify-center py-32 text-center">
               <div className="rounded-[28px] border border-border-subtle bg-surface-card px-8 py-9 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">

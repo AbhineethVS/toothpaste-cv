@@ -43,7 +43,7 @@ export function Sidebar({ analysisSeconds }: { analysisSeconds: number | null })
 /** Horizontal, scrollable equivalent of the sidebar step list for small screens. */
 export function MobileStepStrip() {
   return (
-    <div className="mb-4 flex gap-2 overflow-x-auto lg:hidden">
+    <div className="mb-4 flex w-full min-w-0 gap-2 overflow-x-auto pb-0.5 lg:hidden">
       {CAPTURE_STEPS.map((step) => (
         <div
           key={step.id}

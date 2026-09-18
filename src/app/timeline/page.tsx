@@ -84,25 +84,25 @@ export default function TimelinePage() {
   }
 
   return (
-    <div className="theme-report min-h-screen bg-surface-page text-ink-primary">
-      <header className="border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
+    <div className="theme-report min-h-screen w-full min-w-0 bg-surface-page text-ink-primary">
+      <header className="w-full border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
+            className="inline-flex shrink-0 items-center gap-2 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={2.25} />
             Home
           </Link>
-          <div className="text-center">
-            <p className="text-sm font-semibold text-ink-primary">Oral health timeline</p>
+          <div className="min-w-0 text-center">
+            <p className="truncate text-sm font-semibold text-ink-primary">Oral health timeline</p>
             <p className="text-xs text-ink-muted">{entries.length} saved screenings</p>
           </div>
-          <div className="flex items-center gap-2">
-            <AuthButton className="hidden sm:inline-flex" />
+          <div className="flex shrink-0 items-center gap-2">
+            <AuthButton className="max-sm:hidden" />
             <Link
               href="/capture"
-              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90 sm:px-4"
             >
               <Camera className="h-4 w-4" strokeWidth={2.25} />
               New
@@ -111,7 +111,7 @@ export default function TimelinePage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
+      <main className="mx-auto w-full min-w-0 max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
         <section className="rounded-[28px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-6">
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div>
