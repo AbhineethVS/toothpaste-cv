@@ -208,7 +208,7 @@ export default function Home() {
               href="/"
               className="font-lp-heading text-lg font-bold tracking-tight text-lp-text-primary transition-opacity hover:opacity-80"
             >
-              toothpaste<span className="text-lp-primary-container">.cv</span>
+              toothpaste<span className="text-[#7ea51f]">.cv</span>
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -216,7 +216,7 @@ export default function Home() {
             <AuthButton />
             <Link
               href="/capture"
-              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_34px_rgba(202,255,99,0.2)] transition-colors hover:bg-lp-primary sm:px-4"
+              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_22px_rgba(202,255,99,0.26),0_2px_10px_rgba(13,50,27,0.08)] transition-all duration-300 hover:brightness-105 hover:shadow-[0_0_0_4px_rgba(202,255,99,0.24),0_0_34px_rgba(202,255,99,0.72),0_14px_32px_rgba(13,50,27,0.12)] sm:px-4"
             >
               Start Screening
             </Link>
@@ -240,7 +240,7 @@ export default function Home() {
             <div className="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
               <Link
                 href="/capture"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_14px_34px_rgba(202,255,99,0.24)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_16px_42px_rgba(202,255,99,0.3)] sm:w-auto"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_30px_rgba(202,255,99,0.28),0_3px_14px_rgba(13,50,27,0.08)] transition-all duration-300 hover:brightness-105 hover:shadow-[0_0_0_5px_rgba(202,255,99,0.24),0_0_42px_rgba(202,255,99,0.76),0_18px_42px_rgba(13,50,27,0.12)] sm:w-auto"
               >
                 Start oral check
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -380,7 +380,7 @@ export default function Home() {
               </p>
               <Link
                 href="/capture"
-                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_28px_rgba(35,95,100,0.18)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_12px_28px_rgba(35,95,100,0.22)] sm:w-auto"
+                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_30px_rgba(202,255,99,0.28),0_3px_14px_rgba(13,50,27,0.08)] transition-all duration-300 hover:brightness-105 hover:shadow-[0_0_0_5px_rgba(202,255,99,0.24),0_0_42px_rgba(202,255,99,0.76),0_18px_42px_rgba(13,50,27,0.12)] sm:w-auto"
               >
                 <PlayCircle className="h-5 w-5" />
                 Start oral check
