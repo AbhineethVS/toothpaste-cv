@@ -3,7 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Camera, RotateCcw, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  Camera,
+  Check,
+  ImagePlus,
+  Info,
+  RotateCcw,
+  ShieldCheck,
+  Upload,
+} from "lucide-react";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import { captureVideoFrame, compressImage } from "@/lib/compress-image";
 
@@ -12,10 +21,10 @@ type CaptureMode = "camera" | "upload";
 
 function CornerBrackets() {
   const corners = [
-    "top-2 left-2 border-t-2 border-l-2 rounded-tl-md",
-    "top-2 right-2 border-t-2 border-r-2 rounded-tr-md",
-    "bottom-2 left-2 border-b-2 border-l-2 rounded-bl-md",
-    "bottom-2 right-2 border-b-2 border-r-2 rounded-br-md",
+    "top-4 left-4 border-t-2 border-l-2 rounded-tl-lg",
+    "top-4 right-4 border-t-2 border-r-2 rounded-tr-lg",
+    "bottom-4 left-4 border-b-2 border-l-2 rounded-bl-lg",
+    "bottom-4 right-4 border-b-2 border-r-2 rounded-br-lg",
   ];
   return (
     <>
@@ -23,7 +32,7 @@ function CornerBrackets() {
         <div
           key={classes}
           aria-hidden
-          className={`pointer-events-none absolute h-6 w-6 border-white/70 ${classes}`}
+          className={`pointer-events-none absolute h-10 w-10 border-white/85 ${classes}`}
         />
       ))}
     </>
@@ -38,18 +47,18 @@ function ModeTabs({
   onChange: (mode: CaptureMode) => void;
 }) {
   const tabs: { id: CaptureMode; label: string; icon: typeof Camera }[] = [
-    { id: "camera", label: "Take a photo", icon: Camera },
-    { id: "upload", label: "Upload photo", icon: Upload },
+    { id: "camera", label: "Camera", icon: Camera },
+    { id: "upload", label: "Upload", icon: Upload },
   ];
   return (
-    <div className="flex gap-1 rounded-full bg-surface-page p-1">
+    <div className="grid grid-cols-2 gap-1 rounded-full bg-surface-page p-1">
       {tabs.map(({ id, label, icon: Icon }) => (
         <button
           key={id}
           onClick={() => onChange(id)}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+          className={`flex h-10 items-center justify-center gap-2 rounded-full text-sm font-medium transition-colors ${
             mode === id
-              ? "bg-accent text-accent-ink"
+              ? "bg-accent text-accent-ink shadow-[0_8px_20px_rgba(35,95,100,0.16)]"
               : "text-ink-muted hover:text-ink-primary"
           }`}
         >
@@ -59,6 +68,13 @@ function ModeTabs({
       ))}
     </div>
   );
+}
+
+function statusText(status: CameraStatus, hasPhoto: boolean) {
+  if (hasPhoto) return "Photo captured";
+  if (status === "ready") return "Camera ready";
+  if (status === "starting") return "Starting camera";
+  return "Upload available";
 }
 
 export default function CapturePage() {
@@ -78,6 +94,7 @@ export default function CapturePage() {
 
   const activeStep = CAPTURE_STEPS[activeIndex];
   const currentPhoto = photos[activeIndex];
+  const completedCount = photos.filter(Boolean).length;
   const allCaptured = photos.every((photo) => photo !== null);
 
   useEffect(() => {
@@ -179,47 +196,45 @@ export default function CapturePage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center bg-surface-page">
-      <main className="flex w-full max-w-md flex-1 flex-col px-6 py-10">
-        <div className="flex items-center justify-between">
+    <div className="theme-capture flex min-h-screen flex-col bg-surface-page text-ink-primary">
+      <header className="border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-6">
           <Link
             href="/"
-            className="text-sm font-medium text-ink-muted transition-colors hover:text-ink-primary"
+            className="inline-flex items-center gap-2 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
           >
-            ← Back
+            <ArrowLeft className="h-4 w-4" strokeWidth={2.25} />
+            Back
           </Link>
-          <span className="text-sm font-medium text-ink-muted">
-            Step {activeIndex + 1} of {CAPTURE_STEPS.length}
+          <div className="text-center">
+            <p className="text-sm font-semibold text-ink-primary">Capture photos</p>
+            <p className="text-xs text-ink-muted">
+              {completedCount} of {CAPTURE_STEPS.length} complete
+            </p>
+          </div>
+          <span className="rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
+            Step {activeIndex + 1}
           </span>
         </div>
+      </header>
 
-        <div className="mt-6 flex gap-2">
-          {CAPTURE_STEPS.map((step, i) => (
-            <button
-              key={step.id}
-              onClick={() => goToStep(i)}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                photos[i]
-                  ? "bg-status-good"
-                  : i === activeIndex
-                    ? "bg-accent"
-                    : "bg-border-subtle"
-              }`}
-              aria-label={`Go to ${step.title}`}
-            />
-          ))}
-        </div>
-
-        <div className="mt-8 flex flex-col items-center rounded-2xl border border-border-subtle bg-surface-card p-6 text-center">
-          <h1 className="text-xl font-semibold text-ink-primary">
-            {activeStep.title}
-          </h1>
-          <p className="mt-1 text-sm leading-6 text-ink-secondary">
-            {activeStep.instruction}
-          </p>
-
-          <div className="mt-5 w-full max-w-xs">
-            <ModeTabs mode={mode} onChange={setMode} />
+      <main className="mx-auto grid w-full max-w-6xl flex-1 gap-5 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:py-8">
+        <section className="rounded-[28px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted">
+                {statusText(cameraStatus, Boolean(currentPhoto))}
+              </p>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink-primary">
+                {activeStep.title}
+              </h1>
+              <p className="mt-1 max-w-xl text-sm leading-6 text-ink-secondary">
+                {activeStep.instruction}
+              </p>
+            </div>
+            <div className="w-full sm:w-56">
+              <ModeTabs mode={mode} onChange={setMode} />
+            </div>
           </div>
 
           <input
@@ -231,8 +246,8 @@ export default function CapturePage() {
           />
 
           {mode === "camera" ? (
-            <>
-              <div className="relative mt-4 aspect-square w-full max-w-xs overflow-hidden rounded-xl bg-zinc-950">
+            <div className="mt-5">
+              <div className="relative mx-auto aspect-[4/3] w-full max-w-3xl overflow-hidden rounded-[24px] bg-zinc-950 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]">
                 <video
                   ref={videoRef}
                   muted
@@ -248,105 +263,183 @@ export default function CapturePage() {
                   />
                 )}
                 {!currentPhoto && cameraStatus === "starting" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80 text-sm text-zinc-300">
-                    Starting camera…
+                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/85 text-sm text-zinc-200">
+                    Starting camera...
                   </div>
                 )}
                 {!currentPhoto && cameraStatus === "error" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80 px-4 text-center text-sm text-zinc-300">
-                    Camera unavailable. Use the &quot;Upload photo&quot; tab above.
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/85 px-6 text-center text-sm text-zinc-200">
+                    <Upload className="mb-3 h-6 w-6" strokeWidth={2.25} />
+                    Camera unavailable. Upload a photo instead.
                   </div>
                 )}
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_42%,rgba(0,0,0,0.34)_100%)]" />
                 <CornerBrackets />
+                <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
+                  <span className="rounded-full bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
+                    Keep mouth centered
+                  </span>
+                  <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-900 backdrop-blur-md">
+                    {activeIndex + 1} / {CAPTURE_STEPS.length}
+                  </span>
+                </div>
                 {activeStep.exampleImage && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={activeStep.exampleImage}
-                    alt={`Example: ${activeStep.title}`}
-                    className="absolute top-2 right-2 h-14 w-14 rounded-md border-2 border-white/80 object-cover shadow-md"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <div className="absolute bottom-4 right-4 overflow-hidden rounded-2xl border border-white/70 bg-white/90 p-1 shadow-[0_10px_24px_rgba(0,0,0,0.22)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={activeStep.exampleImage}
+                      alt={`Example: ${activeStep.title}`}
+                      className="h-20 w-20 rounded-xl object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
                 )}
               </div>
 
-              {currentPhoto ? (
-                <button
-                  onClick={handleRetake}
-                  aria-label="Retake photo"
-                  className="mt-5 flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-ink transition-opacity hover:opacity-90"
-                >
-                  <RotateCcw className="h-6 w-6" strokeWidth={2.25} />
-                </button>
-              ) : (
-                <button
-                  onClick={handleCapture}
-                  disabled={cameraStatus !== "ready"}
-                  aria-label="Capture photo"
-                  className="mt-5 flex h-16 w-16 items-center justify-center rounded-full bg-accent transition-opacity hover:opacity-90 disabled:opacity-50"
-                >
-                  <span className="h-11 w-11 rounded-full border-2 border-accent-ink" />
-                </button>
-              )}
-            </>
+              <div className="mt-5 flex items-center justify-center gap-4">
+                {currentPhoto && (
+                  <button
+                    onClick={handleRetake}
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border-subtle bg-surface-page px-5 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
+                  >
+                    <RotateCcw className="h-4 w-4" strokeWidth={2.25} />
+                    Retake
+                  </button>
+                )}
+                {!currentPhoto && (
+                  <button
+                    onClick={handleCapture}
+                    disabled={cameraStatus !== "ready"}
+                    aria-label="Capture photo"
+                    className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-accent-ink shadow-[0_14px_30px_rgba(35,95,100,0.24)] transition-opacity hover:opacity-90 disabled:opacity-50"
+                  >
+                    <span className="h-14 w-14 rounded-full border-2 border-accent-ink" />
+                  </button>
+                )}
+                {currentPhoto && (
+                  <button
+                    onClick={() => setActiveIndex((index) => Math.min(index + 1, CAPTURE_STEPS.length - 1))}
+                    disabled={activeIndex === CAPTURE_STEPS.length - 1}
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-45"
+                  >
+                    Next view
+                  </button>
+                )}
+              </div>
+            </div>
           ) : (
-            <button
-              onClick={() => uploadInputRef.current?.click()}
-              disabled={isUploading}
-              className="mt-4 flex w-full max-w-xs flex-col items-center gap-2 rounded-xl border border-dashed border-border-subtle px-4 py-8 text-center transition-colors hover:border-accent disabled:opacity-50"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-page text-ink-muted">
-                <Upload className="h-5 w-5" strokeWidth={2.25} />
-              </span>
-              <span className="text-sm font-medium text-ink-primary">
-                {isUploading ? "Processing…" : "Upload a photo instead"}
-              </span>
-              <span className="text-xs text-ink-muted">JPG, PNG up to 10MB</span>
-            </button>
+            <div className="mt-5 flex min-h-[420px] items-center justify-center rounded-[24px] border border-dashed border-border-subtle bg-surface-page/70 p-6 text-center">
+              <button
+                onClick={() => uploadInputRef.current?.click()}
+                disabled={isUploading}
+                className="flex w-full max-w-sm flex-col items-center gap-3 rounded-[24px] bg-surface-card px-6 py-10 shadow-[0_14px_36px_rgba(42,54,71,0.08)] transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+              >
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-page text-accent">
+                  <ImagePlus className="h-6 w-6" strokeWidth={2.25} />
+                </span>
+                <span className="text-base font-semibold text-ink-primary">
+                  {isUploading ? "Processing photo..." : "Upload this view"}
+                </span>
+                <span className="text-sm leading-6 text-ink-muted">
+                  Use a clear JPG or PNG with the same angle shown in the reference.
+                </span>
+              </button>
+            </div>
           )}
 
           {uploadError && (
-            <p className="mt-3 text-sm text-status-critical-text">
+            <p className="mt-4 rounded-xl bg-status-critical/10 px-3 py-2 text-sm text-status-critical-text">
               {uploadError}
             </p>
           )}
-        </div>
 
-        <div className="mt-6 flex justify-center gap-2">
-          {CAPTURE_STEPS.map((step, i) => (
+          {allCaptured && (
             <button
-              key={step.id}
-              onClick={() => goToStep(i)}
-              className={`h-14 w-14 overflow-hidden rounded-lg border-2 ${
-                i === activeIndex ? "border-accent" : "border-transparent"
-              }`}
-              aria-label={`Review ${step.title}`}
+              onClick={handleContinue}
+              className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-8 text-base font-medium text-accent-ink shadow-[0_12px_28px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90"
             >
-              {photos[i] ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={photos[i]!}
-                  alt={step.title}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-border-subtle text-xs text-ink-muted">
-                  {i + 1}
-                </div>
-              )}
+              Continue to report
             </button>
-          ))}
-        </div>
+          )}
+        </section>
 
-        {allCaptured && (
-          <button
-            onClick={handleContinue}
-            className="mt-8 inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-8 text-base font-medium text-accent-ink transition-opacity hover:opacity-90"
-          >
-            Continue to report
-          </button>
-        )}
+        <aside className="flex flex-col gap-4">
+          <section className="rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-status-good/12 text-status-good-text">
+                <ShieldCheck className="h-5 w-5" strokeWidth={2.25} />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-ink-primary">Before you capture</h2>
+                <p className="mt-1 text-sm leading-6 text-ink-secondary">
+                  Use bright, even light and keep the camera steady. Retake any blurry view.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-ink-primary">Photo set</h2>
+              <span className="text-xs font-medium text-ink-muted">
+                {completedCount}/{CAPTURE_STEPS.length}
+              </span>
+            </div>
+            <div className="flex flex-col gap-2">
+              {CAPTURE_STEPS.map((step, i) => {
+                const isActive = i === activeIndex;
+                const isComplete = Boolean(photos[i]);
+                return (
+                  <button
+                    key={step.id}
+                    onClick={() => goToStep(i)}
+                    className={`flex items-center gap-3 rounded-2xl border px-3 py-2 text-left transition-colors ${
+                      isActive
+                        ? "border-accent bg-accent/8"
+                        : "border-transparent bg-surface-page hover:border-border-subtle"
+                    }`}
+                    aria-label={`Review ${step.title}`}
+                  >
+                    <span
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl ${
+                        isComplete ? "bg-status-good/12" : "bg-surface-card"
+                      }`}
+                    >
+                      {photos[i] ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={photos[i]!} alt="" className="h-full w-full object-cover" />
+                      ) : isComplete ? (
+                        <Check className="h-4 w-4 text-status-good-text" strokeWidth={2.5} />
+                      ) : (
+                        <span className="text-xs font-semibold text-ink-muted">{i + 1}</span>
+                      )}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-ink-primary">
+                        {step.title}
+                      </span>
+                      <span className="block truncate text-xs text-ink-muted">
+                        {isComplete ? "Captured" : "Needed"}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
+            <div className="flex items-start gap-3">
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2.25} />
+              <p className="text-xs leading-5 text-ink-secondary">
+                Photos stay in this browser session for the report flow. The screening is visual
+                guidance only, not a dental diagnosis.
+              </p>
+            </div>
+          </section>
+        </aside>
       </main>
     </div>
   );
