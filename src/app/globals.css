@@ -72,6 +72,7 @@
   --color-lp-border-subtle: var(--lp-border-subtle);
   --font-lp-heading: var(--font-plus-jakarta);
   --font-lp-body: var(--font-inter);
+  --font-lp-display: var(--font-cormorant);
 }
 
 .theme-obsidian {

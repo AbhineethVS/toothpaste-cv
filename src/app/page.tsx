@@ -198,84 +198,6 @@ function BentoTile({
   );
 }
 
-function ReportWindowPreview() {
-  return (
-    <div className="overflow-hidden rounded-[26px] border border-lp-border-subtle bg-white shadow-[0_30px_90px_rgba(13,50,27,0.18)]">
-      <div className="flex items-center gap-2 border-b border-lp-border-subtle bg-[#f8fbf3] px-4 py-3.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        <div className="ml-2 flex-1 rounded-full bg-white px-3 py-1 text-center font-mono text-[10px] text-lp-text-muted">
-          toothpaste.cv/report
-        </div>
-      </div>
-
-      <div className="min-h-[420px] bg-[#fbfdf8] p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="font-lp-heading text-[10px] font-bold uppercase tracking-[0.24em] text-lp-primary">
-              Visual oral health report
-            </p>
-            <h2 className="mt-2 font-lp-heading text-3xl font-bold leading-tight text-lp-text-primary">
-              Worth monitoring
-            </h2>
-          </div>
-          <span className="rounded-full bg-[#1f7a3f]/10 px-3 py-1.5 text-xs font-semibold text-[#1f7a3f]">
-            AI draft
-          </span>
-        </div>
-
-        <div className="mt-5 rounded-3xl bg-white p-4 shadow-sm">
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              ["6", "flagged"],
-              ["3", "views"],
-              ["PDF", "ready"],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-2xl bg-lp-surface-container-low px-3 py-3">
-                <p className="font-lp-heading text-2xl font-bold text-lp-text-primary">{value}</p>
-                <p className="mt-0.5 text-[10px] uppercase tracking-wider text-lp-text-muted">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            {["front-bite", "left-buccal", "right-buccal"].map((name) => (
-              <div key={name} className="h-20 overflow-hidden rounded-2xl bg-lp-surface-container">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/tooth-sides/${name}.png`} alt="" className="h-full w-full object-cover opacity-85" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-2">
-          {[
-            ["Possible decay", "Upper right molar", "#d84d4d"],
-            ["Gum health", "Front gumline", "#d79a16"],
-            ["Crowding", "Lower front", "#1f7a3f"],
-          ].map(([title, detail, color]) => (
-            <div key={title} className="flex items-center justify-between rounded-2xl border border-lp-border-subtle bg-white px-3 py-3 shadow-sm">
-              <div>
-                <p className="text-sm font-semibold text-lp-text-primary">{title}</p>
-                <p className="mt-0.5 text-xs text-lp-text-muted">{detail}</p>
-              </div>
-              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 flex items-center justify-between rounded-2xl bg-[#0d5a2b] px-4 py-3 text-white">
-          <span className="text-sm font-semibold">Dentist-ready summary</span>
-          <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-ink">
-            Download PDF
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   return (
     <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
@@ -303,118 +225,68 @@ export default function Home() {
       </header>
 
       <main className="flex w-full min-w-0 flex-1 flex-col">
-        <section className="relative isolate w-full overflow-hidden bg-[#f6fbef] px-5 py-8 sm:px-6 sm:py-12">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/examples/upper-arch.jpg"
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.08] saturate-50"
-          />
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_78%_10%,rgba(202,255,99,0.32),transparent_34%),linear-gradient(180deg,rgba(246,251,239,0.68),rgba(246,251,239,0.97)_55%,#ffffff)]" />
+        <section className="relative isolate w-full overflow-hidden bg-white px-5 py-16 sm:px-6 sm:py-24">
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] bg-[radial-gradient(circle_at_50%_0%,rgba(202,255,99,0.34),transparent_32%),linear-gradient(180deg,#f8fff0_0%,#ffffff_70%)]" />
+          <div className="pointer-events-none absolute left-1/2 top-16 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-lp-primary-container/20 blur-3xl" />
 
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">
-            <BentoTile className="flex min-h-[460px] flex-col justify-between p-6 sm:p-7 lg:col-span-5 lg:row-span-2 lg:min-h-[520px]">
-              <div className="relative z-10">
-                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-lp-text-primary lg:text-6xl">
-                  Know when your smile needs a closer look.
-                </h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary lg:text-lg lg:leading-8">
-                  Guided oral photos turn into a clear visual screening report — so you know what to watch and when to see a dentist.
-                </p>
-              </div>
+          <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
+            <h1 className="max-w-4xl font-lp-display text-6xl font-semibold leading-[0.92] tracking-[-0.04em] text-lp-text-primary sm:text-7xl lg:text-8xl">
+              Know when your smile needs a closer look.
+            </h1>
+            <p className="mt-7 max-w-2xl text-base leading-8 text-lp-text-secondary sm:text-lg">
+              Guided oral photos turn into a clear visual screening report, so you know what to watch and when to see a dentist.
+            </p>
 
-              <div className="relative z-10 mt-10">
-                <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                  <Link
-                    href="/capture"
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_14px_34px_rgba(202,255,99,0.22)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_16px_42px_rgba(202,255,99,0.28)] sm:w-auto"
-                  >
-                    Start oral check
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                  <a
-                    href="#faq"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-lp-border-subtle bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_12px_32px_rgba(0,0,0,0.18)] transition-colors hover:bg-lp-surface-container sm:w-auto"
-                  >
-                    <HelpCircle className="h-4 w-4 text-lp-tertiary" />
-                    FAQ & how it works
-                  </a>
+            <div className="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+              <Link
+                href="/capture"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_14px_34px_rgba(202,255,99,0.24)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_16px_42px_rgba(202,255,99,0.3)] sm:w-auto"
+              >
+                Start oral check
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <a
+                href="#faq"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-lp-border-subtle bg-white px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_12px_32px_rgba(13,50,27,0.08)] transition-colors hover:bg-lp-surface-container sm:w-auto"
+              >
+                <HelpCircle className="h-4 w-4 text-lp-tertiary" />
+                FAQ & how it works
+              </a>
+            </div>
+
+            <div className="mt-10 grid w-full max-w-3xl gap-3 sm:grid-cols-3">
+              {TRUST_SIGNALS.map((signal) => (
+                <div
+                  key={signal.label}
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-lp-border-subtle bg-white/80 px-4 py-3 text-xs text-lp-text-secondary shadow-[0_12px_30px_rgba(13,50,27,0.06)] backdrop-blur"
+                >
+                  <signal.icon className={`h-4 w-4 shrink-0 ${signal.tone}`} />
+                  <span>{signal.label}</span>
                 </div>
+              ))}
+            </div>
 
-                <div className="mt-6 grid gap-2 sm:grid-cols-3">
-                  {TRUST_SIGNALS.map((signal) => (
-                    <div
-                      key={signal.label}
-                      className="flex items-center gap-2 rounded-xl bg-lp-surface-container-low px-3 py-2 text-xs text-lp-text-secondary"
-                    >
-                      <signal.icon className={`h-4 w-4 shrink-0 ${signal.tone}`} />
-                      <span>{signal.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </BentoTile>
-
-            <BentoTile className="min-h-[460px] p-4 lg:col-span-7 lg:row-span-2 lg:min-h-[520px]">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
-                  Report preview
-                </span>
-              </div>
-
-              <ReportWindowPreview />
-
-            </BentoTile>
-
-            <BentoTile className="flex min-h-44 flex-col justify-between bg-lp-surface-container p-5 lg:col-span-3">
-              <div className="flex items-start justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lp-secondary/15 text-lp-secondary">
-                  <Activity className="h-5 w-5" />
-                </div>
-                <span className="rounded-full bg-lp-secondary/15 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-lp-secondary">
-                  Ready
-                </span>
-              </div>
-              <div>
-                <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">
-                  Screening snapshot
-                </p>
-                <p className="mt-2 font-lp-heading text-4xl font-bold text-lp-text-primary">05</p>
+            <div className="mt-12 grid w-full max-w-4xl grid-cols-1 gap-3 sm:grid-cols-3">
+              <BentoTile className="bg-white/80 p-5 text-left shadow-[0_16px_40px_rgba(13,50,27,0.06)]">
+                <Activity className="h-5 w-5 text-lp-secondary" />
+                <p className="mt-5 font-lp-heading text-3xl font-bold text-lp-text-primary">05</p>
                 <p className="mt-1 text-sm text-lp-text-secondary">guided photos</p>
-              </div>
-            </BentoTile>
+              </BentoTile>
 
-            <BentoTile className="flex min-h-44 flex-col justify-between bg-lp-surface-container-low p-5 lg:col-span-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lp-primary-container/20 text-lp-primary">
-                <BadgeCheck className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">
-                  Screening areas
-                </p>
-                <p className="mt-2 font-lp-heading text-4xl font-bold text-lp-text-primary">09</p>
+              <BentoTile className="bg-white/80 p-5 text-left shadow-[0_16px_40px_rgba(13,50,27,0.06)]">
+                <BadgeCheck className="h-5 w-5 text-lp-primary" />
+                <p className="mt-5 font-lp-heading text-3xl font-bold text-lp-text-primary">09</p>
                 <p className="mt-1 text-sm text-lp-text-secondary">screening categories</p>
-              </div>
-            </BentoTile>
+              </BentoTile>
 
-            <BentoTile className="flex min-h-44 flex-col justify-between p-5 lg:col-span-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">
-                    Clinical boundary
-                  </p>
-                  <p className="mt-2 font-lp-heading text-xl font-semibold text-lp-text-primary">
-                    Useful triage, not a definitive diagnosis.
-                  </p>
-                </div>
-                <ShieldAlert className="h-5 w-5 shrink-0 text-lp-primary" />
-              </div>
-              <p className="mt-5 text-sm leading-6 text-lp-text-secondary">
-                Visual screening highlights surface-level concerns that may deserve a closer look
-                from a licensed dentist.
-              </p>
-            </BentoTile>
+              <BentoTile className="bg-white/80 p-5 text-left shadow-[0_16px_40px_rgba(13,50,27,0.06)]">
+                <ShieldAlert className="h-5 w-5 text-lp-status-warning" />
+                <p className="mt-5 font-lp-heading text-lg font-semibold text-lp-text-primary">
+                  Triage only
+                </p>
+                <p className="mt-1 text-sm text-lp-text-secondary">not a diagnosis</p>
+              </BentoTile>
+            </div>
           </div>
         </section>
 
