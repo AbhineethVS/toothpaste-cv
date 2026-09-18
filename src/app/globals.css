@@ -190,8 +190,37 @@
   }
 }
 
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--surface-page);
   color: var(--ink-primary);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* App shells are light-themed. Keep body matched so dark-mode OS settings
+   cannot leave a black strip beside a narrower content column. */
+body:has(.theme-minimal),
+body:has(.theme-capture),
+body:has(.theme-report) {
+  background: #f7f5ef;
+  color: #1e2524;
+}
+
+/* Themed app shells always paint edge-to-edge so dark-mode body never shows
+   as a blank strip beside a narrower content column. */
+.theme-minimal,
+.theme-capture,
+.theme-report {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }

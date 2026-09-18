@@ -34,9 +34,9 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="theme-capture min-h-screen bg-surface-page text-ink-primary">
-      <header className="border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-5 sm:px-6">
+    <div className="theme-capture min-h-screen w-full min-w-0 bg-surface-page text-ink-primary">
+      <header className="w-full border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4 sm:px-6">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
@@ -48,7 +48,7 @@ export default function AuthPage() {
         </div>
       </header>
 
-      <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-3xl items-center px-5 py-8 sm:px-6">
+      <main className="mx-auto flex min-h-[calc(100vh-4rem)] w-full min-w-0 max-w-3xl items-center px-4 py-8 sm:px-6">
         <section className="w-full rounded-[28px] border border-border-subtle bg-surface-card p-6 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-8">
           <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-accent">
             <ShieldCheck className="h-6 w-6" strokeWidth={2.25} />

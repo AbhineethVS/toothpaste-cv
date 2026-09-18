@@ -309,29 +309,29 @@ export default function CapturePage() {
   }
 
   return (
-    <div className="theme-capture flex min-h-screen flex-col bg-surface-page text-ink-primary">
-      <header className="border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-6">
+    <div className="theme-capture flex min-h-screen w-full min-w-0 flex-col bg-surface-page text-ink-primary">
+      <header className="w-full border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
+            className="inline-flex shrink-0 items-center gap-2 text-sm font-medium text-ink-secondary transition-colors hover:text-ink-primary"
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={2.25} />
             Back
           </Link>
-          <div className="text-center">
-            <p className="text-sm font-semibold text-ink-primary">Capture photos</p>
+          <div className="min-w-0 text-center">
+            <p className="truncate text-sm font-semibold text-ink-primary">Capture photos</p>
             <p className="text-xs text-ink-muted">
               {completedCount} of {CAPTURE_STEPS.length} complete
             </p>
           </div>
-          <span className="rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
+          <span className="shrink-0 rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
             Step {activeIndex + 1}
           </span>
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-6xl flex-1 gap-5 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:py-8">
+      <main className="mx-auto grid w-full min-w-0 max-w-6xl flex-1 gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:py-8">
         <section className="rounded-[28px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
@@ -29,13 +29,19 @@ export const metadata: Metadata = {
     "A free, 2-minute oral health screening. Take 5 quick photos and get an instant visual report.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${plusJakartaSans.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${plusJakartaSans.variable} h-full w-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full w-full min-w-0 flex-col">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

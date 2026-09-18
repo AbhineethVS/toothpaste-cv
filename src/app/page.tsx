@@ -114,10 +114,10 @@ function BentoTile({
 
 export default function Home() {
   return (
-    <div className="theme-minimal flex flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
-      <header className="sticky top-0 z-50 border-b border-lp-border-subtle bg-lp-surface/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-6">
-          <div className="flex items-center gap-3">
+    <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
+      <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
             <span className="font-lp-heading text-lg font-bold tracking-tight">
               toothpaste<span className="text-lp-tertiary">.cv</span>
             </span>
@@ -128,11 +128,11 @@ export default function Home() {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <AuthButton className="hidden sm:inline-flex" />
+          <div className="flex shrink-0 items-center gap-2">
+            <AuthButton className="max-sm:hidden" />
             <Link
               href="/capture"
-              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-4 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary"
+              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary sm:px-4"
             >
               Start Screening
             </Link>
@@ -140,7 +140,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex flex-1 flex-col">
+      <main className="flex w-full min-w-0 flex-1 flex-col">
         <section className="relative isolate w-full overflow-hidden px-5 py-6 sm:px-6 sm:py-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
