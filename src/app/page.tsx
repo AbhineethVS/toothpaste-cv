@@ -541,8 +541,19 @@ export default function Home() {
 
       <footer className="w-full border-t border-lp-border-subtle bg-lp-surface">
         <div className="mx-auto max-w-6xl px-5 py-8 text-center text-xs text-lp-text-muted sm:px-6">
-          toothpaste.cv gives a preliminary visual screening only and is not a medical diagnosis.
-          Always consult a licensed dentist for advice about your oral health.
+          <p>
+            toothpaste.cv gives a preliminary visual screening only and is not a medical diagnosis.
+            Always consult a licensed dentist for advice about your oral health.
+          </p>
+          <p className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <Link href="/terms" className="underline-offset-2 hover:text-lp-text-secondary hover:underline">
+              Terms of Use
+            </Link>
+            <span aria-hidden>·</span>
+            <Link href="/privacy" className="underline-offset-2 hover:text-lp-text-secondary hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
         </div>
       </footer>
     </div>

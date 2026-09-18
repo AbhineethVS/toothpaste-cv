@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   Camera,
   Check,
+  FileText,
   ImagePlus,
   Info,
   RotateCcw,
@@ -17,6 +18,8 @@ import {
 import { CAPTURE_STEPS, type CaptureStepId } from "@/lib/capture-steps";
 import { compressImage, captureVideoFrame } from "@/lib/compress-image";
 import { TimelineNavButton } from "@/components/auth/TimelineNavButton";
+import { LegalConsentCheckbox } from "@/components/legal/LegalConsentCheckbox";
+import { hasLegalConsent, saveLegalConsent } from "@/lib/legal-consent";
 
 type CameraStatus = "starting" | "ready" | "error";
 type CaptureMode = "camera" | "upload";
@@ -182,6 +185,9 @@ export default function CapturePage() {
   const [isCheckingPhoto, setIsCheckingPhoto] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
+  const [consentReady, setConsentReady] = useState(false);
+  const [hasConsent, setHasConsent] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -193,6 +199,14 @@ export default function CapturePage() {
   const allCaptured = photos.every((photo) => photo !== null);
 
   useEffect(() => {
+    const consented = hasLegalConsent();
+    setHasConsent(consented);
+    setConsentChecked(consented);
+    setConsentReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasConsent) return;
     if (allCaptured) {
       streamRef.current?.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -233,7 +247,7 @@ export default function CapturePage() {
     return () => {
       cancelled = true;
     };
-  }, [allCaptured]);
+  }, [allCaptured, hasConsent]);
 
   useEffect(() => {
     return () => {
@@ -242,6 +256,11 @@ export default function CapturePage() {
     };
   }, []);
 
+  function acceptConsent() {
+    if (!consentChecked) return;
+    saveLegalConsent();
+    setHasConsent(true);
+  }
   function goToStep(index: number) {
     setActiveIndex(index);
     setMode("camera");
@@ -321,20 +340,57 @@ export default function CapturePage() {
             Back
           </Link>
           <div className="min-w-0 text-center">
-            <p className="truncate text-sm font-semibold text-ink-primary">Capture photos</p>
+            <p className="truncate text-sm font-semibold text-ink-primary">
+              {hasConsent ? "Capture photos" : "Before you begin"}
+            </p>
             <p className="text-xs text-ink-muted">
-              {completedCount} of {CAPTURE_STEPS.length} complete
+              {hasConsent
+                ? `${completedCount} of ${CAPTURE_STEPS.length} complete`
+                : "Terms & privacy"}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <TimelineNavButton />
-            <span className="rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
-              Step {activeIndex + 1}
-            </span>
+            {hasConsent && (
+              <span className="rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
+                Step {activeIndex + 1}
+              </span>
+            )}
           </div>
         </div>
       </header>
 
+      {!consentReady ? (
+        <div className="flex flex-1 items-center justify-center py-24">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-border-subtle border-t-accent" />
+        </div>
+      ) : !hasConsent ? (
+        <main className="mx-auto flex w-full min-w-0 max-w-xl flex-1 items-center px-4 py-8 sm:px-6">
+          <section className="w-full rounded-[28px] border border-border-subtle bg-surface-card p-6 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-8">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+              <FileText className="h-6 w-6" strokeWidth={2.25} />
+            </div>
+            <h1 className="mt-5 text-2xl font-semibold tracking-tight text-ink-primary">
+              Quick consent before photos
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-ink-secondary">
+              Your photos are used to generate a visual screening report. This is not a dental
+              diagnosis.
+            </p>
+            <div className="mt-6 rounded-2xl bg-surface-page p-4">
+              <LegalConsentCheckbox checked={consentChecked} onChange={setConsentChecked} />
+            </div>
+            <button
+              type="button"
+              disabled={!consentChecked}
+              onClick={acceptConsent}
+              className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-45"
+            >
+              Continue to capture
+            </button>
+          </section>
+        </main>
+      ) : (
       <main className="mx-auto grid w-full min-w-0 max-w-6xl flex-1 gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:py-8">
         <section className="rounded-[28px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -579,6 +635,7 @@ export default function CapturePage() {
           </section>
         </aside>
       </main>
+      )}
     </div>
   );
 }

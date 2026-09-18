@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { LegalConsentCheckbox } from "@/components/legal/LegalConsentCheckbox";
+import { saveLegalConsent } from "@/lib/legal-consent";
 
 type Mode = "signin" | "signup";
 
@@ -42,6 +44,7 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<"idle" | "working" | "error" | "confirm">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
 
   async function handleSignOut() {
     await signOut();
@@ -64,6 +67,12 @@ export default function AuthPage() {
     if (mode === "signup" && password !== confirmPassword) {
       setStatus("error");
       setMessage("Passwords do not match.");
+      return;
+    }
+
+    if (mode === "signup" && !acceptedLegal) {
+      setStatus("error");
+      setMessage("Please agree to the Terms and Privacy Policy to create an account.");
       return;
     }
 
@@ -105,6 +114,8 @@ export default function AuthPage() {
       return;
     }
 
+    saveLegalConsent();
+
     // Supabase returns a user with empty identities when the email is already taken
     // (to avoid email enumeration), without creating a new session.
     const alreadyRegistered =
@@ -140,6 +151,7 @@ export default function AuthPage() {
     setMessage(null);
     setPassword("");
     setConfirmPassword("");
+    setAcceptedLegal(false);
   }
 
   return (
@@ -311,9 +323,17 @@ export default function AuthPage() {
                   </div>
                 )}
 
+                {mode === "signup" && (
+                  <LegalConsentCheckbox
+                    id="auth-legal-consent"
+                    checked={acceptedLegal}
+                    onChange={setAcceptedLegal}
+                  />
+                )}
+
                 <button
                   type="submit"
-                  disabled={status === "working"}
+                  disabled={status === "working" || (mode === "signup" && !acceptedLegal)}
                   className="inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-50"
                 >
                   {status === "working"
