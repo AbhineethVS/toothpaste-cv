@@ -59,9 +59,17 @@ async function hasVisibleTeeth(dataUrl: string): Promise<boolean> {
   const { data } = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
 
   let toothLike = 0;
+  let oralContext = 0;
+  let brightnessSum = 0;
+  let brightnessSquareSum = 0;
+  const rowsWithTeeth = new Set<number>();
+  const columnsWithTeeth = new Set<number>();
   const total = data.length / 4;
 
   for (let i = 0; i < data.length; i += 4) {
+    const pixel = i / 4;
+    const x = pixel % cropWidth;
+    const y = Math.floor(pixel / cropWidth);
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
@@ -69,12 +77,38 @@ async function hasVisibleTeeth(dataUrl: string): Promise<boolean> {
     const min = Math.min(r, g, b);
     const brightness = (r + g + b) / 3;
     const saturation = max === 0 ? 0 : (max - min) / max;
-    const balanced = Math.abs(r - g) < 58 && Math.abs(g - b) < 70;
+    const balanced = Math.abs(r - g) < 48 && Math.abs(g - b) < 58 && Math.abs(r - b) < 68;
+    const toothPixel = brightness > 145 && saturation < 0.34 && balanced;
+    const gumOrLipPixel = r > 92 && r > g * 1.08 && r > b * 1.08 && saturation > 0.16;
+    const mouthShadowPixel = brightness < 92 && saturation < 0.72;
 
-    if (brightness > 138 && saturation < 0.38 && balanced) toothLike += 1;
+    brightnessSum += brightness;
+    brightnessSquareSum += brightness * brightness;
+
+    if (gumOrLipPixel || mouthShadowPixel) oralContext += 1;
+
+    if (toothPixel) {
+      toothLike += 1;
+      rowsWithTeeth.add(y);
+      columnsWithTeeth.add(x);
+    }
   }
 
-  return toothLike / total > 0.012;
+  const toothRatio = toothLike / total;
+  const oralContextRatio = oralContext / total;
+  const meanBrightness = brightnessSum / total;
+  const brightnessVariance = brightnessSquareSum / total - meanBrightness * meanBrightness;
+  const brightnessStdDev = Math.sqrt(Math.max(0, brightnessVariance));
+  const toothRowCoverage = rowsWithTeeth.size / cropHeight;
+  const toothColumnCoverage = columnsWithTeeth.size / cropWidth;
+
+  const hasToothArea = toothRatio > 0.018 && toothRatio < 0.45;
+  const hasToothShape = toothRowCoverage > 0.055 && toothColumnCoverage > 0.12;
+  const hasPhotoVariation = brightnessStdDev > 20;
+  const hasMouthContext = oralContextRatio > 0.018;
+  const hasStrongToothPattern = toothRatio > 0.075 && hasToothShape && brightnessStdDev > 28;
+
+  return hasToothArea && hasToothShape && hasPhotoVariation && (hasMouthContext || hasStrongToothPattern);
 }
 
 function CornerBrackets() {
