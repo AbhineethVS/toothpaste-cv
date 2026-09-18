@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Activity,
@@ -199,21 +200,52 @@ function BentoTile({
 }
 
 export default function Home() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 4);
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
-      <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/95 backdrop-blur-xl">
+      <header
+        className={`sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-colors duration-300 ${
+          isScrolled
+            ? "border-lp-border-subtle bg-lp-surface/95"
+            : "border-white/10 bg-[#0b2f1a]/95"
+        }`}
+      >
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              className="font-lp-heading text-lg font-bold tracking-tight text-lp-text-primary transition-opacity hover:opacity-80"
+              aria-hidden={!isScrolled}
+              className={`font-lp-heading text-lg font-bold tracking-tight text-lp-text-primary transition-all duration-300 hover:opacity-80 ${
+                isScrolled ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
             >
               toothpaste<span className="text-[#7ea51f]">.cv</span>
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_10px_30px_rgba(13,50,27,0.08)] hover:text-lp-text-primary" />
-            <AuthButton />
+            <TimelineNavButton
+              className={
+                isScrolled
+                  ? "border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_10px_30px_rgba(13,50,27,0.08)] hover:text-lp-text-primary"
+                  : "border-white/15 bg-white/10 text-white/80 shadow-none hover:text-white"
+              }
+            />
+            <AuthButton
+              className={
+                isScrolled
+                  ? "border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_10px_30px_rgba(13,50,27,0.08)] hover:text-lp-text-primary"
+                  : "border-white/15 bg-white/10 text-white/80 shadow-none hover:text-white"
+              }
+            />
             <Link
               href="/capture"
               className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_22px_rgba(202,255,99,0.26),0_2px_10px_rgba(13,50,27,0.08)] transition-all duration-300 hover:brightness-105 hover:shadow-[0_0_0_4px_rgba(202,255,99,0.24),0_0_34px_rgba(202,255,99,0.72),0_14px_32px_rgba(13,50,27,0.12)] sm:px-4"
@@ -225,15 +257,17 @@ export default function Home() {
       </header>
 
       <main className="flex w-full min-w-0 flex-1 flex-col">
-        <section className="relative isolate w-full overflow-hidden bg-white px-5 py-16 sm:px-6 sm:py-24">
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] bg-[radial-gradient(circle_at_50%_0%,rgba(202,255,99,0.34),transparent_32%),linear-gradient(180deg,#f8fff0_0%,#ffffff_70%)]" />
-          <div className="pointer-events-none absolute left-1/2 top-16 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-lp-primary-container/20 blur-3xl" />
+        <section className="relative isolate w-full overflow-hidden bg-[#0b2f1a] px-5 py-16 text-white sm:px-6 sm:py-24">
+          <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_70%_12%,rgba(202,255,99,0.32),transparent_30%),radial-gradient(circle_at_18%_20%,rgba(31,155,88,0.28),transparent_26%),linear-gradient(135deg,#071d11_0%,#0b2f1a_48%,#123f21_100%)]" />
+          <div className="pointer-events-none absolute right-[8%] top-16 -z-10 h-64 w-64 rounded-full bg-lp-primary-container/30 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-[-160px] left-1/2 -z-10 h-80 w-[720px] -translate-x-1/2 rounded-full bg-lp-primary-container/15 blur-3xl" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:72px_72px] opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
 
           <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
-            <h1 className="max-w-4xl font-lp-display text-6xl font-semibold leading-[0.92] tracking-[-0.04em] text-lp-text-primary sm:text-7xl lg:text-8xl">
+            <h1 className="max-w-4xl font-lp-display text-6xl font-semibold leading-[0.96] tracking-[-0.03em] text-[#f6fff0] sm:text-7xl lg:text-8xl">
               Know when your smile needs a closer look.
             </h1>
-            <p className="mt-7 max-w-2xl text-base leading-8 text-lp-text-secondary sm:text-lg">
+            <p className="mt-7 max-w-2xl text-base leading-8 text-[#d7e8d4] sm:text-lg">
               Guided oral photos turn into a clear visual screening report, so you know what to watch and when to see a dentist.
             </p>
 
@@ -247,9 +281,9 @@ export default function Home() {
               </Link>
               <a
                 href="#faq"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-lp-border-subtle bg-white px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_12px_32px_rgba(13,50,27,0.08)] transition-colors hover:bg-lp-surface-container sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/10 px-6 py-4 font-lp-heading text-sm font-semibold text-white shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition-all duration-300 hover:bg-white/15 hover:shadow-[0_0_24px_rgba(202,255,99,0.18)] sm:w-auto"
               >
-                <HelpCircle className="h-4 w-4 text-lp-tertiary" />
+                <HelpCircle className="h-4 w-4 text-lp-primary-container" />
                 FAQ & how it works
               </a>
             </div>
@@ -258,7 +292,7 @@ export default function Home() {
               {TRUST_SIGNALS.map((signal) => (
                 <div
                   key={signal.label}
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-lp-border-subtle bg-white/80 px-4 py-3 text-xs text-lp-text-secondary shadow-[0_12px_30px_rgba(13,50,27,0.06)] backdrop-blur"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-xs text-[#d7e8d4] shadow-[0_14px_34px_rgba(0,0,0,0.16)] backdrop-blur"
                 >
                   <signal.icon className={`h-4 w-4 shrink-0 ${signal.tone}`} />
                   <span>{signal.label}</span>
@@ -267,24 +301,24 @@ export default function Home() {
             </div>
 
             <div className="mt-12 grid w-full max-w-4xl grid-cols-1 gap-3 sm:grid-cols-3">
-              <BentoTile className="bg-white/80 p-5 text-left shadow-[0_16px_40px_rgba(13,50,27,0.06)]">
-                <Activity className="h-5 w-5 text-lp-secondary" />
-                <p className="mt-5 font-lp-heading text-3xl font-bold text-lp-text-primary">05</p>
-                <p className="mt-1 text-sm text-lp-text-secondary">guided photos</p>
+              <BentoTile className="border-white/10 bg-white/10 p-5 text-left shadow-[0_18px_44px_rgba(0,0,0,0.18)] backdrop-blur">
+                <Activity className="h-5 w-5 text-lp-primary-container" />
+                <p className="mt-5 font-lp-heading text-3xl font-bold text-white">05</p>
+                <p className="mt-1 text-sm text-[#d7e8d4]">guided photos</p>
               </BentoTile>
 
-              <BentoTile className="bg-white/80 p-5 text-left shadow-[0_16px_40px_rgba(13,50,27,0.06)]">
-                <BadgeCheck className="h-5 w-5 text-lp-primary" />
-                <p className="mt-5 font-lp-heading text-3xl font-bold text-lp-text-primary">09</p>
-                <p className="mt-1 text-sm text-lp-text-secondary">screening categories</p>
+              <BentoTile className="border-white/10 bg-white/10 p-5 text-left shadow-[0_18px_44px_rgba(0,0,0,0.18)] backdrop-blur">
+                <BadgeCheck className="h-5 w-5 text-lp-primary-container" />
+                <p className="mt-5 font-lp-heading text-3xl font-bold text-white">09</p>
+                <p className="mt-1 text-sm text-[#d7e8d4]">screening categories</p>
               </BentoTile>
 
-              <BentoTile className="bg-white/80 p-5 text-left shadow-[0_16px_40px_rgba(13,50,27,0.06)]">
-                <ShieldAlert className="h-5 w-5 text-lp-status-warning" />
-                <p className="mt-5 font-lp-heading text-lg font-semibold text-lp-text-primary">
+              <BentoTile className="border-white/10 bg-white/10 p-5 text-left shadow-[0_18px_44px_rgba(0,0,0,0.18)] backdrop-blur">
+                <ShieldAlert className="h-5 w-5 text-lp-primary-container" />
+                <p className="mt-5 font-lp-heading text-lg font-semibold text-white">
                   Triage only
                 </p>
-                <p className="mt-1 text-sm text-lp-text-secondary">not a diagnosis</p>
+                <p className="mt-1 text-sm text-[#d7e8d4]">not a diagnosis</p>
               </BentoTile>
             </div>
           </div>
