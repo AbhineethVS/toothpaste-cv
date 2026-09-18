@@ -87,11 +87,11 @@ const TRUST_SIGNALS = [
 ];
 
 const PREVIEW_SHOTS = [
-  { label: "Front bite", src: "/tooth-sides/front-bite.png" },
-  { label: "Upper arch", src: "/tooth-sides/upper-arc.png" },
-  { label: "Lower arch", src: "/tooth-sides/lower-arc.png" },
-  { label: "Left side", src: "/tooth-sides/left-buccal.png" },
-  { label: "Right side", src: "/tooth-sides/right-buccal.png" },
+  { label: "Front bite", src: "/tooth-sides/front-bite.png", objectPosition: "center center" },
+  { label: "Upper arch", src: "/tooth-sides/upper-arc.png", objectPosition: "center top" },
+  { label: "Lower arch", src: "/tooth-sides/lower-arc.png", objectPosition: "center bottom" },
+  { label: "Left side", src: "/tooth-sides/left-buccal.png", objectPosition: "left center" },
+  { label: "Right side", src: "/tooth-sides/right-buccal.png", objectPosition: "right center" },
 ];
 
 const TOOTHPASTE_PROVIDES = [
@@ -218,6 +218,7 @@ export default function Home() {
                   src={activePreview.src}
                   alt={`Example ${activePreview.label.toLowerCase()} framing`}
                   className="absolute inset-0 h-full w-full object-cover opacity-70"
+                  style={{ objectPosition: activePreview.objectPosition }}
                 />
                 <div className="absolute inset-x-4 top-4 flex items-center justify-between">
                   <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white backdrop-blur-md">
