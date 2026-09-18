@@ -117,29 +117,31 @@ export default function Home() {
       </header>
 
       <main className="flex flex-1 flex-col">
-        <section className="relative w-full overflow-hidden px-5 py-16 sm:px-6 sm:py-24">
+        <section className="relative w-full overflow-hidden px-5 py-8 sm:px-6 sm:py-12">
           <div className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-[340px] w-[720px] -translate-x-1/2 bg-gradient-to-b from-lp-primary-container/20 via-lp-tertiary/10 to-transparent blur-[120px]" />
-          <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-lp-surface-container-high/80 px-4 py-1.5 shadow-md backdrop-blur-md">
+          <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-12 lg:grid-rows-[minmax(390px,auto)_auto]">
+            <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card px-5 py-12 text-center shadow-2xl sm:px-10 lg:col-span-8 lg:row-span-2">
+              <div className="pointer-events-none absolute -right-20 -bottom-32 h-72 w-72 rounded-full bg-lp-tertiary/10 blur-[90px]" />
+              <div className="relative z-10 mb-6 inline-flex items-center gap-2 rounded-full bg-lp-surface-container-high/80 px-4 py-1.5 shadow-md backdrop-blur-md">
               <span className="h-2 w-2 animate-pulse rounded-full bg-lp-secondary shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
               <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-primary">
                 Free · ~2 minutes · smartphone or web
               </span>
-            </div>
+              </div>
 
-            <h1 className="mb-4 max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
+              <h1 className="relative z-10 mb-4 max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
               Instant oral health screening
               <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-lp-text-primary via-lp-primary to-lp-tertiary bg-clip-text text-transparent">
                 {" "}from your phone.
               </span>
-            </h1>
-            <p className="mb-8 max-w-xl text-lg leading-8 text-lp-text-secondary">
+              </h1>
+              <p className="relative z-10 mb-8 max-w-xl text-lg leading-8 text-lp-text-secondary">
               Five guided photos, instant computer vision analysis, and a clear visual
               scorecard — so you know whether it&apos;s time to book a dentist.
-            </p>
+              </p>
 
-            <div className="mb-8 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row">
+              <div className="relative z-10 mb-8 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row">
               <Link
                 href="/capture"
                 className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-xl transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_0_28px_rgba(59,130,246,0.45)] sm:w-auto"
@@ -154,9 +156,9 @@ export default function Home() {
                 <Eye className="h-4 w-4 text-lp-tertiary" />
                 See Sample Report
               </a>
-            </div>
+              </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-lp-text-muted">
+              <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-lp-text-muted">
               <span className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-lp-secondary" />
                 No account required
@@ -169,12 +171,52 @@ export default function Home() {
                 <Info className="h-4 w-4 text-lp-tertiary" />
                 Triage, not medical diagnosis
               </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-between rounded-[24px] border border-lp-border-subtle bg-lp-surface-container p-6 shadow-xl lg:col-span-4">
+              <div>
+                <div className="mb-8 flex items-start justify-between">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lp-secondary/15 text-lp-secondary">
+                    <Activity className="h-5 w-5" />
+                  </div>
+                  <span className="rounded-full bg-lp-secondary/15 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-lp-secondary">
+                    Ready
+                  </span>
+                </div>
+                <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">Screening snapshot</p>
+                <p className="mt-2 font-lp-heading text-3xl font-bold text-lp-text-primary">05:00</p>
+                <p className="mt-1 text-sm leading-6 text-lp-text-secondary">Guided capture sequence with live alignment checks.</p>
+              </div>
+              <div className="mt-8 grid grid-cols-2 gap-2 border-t border-lp-border-subtle pt-4">
+                <div>
+                  <p className="font-lp-heading text-lg font-semibold text-lp-text-primary">9</p>
+                  <p className="text-xs text-lp-text-muted">visual categories</p>
+                </div>
+                <div>
+                  <p className="font-lp-heading text-lg font-semibold text-lp-text-primary">0</p>
+                  <p className="text-xs text-lp-text-muted">photos stored</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-between rounded-[24px] border border-lp-border-subtle bg-lp-surface-container-low p-6 shadow-xl lg:col-span-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">Clinical boundary</p>
+                  <p className="mt-2 font-lp-heading text-xl font-semibold text-lp-text-primary">Triage, not diagnosis.</p>
+                </div>
+                <ShieldAlert className="h-5 w-5 shrink-0 text-lp-primary" />
+              </div>
+              <p className="mt-6 text-sm leading-6 text-lp-text-secondary">
+                Visual screening highlights what may deserve a closer look from your dentist.
+              </p>
             </div>
           </div>
         </section>
 
         <section id="preview" className="relative mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-          <div className="relative overflow-hidden rounded-2xl bg-lp-surface-card p-5 shadow-2xl sm:p-8">
+          <div className="relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card p-5 shadow-2xl sm:p-8">
             <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-lp-primary/10 blur-3xl" />
             <div className="mb-8 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div>
