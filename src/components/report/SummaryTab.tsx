@@ -19,8 +19,8 @@ export function SummaryTab({ result, photos }: { result: AnalysisResult; photos:
         <h2 className="text-lg font-semibold text-ink-primary">Dental map</h2>
         <p className="mt-0.5 text-xs text-ink-muted">
           {flagged.length > 0
-            ? "Click on a highlighted region to view details"
-            : "No areas were flagged in this screening"}
+            ? "Tap a highlighted region"
+            : "No regions flagged"}
         </p>
         <div className="mt-4">
           <DentalMap

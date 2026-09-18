@@ -19,6 +19,13 @@ const TINT_OPACITY: Record<Severity, number> = {
   notable: 0.75,
 };
 
+const MAP_SEVERITY_LABEL: Record<Severity, string> = {
+  none: "Clear",
+  mild: "Mild",
+  moderate: "Mod.",
+  notable: "High",
+};
+
 function Tooth({
   tooth,
   severity,
@@ -203,14 +210,14 @@ export function DentalMap({
               className="h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: SEVERITY_HEX[severity] }}
             />
-            {SEVERITY_LABEL[severity]}
+            {MAP_SEVERITY_LABEL[severity]}
           </span>
         ))}
       </div>
       <p className="mt-2 text-center text-xs leading-5 text-ink-muted">
         {highlighted.length === 0
-          ? "Nothing was localised to a specific area of the mouth."
-          : "Highlighted areas are approximate — this screening locates concerns by region, not by individual tooth."}
+          ? "No localized flags."
+          : "Approximate regions only."}
       </p>
     </div>
   );

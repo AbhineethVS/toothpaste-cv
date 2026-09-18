@@ -43,7 +43,7 @@ export function ReportTab({ result, photos }: { result: AnalysisResult; photos: 
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
-        <Panel title="Dental map" subtitle="Areas flagged across your photos">
+        <Panel title="Dental map" subtitle="Flagged regions">
           <DentalMap findings={result.findings} />
         </Panel>
 
