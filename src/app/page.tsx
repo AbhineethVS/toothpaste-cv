@@ -50,7 +50,7 @@ const CUSTOMER_JOURNEY = [
     icon: Camera,
     iconClass: "text-lp-secondary",
     title: "Start with the concern",
-    detail: "The page makes the problem obvious: users want to know whether visible changes need attention.",
+    detail: "You open with a clear question: is this visible change worth a closer look, or can it wait?",
     meta: "Attention",
     metaIcon: Zap,
   },
@@ -59,7 +59,7 @@ const CUSTOMER_JOURNEY = [
     icon: ClipboardCheck,
     iconClass: "text-lp-tertiary",
     title: "Take five guided photos",
-    detail: "Front bite, upper arch, lower arch, and side views are framed as one clear capture flow.",
+    detail: "Front bite, upper arch, lower arch, and both side views follow one guided capture flow.",
     meta: "Understanding",
     metaIcon: Sparkles,
   },
@@ -68,7 +68,7 @@ const CUSTOMER_JOURNEY = [
     icon: FileText,
     iconClass: "text-lp-primary",
     title: "Read a plain report",
-    detail: "Users see severity, photo evidence, dental map context, and simple next-step language.",
+    detail: "Severity, photo evidence, dental map context, and plain next-step language in one place.",
     meta: "Trust",
     metaIcon: BadgeCheck,
   },
@@ -77,7 +77,7 @@ const CUSTOMER_JOURNEY = [
     icon: History,
     iconClass: "text-lp-secondary",
     title: "Track changes over time",
-    detail: "Saved reports become a timeline so repeat checks feel useful after the first visit.",
+    detail: "Saved reports become a timeline so later checks show what improved, stayed, or worsened.",
     meta: "After the report",
     metaIcon: CalendarCheck,
   },
@@ -85,9 +85,10 @@ const CUSTOMER_JOURNEY = [
     number: "05",
     icon: Stethoscope,
     iconClass: "text-lp-tertiary",
-    title: "Escalate when needed",
-    detail: "Higher concern reports can move toward dentist review instead of leaving the user guessing.",
-    meta: "Conversion",
+    title: "Bring it to your dentist",
+    detail:
+      "When something is flagged, the report packages map context, evidence, and a dentist-ready summary for the visit.",
+    meta: "Clinic handoff",
     metaIcon: ArrowRight,
   },
 ];
@@ -143,10 +144,6 @@ const TECH_POINTS = [
   {
     title: "Local timeline",
     detail: "Saved screenings stay on-device so you can compare flagged trends across visits.",
-  },
-  {
-    title: "CareStack-ready handoff",
-    detail: "Report shape matches clinic workflow: map context, evidence, and dentist-ready summary.",
   },
 ];
 
@@ -424,10 +421,7 @@ export default function Home() {
         <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
           <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
-                Customer journey
-              </span>
-              <h2 className="mt-1 max-w-2xl font-lp-heading text-3xl font-bold">
+              <h2 className="max-w-2xl font-lp-heading text-3xl font-bold">
                 From first concern to a confident next step.
               </h2>
             </div>
