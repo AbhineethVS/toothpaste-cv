@@ -7,7 +7,7 @@ import { Clock3, Download, Plus, Save } from "lucide-react";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import type { AnalysisResult } from "@/lib/analysis-schema";
 import { clearEntries, flaggedEntries, urgency } from "@/lib/report-metrics";
-import { saveTimelineEntry } from "@/lib/timeline-storage";
+import { saveTimelineEntry, getTimelineEntry, timelineEntryHasFullReport } from "@/lib/timeline-storage";
 import { SEVERITY_ICON, SEVERITY_TEXT_CLASS, SEVERITY_WASH_CLASS } from "@/lib/severity";
 import { Sidebar, MobileStepStrip } from "@/components/report/Sidebar";
 import { Tabs, type ReportTabId } from "@/components/report/Tabs";
@@ -29,6 +29,11 @@ const AUTH_GATE_COPY: Record<Exclude<AuthGateAction, null>, string> = {
   save: "Sign in to save this screening to your timeline so you can compare results across visits.",
 };
 
+function readEntryIdFromUrl(): string | null {
+  if (typeof window === "undefined") return null;
+  return new URLSearchParams(window.location.search).get("entry");
+}
+
 function readStoredPhotos(): string[] | null {
   if (typeof window === "undefined") return null;
   const raw = sessionStorage.getItem("toothpaste-cv:photos");
@@ -47,9 +52,11 @@ function readStoredPhotos(): string[] | null {
 function ReportOverview({
   result,
   analysisSeconds,
+  isSavedView,
 }: {
   result: AnalysisResult;
   analysisSeconds: number | null;
+  isSavedView?: boolean;
 }) {
   const tone = urgency(result.findings);
   const ToneIcon = SEVERITY_ICON[tone.severity];
@@ -85,7 +92,7 @@ function ReportOverview({
           </div>
           <div className="rounded-2xl bg-surface-page px-3 py-3">
             <p className="text-xl font-semibold tabular-nums text-ink-primary">
-              {analysisSeconds !== null ? `${analysisSeconds}s` : "Ready"}
+              {analysisSeconds !== null ? `${analysisSeconds}s` : isSavedView ? "Saved" : "Ready"}
             </p>
             <p className="mt-0.5 text-xs text-ink-muted">analysis</p>
           </div>
@@ -98,7 +105,8 @@ function ReportOverview({
 export default function ReportPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [photos] = useState<string[] | null>(readStoredPhotos);
+  const [savedEntryId, setSavedEntryId] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[] | null>(null);
   const [status, setStatus] = useState<Status>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -111,13 +119,41 @@ export default function ReportPage() {
   const [exportError, setExportError] = useState<string | null>(null);
   const [authGate, setAuthGate] = useState<AuthGateAction>(null);
   const exportRef = useRef<HTMLDivElement>(null);
+  const isSavedView = Boolean(savedEntryId);
 
   useEffect(() => {
-    if (!photos) router.replace("/capture");
-  }, [photos, router]);
+    const entryId = readEntryIdFromUrl();
+    if (entryId) {
+      const entry = getTimelineEntry(entryId);
+      if (!entry || !timelineEntryHasFullReport(entry)) {
+        setSavedEntryId(entryId);
+        setStatus("error");
+        setErrorMessage(
+          entry
+            ? "This saved screening doesn’t include the full report photos. Run a new screening and save again."
+            : "That saved screening could not be found on this device."
+        );
+        return;
+      }
+      setSavedEntryId(entryId);
+      setPhotos(entry.photos ?? null);
+      setResult(entry.result);
+      setAnalysisSeconds(null);
+      setTimelineStatus("saved");
+      setStatus("done");
+      return;
+    }
+
+    const sessionPhotos = readStoredPhotos();
+    if (!sessionPhotos) {
+      router.replace("/capture");
+      return;
+    }
+    setPhotos(sessionPhotos);
+  }, [router]);
 
   useEffect(() => {
-    if (!photos) return;
+    if (isSavedView || !photos) return;
 
     let cancelled = false;
     const startedAt = performance.now();
@@ -144,9 +180,13 @@ export default function ReportPage() {
     return () => {
       cancelled = true;
     };
-  }, [photos, attempt]);
+  }, [photos, attempt, isSavedView]);
 
   function handleRetry() {
+    if (isSavedView) {
+      router.push("/timeline");
+      return;
+    }
     setStatus("loading");
     setErrorMessage(null);
     setAttempt((n) => n + 1);
@@ -244,7 +284,15 @@ export default function ReportPage() {
           </div>
           <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-2.5">
             <AuthButton />
-            {user ? (
+            {isSavedView ? (
+              <Link
+                href="/timeline"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary sm:px-4"
+              >
+                <Clock3 className="h-4 w-4" strokeWidth={2.25} />
+                Back
+              </Link>
+            ) : user ? (
               <TimelineNavButton />
             ) : (
               <button
@@ -256,7 +304,7 @@ export default function ReportPage() {
                 Timeline
               </button>
             )}
-            {status === "done" && result && (
+            {status === "done" && result && !isSavedView && (
               <button
                 onClick={handleSaveTimeline}
                 disabled={isSavingTimeline || timelineStatus === "saved"}
@@ -296,12 +344,12 @@ export default function ReportPage() {
       {exportError && (
         <p className="px-5 pt-2 text-right text-xs text-status-critical-text sm:px-6">{exportError}</p>
       )}
-      {timelineStatus === "error" && (
+      {timelineStatus === "error" && !isSavedView && (
         <p className="px-5 pt-2 text-right text-xs text-status-critical-text sm:px-6">
           Couldn&apos;t save this screening to your timeline.
         </p>
       )}
-      {timelineStatus === "saved" && (
+      {timelineStatus === "saved" && !isSavedView && (
         <p className="px-5 pt-2 text-right text-xs text-status-good-text sm:px-6">
           Saved to your oral health timeline.
         </p>
@@ -328,13 +376,15 @@ export default function ReportPage() {
               <div className="rounded-[28px] border border-border-subtle bg-surface-card px-8 py-9 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
                 <p className="text-sm font-medium text-status-critical-text">{errorMessage}</p>
                 <p className="mt-2 max-w-sm text-sm leading-6 text-ink-muted">
-                  You can retry with the same photos or start a new screening.
+                  {isSavedView
+                    ? "You can return to your timeline or start a new screening."
+                    : "You can retry with the same photos or start a new screening."}
                 </p>
               <button
                 onClick={handleRetry}
                   className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90"
               >
-                Try again
+                {isSavedView ? "Back to timeline" : "Try again"}
               </button>
               </div>
             </div>
@@ -343,7 +393,11 @@ export default function ReportPage() {
           {status === "done" && result && photos && (
             <>
               <MobileStepStrip />
-              <ReportOverview result={result} analysisSeconds={analysisSeconds} />
+              <ReportOverview
+                result={result}
+                analysisSeconds={analysisSeconds}
+                isSavedView={isSavedView}
+              />
               <div className="mb-4">
                 <Tabs active={activeTab} onChange={setActiveTab} />
               </div>

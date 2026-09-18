@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Camera, Clock3, Sparkles, Trash2, TrendingDown, TrendingUp } from "lucide-react";
-import { clearTimeline, readTimeline, type TimelineEntry } from "@/lib/timeline-storage";
+import { ArrowLeft, Camera, ChevronRight, Clock3, Sparkles, Trash2, TrendingDown, TrendingUp } from "lucide-react";
+import { clearTimeline, readTimeline, timelineEntryHasFullReport, type TimelineEntry } from "@/lib/timeline-storage";
 import { clearEntries, flaggedEntries, urgency } from "@/lib/report-metrics";
 import { SEVERITY_ICON, SEVERITY_TEXT_CLASS, SEVERITY_WASH_CLASS } from "@/lib/severity";
 import { AuthButton } from "@/components/auth/AuthButton";
@@ -181,11 +181,12 @@ export default function TimelinePage() {
             <div className="grid gap-4">
               {timelineRows.map(({ entry, trend, flagged, clear, tone }) => {
                 const ToneIcon = SEVERITY_ICON[tone.severity];
-                return (
-                  <article
-                    key={entry.id}
-                    className="grid gap-4 rounded-[28px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)] md:grid-cols-[120px_minmax(0,1fr)]"
-                  >
+                const canOpenReport = timelineEntryHasFullReport(entry);
+                const cardClassName =
+                  "grid gap-4 rounded-[28px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)] transition-colors md:grid-cols-[120px_minmax(0,1fr)]";
+
+                const cardBody = (
+                  <>
                     <div className="aspect-square overflow-hidden rounded-2xl bg-surface-page">
                       {entry.thumbnail ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -205,7 +206,7 @@ export default function TimelinePage() {
                             {flagged.length} flagged · {clear.length} clear
                           </p>
                         </div>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <TrendBadge trend={trend} />
                           <span
                             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${SEVERITY_WASH_CLASS[tone.severity]} ${SEVERITY_TEXT_CLASS[tone.severity]}`}
@@ -213,6 +214,12 @@ export default function TimelinePage() {
                             <ToneIcon className="h-3.5 w-3.5" strokeWidth={2.25} />
                             {tone.label}
                           </span>
+                          {canOpenReport && (
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-accent">
+                              View report
+                              <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -231,8 +238,26 @@ export default function TimelinePage() {
                         </div>
                       )}
 
-                      <p className="mt-3 text-xs text-ink-muted">{trend.detail}</p>
+                      <p className="mt-3 text-xs text-ink-muted">
+                        {canOpenReport
+                          ? trend.detail
+                          : "Full report unavailable for this older save. Run a new screening and save again."}
+                      </p>
                     </div>
+                  </>
+                );
+
+                return canOpenReport ? (
+                  <Link
+                    key={entry.id}
+                    href={`/report?entry=${entry.id}`}
+                    className={`${cardClassName} hover:border-accent/40 hover:bg-surface-page/40`}
+                  >
+                    {cardBody}
+                  </Link>
+                ) : (
+                  <article key={entry.id} className={`${cardClassName} opacity-90`}>
+                    {cardBody}
                   </article>
                 );
               })}
