@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { ResponseInputContent } from "openai/resources/responses/responses";
-import { AnalysisSchema, DIAGNOSTIC_DEFS, type FindingKey } from "@/lib/analysis-schema";
+import {
+  AnalysisSchema,
+  DIAGNOSTIC_DEFS,
+  SEVERITIES,
+  type AnalysisResult,
+  type Finding,
+  type FindingKey,
+  type Severity,
+} from "@/lib/analysis-schema";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 
 export const runtime = "nodejs";
@@ -87,6 +95,217 @@ Never state a definitive medical diagnosis — describe only what is visually ob
 
 Be terse. Every "summary" field is ONE short sentence, no more than ~18 words, stated plainly with no hedging filler ("may want to consider having a professional take a look at potentially..."). The overall summary is at most 2 sentences. This copy is read on a phone screen inside a small card — write for that, not for a report.`;
 
+const CLAUDE_JSON_PROMPT = `${SYSTEM_PROMPT}
+
+Return ONLY valid JSON matching this exact shape:
+{
+  "overallSummary": "string",
+  "findings": {
+    "crowding": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "wear": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "discoloration": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "gumHealth": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "plaque": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "biteAlignment": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "spacing": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "chipsOrFractures": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" },
+    "possibleDecay": { "severity": "none|mild|moderate|notable", "region": "upper-left|upper-right|lower-left|lower-right|overall", "zone": "front|middle|back|all", "locationLabel": "string", "photo": "front-bite|upper-arch|lower-arch|left-buccal|right-buccal", "summary": "string" }
+  }
+}`;
+
+const SEVERITY_RANK: Record<Severity, number> = Object.fromEntries(
+  SEVERITIES.map((severity, index) => [severity, index])
+) as Record<Severity, number>;
+
+function parseDataUrl(dataUrl: string) {
+  const match = dataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  if (!match) {
+    throw new Error("Invalid image data URL.");
+  }
+
+  return { mediaType: match[1], data: match[2] };
+}
+
+function parseClaudeJson(text: string) {
+  const trimmed = text.trim();
+  const fencedJson = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  return JSON.parse(fencedJson?.[1] ?? trimmed);
+}
+
+function downgradeSeverity(severity: Severity): Severity {
+  const index = Math.max(0, SEVERITY_RANK[severity] - 1);
+  return SEVERITIES[index];
+}
+
+function lowerSeverity(a: Severity, b: Severity): Severity {
+  return SEVERITY_RANK[a] <= SEVERITY_RANK[b] ? a : b;
+}
+
+function mergeFinding(gptFinding: Finding, claudeFinding: Finding): Finding {
+  const gptSeverity = gptFinding.severity;
+  const claudeSeverity = claudeFinding.severity;
+  const oneModelDetected = gptSeverity === "none" || claudeSeverity === "none";
+  const severity = oneModelDetected
+    ? downgradeSeverity(gptSeverity === "none" ? claudeSeverity : gptSeverity)
+    : lowerSeverity(gptSeverity, claudeSeverity);
+  const preferredFinding =
+    SEVERITY_RANK[gptSeverity] <= SEVERITY_RANK[claudeSeverity] ? gptFinding : claudeFinding;
+
+  if (severity === "none") {
+    return {
+      ...preferredFinding,
+      severity,
+      region: "overall",
+      zone: "all",
+      locationLabel: "No concern",
+      summary: "No clear visible concern was confirmed.",
+    };
+  }
+
+  const sameRegion = gptFinding.region === claudeFinding.region;
+  const sameZone = gptFinding.zone === claudeFinding.zone;
+
+  return {
+    ...preferredFinding,
+    severity,
+    region: sameRegion ? gptFinding.region : preferredFinding.region,
+    zone: sameZone ? gptFinding.zone : preferredFinding.zone,
+    locationLabel: sameRegion && sameZone ? preferredFinding.locationLabel : "Visible area",
+    summary: oneModelDetected
+      ? `One review noted: ${preferredFinding.summary.replace(/\.$/, "")}.`
+      : preferredFinding.summary,
+  };
+}
+
+function buildMergedSummary(findings: AnalysisResult["findings"]) {
+  const visibleFindings = DIAGNOSTIC_DEFS.map((def) => ({
+    label: def.label,
+    finding: findings[def.key],
+  }))
+    .filter(({ finding }) => finding.severity !== "none")
+    .sort((a, b) => SEVERITY_RANK[b.finding.severity] - SEVERITY_RANK[a.finding.severity]);
+
+  if (visibleFindings.length === 0) {
+    return "No clear visible concerns were confirmed across the photos. Keep routine dental checkups for a complete exam.";
+  }
+
+  const topFindings = visibleFindings
+    .slice(0, 2)
+    .map(({ label }) => label.toLowerCase())
+    .join(" and ");
+
+  return `${topFindings} stood out in the visual screening. Use this as a non-diagnostic summary to discuss with a dentist.`;
+}
+
+function mergeAnalysisResults(gptResult: AnalysisResult, claudeResult: AnalysisResult): AnalysisResult {
+  const findings = Object.fromEntries(
+    DIAGNOSTIC_DEFS.map((def) => [
+      def.key,
+      mergeFinding(gptResult.findings[def.key], claudeResult.findings[def.key]),
+    ])
+  ) as AnalysisResult["findings"];
+
+  return {
+    overallSummary: buildMergedSummary(findings),
+    findings,
+  };
+}
+
+async function analyzeWithOpenAI(photos: string[]) {
+  const content: ResponseInputContent[] = [{ type: "input_text", text: SYSTEM_PROMPT }];
+  CAPTURE_STEPS.forEach((step, i) => {
+    content.push({
+      type: "input_text",
+      text: `Photo ${i + 1} of ${CAPTURE_STEPS.length} — ${step.title}: ${step.instruction}`,
+    });
+    content.push({ type: "input_image", image_url: photos[i], detail: "auto" });
+  });
+
+  const client = new OpenAI();
+  const model = process.env.OPENAI_MODEL || "gpt-5.5";
+  const requestParams = {
+    model,
+    input: [{ role: "user" as const, content }],
+    text: { format: zodTextFormat(AnalysisSchema, "oral_health_screening") },
+  };
+
+  let response;
+  try {
+    response = await client.responses.parse({ ...requestParams, temperature: 0 });
+  } catch (error) {
+    // Some reasoning models reject a non-default temperature outright -- retry without it.
+    if (error instanceof OpenAI.BadRequestError && /temperature/i.test(error.message)) {
+      response = await client.responses.parse(requestParams);
+    } else {
+      throw error;
+    }
+  }
+
+  if (!response.output_parsed) {
+    throw new Error("The OpenAI model did not return a parsable result.");
+  }
+
+  return response.output_parsed;
+}
+
+async function analyzeWithClaude(photos: string[]) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+
+  const content = [
+    { type: "text", text: CLAUDE_JSON_PROMPT },
+    ...CAPTURE_STEPS.flatMap((step, i) => {
+      const image = parseDataUrl(photos[i]);
+      return [
+        {
+          type: "text",
+          text: `Photo ${i + 1} of ${CAPTURE_STEPS.length} — ${step.title}: ${step.instruction}`,
+        },
+        {
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: image.mediaType,
+            data: image.data,
+          },
+        },
+      ];
+    }),
+  ];
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
+      max_tokens: 2200,
+      temperature: 0,
+      messages: [{ role: "user", content }],
+    }),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Claude analysis failed: ${response.status} ${message}`);
+  }
+
+  const data = (await response.json()) as {
+    content?: Array<{ type: string; text?: string }>;
+  };
+  const text = data.content?.find((item) => item.type === "text")?.text;
+  if (!text) {
+    throw new Error("Claude did not return text content.");
+  }
+
+  return AnalysisSchema.parse(parseClaudeJson(text));
+}
+
 export async function POST(request: NextRequest) {
   let body: unknown;
   try {
@@ -107,41 +326,27 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const content: ResponseInputContent[] = [{ type: "input_text", text: SYSTEM_PROMPT }];
-  CAPTURE_STEPS.forEach((step, i) => {
-    content.push({
-      type: "input_text",
-      text: `Photo ${i + 1} of ${CAPTURE_STEPS.length} — ${step.title}: ${step.instruction}`,
-    });
-    content.push({ type: "input_image", image_url: photos[i] as string, detail: "auto" });
-  });
-
   try {
-    const client = new OpenAI();
-    const model = process.env.OPENAI_MODEL || "gpt-5.5";
-    const requestParams = {
-      model,
-      input: [{ role: "user" as const, content }],
-      text: { format: zodTextFormat(AnalysisSchema, "oral_health_screening") },
-    };
+    const typedPhotos = photos as string[];
+    const [gptResult, claudeResult] = await Promise.allSettled([
+      analyzeWithOpenAI(typedPhotos),
+      analyzeWithClaude(typedPhotos),
+    ]);
 
-    let response;
-    try {
-      response = await client.responses.parse({ ...requestParams, temperature: 0 });
-    } catch (error) {
-      // Some reasoning models reject a non-default temperature outright -- retry without it.
-      if (error instanceof OpenAI.BadRequestError && /temperature/i.test(error.message)) {
-        response = await client.responses.parse(requestParams);
-      } else {
-        throw error;
-      }
+    if (gptResult.status === "rejected") {
+      throw gptResult.reason;
     }
 
-    if (!response.output_parsed) {
-      return NextResponse.json({ error: "The model did not return a parsable result." }, { status: 502 });
+    if (claudeResult.status === "rejected") {
+      console.warn("toothpaste-cv Claude second review skipped:", claudeResult.reason);
     }
 
-    return NextResponse.json(response.output_parsed);
+    const result =
+      claudeResult.status === "fulfilled" && claudeResult.value
+        ? mergeAnalysisResults(gptResult.value, claudeResult.value)
+        : gptResult.value;
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("toothpaste-cv analyze failed:", error);
     return NextResponse.json({ error: "Analysis failed. Please try again." }, { status: 502 });

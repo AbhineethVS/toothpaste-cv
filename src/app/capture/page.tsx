@@ -24,9 +24,6 @@ import { hasLegalConsent, saveLegalConsent } from "@/lib/legal-consent";
 type CameraStatus = "starting" | "ready" | "error";
 type CaptureMode = "camera" | "upload";
 
-const TEETH_NOT_VISIBLE_MESSAGE =
-  "We couldn't clearly see your teeth in this photo. Open your mouth or smile wider, keep teeth centered, and try again in brighter light.";
-
 const CAPTURE_GUIDES: Record<CaptureStepId, string[]> = {
   "front-bite": ["Bite gently with teeth together", "Show the full smile from left to right", "Keep lips away from the front teeth"],
   "upper-arch": ["Tilt your head back", "Open wide and aim at the upper teeth", "Use a mirror or helper if needed"],
@@ -34,86 +31,6 @@ const CAPTURE_GUIDES: Record<CaptureStepId, string[]> = {
   "left-buccal": ["Turn slightly to show the left bite", "Keep teeth together", "Pull the cheek aside if needed"],
   "right-buccal": ["Turn slightly to show the right bite", "Keep teeth together", "Pull the cheek aside if needed"],
 };
-
-function loadDataUrlImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Photo could not be checked."));
-    img.src = src;
-  });
-}
-
-async function hasVisibleTeeth(dataUrl: string): Promise<boolean> {
-  const img = await loadDataUrlImage(dataUrl);
-  const canvas = document.createElement("canvas");
-  const width = 180;
-  const height = Math.max(120, Math.round((img.height / Math.max(img.width, 1)) * width));
-  canvas.width = width;
-  canvas.height = height;
-
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) return true;
-  ctx.drawImage(img, 0, 0, width, height);
-
-  const cropX = Math.round(width * 0.16);
-  const cropY = Math.round(height * 0.18);
-  const cropWidth = Math.round(width * 0.68);
-  const cropHeight = Math.round(height * 0.64);
-  const { data } = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
-
-  let toothLike = 0;
-  let oralContext = 0;
-  let brightnessSum = 0;
-  let brightnessSquareSum = 0;
-  const rowsWithTeeth = new Set<number>();
-  const columnsWithTeeth = new Set<number>();
-  const total = data.length / 4;
-
-  for (let i = 0; i < data.length; i += 4) {
-    const pixel = i / 4;
-    const x = pixel % cropWidth;
-    const y = Math.floor(pixel / cropWidth);
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const brightness = (r + g + b) / 3;
-    const saturation = max === 0 ? 0 : (max - min) / max;
-    const balanced = Math.abs(r - g) < 48 && Math.abs(g - b) < 58 && Math.abs(r - b) < 68;
-    const toothPixel = brightness > 145 && saturation < 0.34 && balanced;
-    const gumOrLipPixel = r > 92 && r > g * 1.08 && r > b * 1.08 && saturation > 0.16;
-    const mouthShadowPixel = brightness < 92 && saturation < 0.72;
-
-    brightnessSum += brightness;
-    brightnessSquareSum += brightness * brightness;
-
-    if (gumOrLipPixel || mouthShadowPixel) oralContext += 1;
-
-    if (toothPixel) {
-      toothLike += 1;
-      rowsWithTeeth.add(y);
-      columnsWithTeeth.add(x);
-    }
-  }
-
-  const toothRatio = toothLike / total;
-  const oralContextRatio = oralContext / total;
-  const meanBrightness = brightnessSum / total;
-  const brightnessVariance = brightnessSquareSum / total - meanBrightness * meanBrightness;
-  const brightnessStdDev = Math.sqrt(Math.max(0, brightnessVariance));
-  const toothRowCoverage = rowsWithTeeth.size / cropHeight;
-  const toothColumnCoverage = columnsWithTeeth.size / cropWidth;
-
-  const hasToothArea = toothRatio > 0.018 && toothRatio < 0.45;
-  const hasToothShape = toothRowCoverage > 0.055 && toothColumnCoverage > 0.12;
-  const hasPhotoVariation = brightnessStdDev > 20;
-  const hasMouthContext = oralContextRatio > 0.018;
-  const hasStrongToothPattern = toothRatio > 0.075 && hasToothShape && brightnessStdDev > 28;
-
-  return hasToothArea && hasToothShape && hasPhotoVariation && (hasMouthContext || hasStrongToothPattern);
-}
 
 function CornerBrackets() {
   const corners = [
@@ -182,7 +99,6 @@ export default function CapturePage() {
   const [mode, setMode] = useState<CaptureMode>("camera");
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [isUploading, setIsUploading] = useState(false);
-  const [isCheckingPhoto, setIsCheckingPhoto] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [consentReady, setConsentReady] = useState(false);
@@ -271,21 +187,9 @@ export default function CapturePage() {
     setUploadError(null);
   }
 
-  async function storePhoto(dataUrl: string) {
-    setIsCheckingPhoto(true);
+  function storePhoto(dataUrl: string) {
     setCaptureError(null);
     setUploadError(null);
-    try {
-      if (!(await hasVisibleTeeth(dataUrl))) {
-        setCaptureError(TEETH_NOT_VISIBLE_MESSAGE);
-        return;
-      }
-    } catch {
-      setCaptureError("We couldn't check that photo. Please retake it with your teeth clearly visible.");
-      return;
-    } finally {
-      setIsCheckingPhoto(false);
-    }
 
     setPhotos((prev) => {
       const next = [...prev];
@@ -297,7 +201,7 @@ export default function CapturePage() {
 
   async function handleCapture() {
     if (!videoRef.current) return;
-    await storePhoto(captureVideoFrame(videoRef.current));
+    storePhoto(captureVideoFrame(videoRef.current));
   }
 
   function handleRetake() {
@@ -318,7 +222,7 @@ export default function CapturePage() {
     setUploadError(null);
     setCaptureError(null);
     try {
-      await storePhoto(await compressImage(file));
+      storePhoto(await compressImage(file));
     } catch {
       setUploadError("Couldn't process that photo. Please try again.");
     } finally {
@@ -399,7 +303,7 @@ export default function CapturePage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted">
-                {isCheckingPhoto ? "Checking photo" : statusText(cameraStatus, Boolean(currentPhoto))}
+                {statusText(cameraStatus, Boolean(currentPhoto))}
               </p>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink-primary">
                 {activeStep.title}
@@ -452,11 +356,6 @@ export default function CapturePage() {
                     Starting camera...
                   </div>
                 )}
-                {!currentPhoto && isCheckingPhoto && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/75 text-sm font-medium text-zinc-100 backdrop-blur-sm">
-                    Checking teeth visibility...
-                  </div>
-                )}
                 {!currentPhoto && cameraStatus === "error" && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/85 px-6 text-center text-sm text-zinc-200">
                     <Upload className="mb-3 h-6 w-6" strokeWidth={2.25} />
@@ -501,7 +400,7 @@ export default function CapturePage() {
                 {!currentPhoto && (
                   <button
                     onClick={handleCapture}
-                    disabled={cameraStatus !== "ready" || isCheckingPhoto}
+                    disabled={cameraStatus !== "ready"}
                     aria-label="Capture photo"
                     className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-accent-ink shadow-[0_14px_30px_rgba(35,95,100,0.24)] transition-opacity hover:opacity-90 disabled:opacity-50"
                   >
@@ -523,14 +422,14 @@ export default function CapturePage() {
             <div className="mt-5 flex min-h-[420px] items-center justify-center rounded-[24px] border border-dashed border-border-subtle bg-surface-page/70 p-6 text-center">
               <button
                 onClick={() => uploadInputRef.current?.click()}
-                disabled={isUploading || isCheckingPhoto}
+                disabled={isUploading}
                 className="flex w-full max-w-sm flex-col items-center gap-3 rounded-[24px] bg-surface-card px-6 py-10 shadow-[0_14px_36px_rgba(42,54,71,0.08)] transition-transform hover:-translate-y-0.5 disabled:opacity-50"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-page text-accent">
                   <ImagePlus className="h-6 w-6" strokeWidth={2.25} />
                 </span>
                 <span className="text-base font-semibold text-ink-primary">
-                  {isUploading || isCheckingPhoto ? "Checking photo..." : "Upload this view"}
+                  {isUploading ? "Processing photo..." : "Upload this view"}
                 </span>
                 <span className="text-sm leading-6 text-ink-muted">
                   Use a clear JPG or PNG with the same angle shown in the reference.
