@@ -270,9 +270,12 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/95 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="font-lp-heading text-lg font-bold tracking-tight">
+            <Link
+              href="/"
+              className="font-lp-heading text-lg font-bold tracking-tight text-lp-text-primary transition-opacity hover:opacity-80"
+            >
               toothpaste<span className="text-lp-primary-container">.cv</span>
-            </span>
+            </Link>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_10px_30px_rgba(13,50,27,0.08)] hover:text-lp-text-primary" />

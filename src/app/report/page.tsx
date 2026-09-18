@@ -280,9 +280,12 @@ export default function ReportPage() {
       <header className="w-full border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="min-w-0">
-            <p className="text-lg font-bold tracking-tight text-ink-primary">
+            <Link
+              href="/"
+              className="text-lg font-bold tracking-tight text-ink-primary transition-opacity hover:opacity-80"
+            >
               toothpaste<span className="text-accent">.cv</span>
-            </p>
+            </Link>
             <p className="mt-0.5 text-xs text-ink-muted">Visual screening report</p>
           </div>
           <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-2.5">
