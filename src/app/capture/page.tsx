@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
+  AlertTriangle,
   Camera,
   Check,
   ImagePlus,
@@ -13,11 +14,68 @@ import {
   ShieldCheck,
   Upload,
 } from "lucide-react";
-import { CAPTURE_STEPS } from "@/lib/capture-steps";
+import { CAPTURE_STEPS, type CaptureStepId } from "@/lib/capture-steps";
 import { captureVideoFrame, compressImage } from "@/lib/compress-image";
 
 type CameraStatus = "starting" | "ready" | "error";
 type CaptureMode = "camera" | "upload";
+
+const TEETH_NOT_VISIBLE_MESSAGE =
+  "We couldn't clearly see your teeth in this photo. Open your mouth or smile wider, keep teeth centered, and try again in brighter light.";
+
+const CAPTURE_GUIDES: Record<CaptureStepId, string[]> = {
+  "front-bite": ["Bite gently with teeth together", "Show the full smile from left to right", "Keep lips away from the front teeth"],
+  "upper-arch": ["Tilt your head back", "Open wide and aim at the upper teeth", "Use a mirror or helper if needed"],
+  "lower-arch": ["Tilt your chin down", "Open wide and show the lower teeth", "Keep the tongue below the teeth"],
+  "left-buccal": ["Turn slightly to show the left bite", "Keep teeth together", "Pull the cheek aside if needed"],
+  "right-buccal": ["Turn slightly to show the right bite", "Keep teeth together", "Pull the cheek aside if needed"],
+};
+
+function loadDataUrlImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Photo could not be checked."));
+    img.src = src;
+  });
+}
+
+async function hasVisibleTeeth(dataUrl: string): Promise<boolean> {
+  const img = await loadDataUrlImage(dataUrl);
+  const canvas = document.createElement("canvas");
+  const width = 180;
+  const height = Math.max(120, Math.round((img.height / Math.max(img.width, 1)) * width));
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return true;
+  ctx.drawImage(img, 0, 0, width, height);
+
+  const cropX = Math.round(width * 0.16);
+  const cropY = Math.round(height * 0.18);
+  const cropWidth = Math.round(width * 0.68);
+  const cropHeight = Math.round(height * 0.64);
+  const { data } = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
+
+  let toothLike = 0;
+  const total = data.length / 4;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const brightness = (r + g + b) / 3;
+    const saturation = max === 0 ? 0 : (max - min) / max;
+    const balanced = Math.abs(r - g) < 58 && Math.abs(g - b) < 70;
+
+    if (brightness > 138 && saturation < 0.38 && balanced) toothLike += 1;
+  }
+
+  return toothLike / total > 0.012;
+}
 
 function CornerBrackets() {
   const corners = [
@@ -86,7 +144,9 @@ export default function CapturePage() {
   const [mode, setMode] = useState<CaptureMode>("camera");
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [isUploading, setIsUploading] = useState(false);
+  const [isCheckingPhoto, setIsCheckingPhoto] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [captureError, setCaptureError] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -150,9 +210,26 @@ export default function CapturePage() {
   function goToStep(index: number) {
     setActiveIndex(index);
     setMode("camera");
+    setCaptureError(null);
+    setUploadError(null);
   }
 
-  function storePhoto(dataUrl: string) {
+  async function storePhoto(dataUrl: string) {
+    setIsCheckingPhoto(true);
+    setCaptureError(null);
+    setUploadError(null);
+    try {
+      if (!(await hasVisibleTeeth(dataUrl))) {
+        setCaptureError(TEETH_NOT_VISIBLE_MESSAGE);
+        return;
+      }
+    } catch {
+      setCaptureError("We couldn't check that photo. Please retake it with your teeth clearly visible.");
+      return;
+    } finally {
+      setIsCheckingPhoto(false);
+    }
+
     setPhotos((prev) => {
       const next = [...prev];
       next[activeIndex] = dataUrl;
@@ -161,12 +238,13 @@ export default function CapturePage() {
     setActiveIndex((prev) => Math.min(prev + 1, CAPTURE_STEPS.length - 1));
   }
 
-  function handleCapture() {
+  async function handleCapture() {
     if (!videoRef.current) return;
-    storePhoto(captureVideoFrame(videoRef.current));
+    await storePhoto(captureVideoFrame(videoRef.current));
   }
 
   function handleRetake() {
+    setCaptureError(null);
     setPhotos((prev) => {
       const next = [...prev];
       next[activeIndex] = null;
@@ -181,8 +259,9 @@ export default function CapturePage() {
 
     setIsUploading(true);
     setUploadError(null);
+    setCaptureError(null);
     try {
-      storePhoto(await compressImage(file));
+      await storePhoto(await compressImage(file));
     } catch {
       setUploadError("Couldn't process that photo. Please try again.");
     } finally {
@@ -223,7 +302,7 @@ export default function CapturePage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted">
-                {statusText(cameraStatus, Boolean(currentPhoto))}
+                {isCheckingPhoto ? "Checking photo" : statusText(cameraStatus, Boolean(currentPhoto))}
               </p>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink-primary">
                 {activeStep.title}
@@ -235,6 +314,15 @@ export default function CapturePage() {
             <div className="w-full sm:w-56">
               <ModeTabs mode={mode} onChange={setMode} />
             </div>
+          </div>
+
+          <div className="mt-4 grid gap-2 rounded-2xl bg-surface-page/70 p-3 sm:grid-cols-3">
+            {CAPTURE_GUIDES[activeStep.id].map((item) => (
+              <div key={item} className="flex items-start gap-2 text-xs leading-5 text-ink-secondary">
+                <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-status-good-text" strokeWidth={2.4} />
+                <span>{item}</span>
+              </div>
+            ))}
           </div>
 
           <input
@@ -267,6 +355,11 @@ export default function CapturePage() {
                     Starting camera...
                   </div>
                 )}
+                {!currentPhoto && isCheckingPhoto && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/75 text-sm font-medium text-zinc-100 backdrop-blur-sm">
+                    Checking teeth visibility...
+                  </div>
+                )}
                 {!currentPhoto && cameraStatus === "error" && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/85 px-6 text-center text-sm text-zinc-200">
                     <Upload className="mb-3 h-6 w-6" strokeWidth={2.25} />
@@ -277,7 +370,7 @@ export default function CapturePage() {
                 <CornerBrackets />
                 <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
                   <span className="rounded-full bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
-                    Keep mouth centered
+                    Keep teeth centered
                   </span>
                   <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-900 backdrop-blur-md">
                     {activeIndex + 1} / {CAPTURE_STEPS.length}
@@ -311,7 +404,7 @@ export default function CapturePage() {
                 {!currentPhoto && (
                   <button
                     onClick={handleCapture}
-                    disabled={cameraStatus !== "ready"}
+                    disabled={cameraStatus !== "ready" || isCheckingPhoto}
                     aria-label="Capture photo"
                     className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-accent-ink shadow-[0_14px_30px_rgba(35,95,100,0.24)] transition-opacity hover:opacity-90 disabled:opacity-50"
                   >
@@ -333,19 +426,26 @@ export default function CapturePage() {
             <div className="mt-5 flex min-h-[420px] items-center justify-center rounded-[24px] border border-dashed border-border-subtle bg-surface-page/70 p-6 text-center">
               <button
                 onClick={() => uploadInputRef.current?.click()}
-                disabled={isUploading}
+                disabled={isUploading || isCheckingPhoto}
                 className="flex w-full max-w-sm flex-col items-center gap-3 rounded-[24px] bg-surface-card px-6 py-10 shadow-[0_14px_36px_rgba(42,54,71,0.08)] transition-transform hover:-translate-y-0.5 disabled:opacity-50"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-page text-accent">
                   <ImagePlus className="h-6 w-6" strokeWidth={2.25} />
                 </span>
                 <span className="text-base font-semibold text-ink-primary">
-                  {isUploading ? "Processing photo..." : "Upload this view"}
+                  {isUploading || isCheckingPhoto ? "Checking photo..." : "Upload this view"}
                 </span>
                 <span className="text-sm leading-6 text-ink-muted">
                   Use a clear JPG or PNG with the same angle shown in the reference.
                 </span>
               </button>
+            </div>
+          )}
+
+          {captureError && (
+            <div className="mt-4 flex items-start gap-2 rounded-2xl border border-status-critical/20 bg-status-critical/10 px-3 py-3 text-sm text-status-critical-text">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.25} />
+              <p className="leading-5">{captureError}</p>
             </div>
           )}
 
