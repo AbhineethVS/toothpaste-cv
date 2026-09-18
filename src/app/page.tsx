@@ -12,7 +12,6 @@ import {
   CircleDot,
   ClipboardCheck,
   Columns3,
-  Eye,
   FileText,
   HelpCircle,
   History,
@@ -44,23 +43,6 @@ const DETECTION_ICONS: Record<FindingKey, typeof Columns3> = {
   chipsOrFractures: TriangleAlert,
   possibleDecay: Activity,
 };
-
-type PreviewTone = "success" | "warning" | "danger";
-
-const PREVIEW_TONE_CLASSES: Record<PreviewTone, string> = {
-  success: "bg-lp-status-success/15 text-lp-status-success",
-  warning: "bg-lp-status-warning/15 text-lp-status-warning",
-  danger: "bg-lp-status-danger/15 text-lp-status-danger",
-};
-
-const PREVIEW_FINDINGS: { key: FindingKey; tag: string; tone: PreviewTone; detail: string }[] = [
-  { key: "crowding", tag: "Mild", tone: "warning", detail: "Slight lower front rotation" },
-  { key: "wear", tag: "Minimal", tone: "success", detail: "Normal incisal edges" },
-  { key: "discoloration", tag: "Surface", tone: "warning", detail: "Light staining, upper front" },
-  { key: "gumHealth", tag: "Healthy", tone: "success", detail: "Firm margins, no swelling" },
-  { key: "chipsOrFractures", tag: "Clear", tone: "success", detail: "Enamel edges intact" },
-  { key: "possibleDecay", tag: "Flagged", tone: "danger", detail: "Dark pit on upper right molar" },
-];
 
 const CUSTOMER_JOURNEY = [
   {
@@ -116,22 +98,55 @@ const TRUST_SIGNALS = [
   { icon: Info, label: "Triage, not medical diagnosis", tone: "text-lp-tertiary" },
 ];
 
-const CONSIDERATION_POINTS = [
+const FAQ_ITEMS = [
   {
-    question: "Hard to take the upper arch?",
-    answer: "The capture flow gives angle-specific coaching while still keeping the required five-photo format.",
+    question: "Is this a dental diagnosis?",
+    answer:
+      "No. toothpaste.cv is a visual screening tool only. It flags surface-level concerns and helps you decide when to see a licensed dentist.",
   },
   {
-    question: "No teeth visible in the upload?",
-    answer: "Image validation asks the user to retake or re-upload a clearer mouth photo before analysis.",
+    question: "What photos do I need?",
+    answer:
+      "Five guided views with framing cues. If a shot is unclear or teeth are not visible, the flow asks you to retake before analysis.",
   },
   {
-    question: "Missing teeth or gum-only concerns?",
-    answer: "The report can explain visibility limits and guide users toward dentist review for gum symptoms.",
+    question: "Where do my photos go?",
+    answer:
+      "Photos stay in this browser session for the report. We do not keep permanent photo storage for the free screening flow.",
   },
   {
-    question: "Is this a diagnosis?",
-    answer: "No. It is positioned as early visual triage that helps users decide when to consult a dentist.",
+    question: "How does the AI review work?",
+    answer:
+      "Your photos are sent to a vision model with a fixed oral-health rubric. Output is structured findings with severity, region, and plain-English notes.",
+  },
+  {
+    question: "Can I share this with a dentist?",
+    answer:
+      "Yes. The report is designed as a pre-visit summary with photo evidence and severity labels you can save or export.",
+  },
+  {
+    question: "What can it not see?",
+    answer:
+      "Anything under the surface: cavities between teeth, pocket depth, root issues, and treatment planning all still need a clinical exam.",
+  },
+];
+
+const TECH_POINTS = [
+  {
+    title: "Structured vision output",
+    detail: "Findings are forced into a typed schema: severity, region, zone, and location label.",
+  },
+  {
+    title: "Conservative severity rubric",
+    detail: "Mild / moderate / notable anchors reduce random swings on borderline photos.",
+  },
+  {
+    title: "Local timeline",
+    detail: "Saved screenings stay on-device so you can compare flagged trends across visits.",
+  },
+  {
+    title: "CareStack-ready handoff",
+    detail: "Report shape matches clinic workflow: map context, evidence, and dentist-ready summary.",
   },
 ];
 
@@ -322,11 +337,11 @@ export default function Home() {
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <a
-                    href="#preview"
+                    href="#faq"
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-lp-border-subtle bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_12px_32px_rgba(0,0,0,0.18)] transition-colors hover:bg-lp-surface-container sm:w-auto"
                   >
-                    <Eye className="h-4 w-4 text-lp-tertiary" />
-                    View sample report
+                    <HelpCircle className="h-4 w-4 text-lp-tertiary" />
+                    FAQ & how it works
                   </a>
                 </div>
 
@@ -452,134 +467,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="preview" className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
-          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-            <div>
-              <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
-                Sample report
-              </span>
-              <h2 className="mt-1 font-lp-heading text-3xl font-bold">
-                See the report format before you start.
-              </h2>
-            </div>
-            <span className="self-start rounded-full bg-lp-secondary/15 px-2.5 py-1 font-lp-heading text-xs font-semibold text-lp-secondary sm:self-auto">
-              Illustrative example
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <BentoTile className="p-4 sm:p-5 lg:col-span-7 lg:row-span-2">
-              <div className="mb-4 flex items-center justify-between border-b border-lp-border-subtle pb-3">
-                <span className="flex items-center gap-2 font-lp-heading text-sm font-semibold">
-                  <BadgeCheck className="h-4 w-4 text-lp-primary" />
-                  Visual report snapshot
-                </span>
-                <span className="font-mono text-xs text-lp-text-muted">6 of 9 shown</span>
-              </div>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {PREVIEW_FINDINGS.map((finding) => {
-                  const def = DIAGNOSTIC_DEFS.find((d) => d.key === finding.key)!;
-                  const Icon = DETECTION_ICONS[finding.key];
-                  return (
-                    <div key={finding.key} className="rounded-xl bg-lp-surface-container-low p-3">
-                      <div className="mb-1 flex items-center justify-between gap-2">
-                        <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-lp-text-primary">
-                          <Icon className="h-3.5 w-3.5 shrink-0 text-lp-text-muted" />
-                          <span className="truncate">{def.label}</span>
-                        </span>
-                        <span
-                          className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${PREVIEW_TONE_CLASSES[finding.tone]}`}
-                        >
-                          {finding.tag}
-                        </span>
-                      </div>
-                      <p className="text-xs text-lp-text-muted">{finding.detail}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </BentoTile>
-
-            <BentoTile className="flex min-h-48 flex-col justify-between bg-lp-surface-container p-5 lg:col-span-5">
-              <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-lp-status-warning/20">
-                  <CalendarCheck className="h-5 w-5 text-lp-status-warning" />
-                </div>
-                <div>
-                  <p className="font-lp-heading text-lg font-semibold text-lp-text-primary">
-                    Routine check-up recommended
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-lp-text-secondary">
-                    One area is flagged for professional review within 30 days.
-                  </p>
-                </div>
-              </div>
-              <div className="mt-5 grid grid-cols-3 gap-2">
-                {["1 notable", "2 mild", "6 clear"].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-xl bg-lp-surface-card px-3 py-2 text-center text-xs font-medium text-lp-text-secondary"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </BentoTile>
-
-            <BentoTile className="bg-lp-surface-container-low p-5 lg:col-span-5">
-              <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">
-                What you get
-              </p>
-              <p className="mt-2 font-lp-heading text-xl font-semibold text-lp-text-primary">
-                Map, photo evidence, severity labels, and a PDF-ready summary.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {["Dental map", "Key findings", "Photo review", "PDF export"].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full bg-lp-surface-card px-3 py-1.5 text-xs font-medium text-lp-text-secondary"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </BentoTile>
-          </div>
-        </section>
-
-        <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <BentoTile className="p-6 sm:p-7 lg:col-span-5">
-              <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
-                Consideration
-              </span>
-              <h2 className="mt-2 font-lp-heading text-3xl font-bold">
-                The common doubts are answered before the user gets stuck.
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-lp-text-secondary">
-                The experience should make edge cases feel expected: difficult camera angles,
-                invalid images, missing teeth, and the boundary between screening and diagnosis.
-              </p>
-            </BentoTile>
-
-            <BentoTile className="p-4 sm:p-5 lg:col-span-7">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {CONSIDERATION_POINTS.map((item) => (
-                  <div key={item.question} className="rounded-2xl bg-lp-surface-container-low p-4">
-                    <div className="mb-2 flex items-center gap-2">
-                      <HelpCircle className="h-4 w-4 shrink-0 text-lp-primary" />
-                      <h3 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
-                        {item.question}
-                      </h3>
-                    </div>
-                    <p className="text-sm leading-6 text-lp-text-secondary">{item.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </BentoTile>
-          </div>
-        </section>
-
         <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
           <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -612,7 +499,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6 sm:pb-16">
+        <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
             <BentoTile className="p-6 sm:p-8 lg:col-span-5">
               <span className="font-lp-heading text-xs font-semibold uppercase tracking-wider text-lp-primary">
@@ -680,6 +567,62 @@ export default function Home() {
                     ))}
                   </ul>
                 </div>
+              </div>
+            </BentoTile>
+          </div>
+        </section>
+
+        <section id="faq" className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6 sm:pb-16">
+          <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div>
+              <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
+                FAQ & technical
+              </span>
+              <h2 className="mt-1 font-lp-heading text-3xl font-bold">
+                How the screening works — and what it is not.
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+            <BentoTile className="p-5 sm:p-6 lg:col-span-7">
+              <div className="mb-4 flex items-center gap-2">
+                <HelpCircle className="h-4 w-4 text-lp-primary" />
+                <h3 className="font-lp-heading text-sm font-semibold uppercase tracking-wider text-lp-text-muted">
+                  Common questions
+                </h3>
+              </div>
+              <div className="divide-y divide-lp-border-subtle">
+                {FAQ_ITEMS.map((item) => (
+                  <details key={item.question} className="group py-3.5 first:pt-0 last:pb-0">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-lp-heading text-sm font-semibold text-lp-text-primary marker:content-none [&::-webkit-details-marker]:hidden">
+                      {item.question}
+                      <span className="shrink-0 text-lp-text-muted transition-transform group-open:rotate-45">
+                        +
+                      </span>
+                    </summary>
+                    <p className="mt-2 pr-8 text-sm leading-6 text-lp-text-secondary">{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </BentoTile>
+
+            <BentoTile className="flex flex-col gap-4 bg-lp-surface-container p-5 sm:p-6 lg:col-span-5">
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-lp-secondary" />
+                <h3 className="font-lp-heading text-sm font-semibold uppercase tracking-wider text-lp-text-muted">
+                  Under the hood
+                </h3>
+              </div>
+              <div className="flex flex-1 flex-col gap-3">
+                {TECH_POINTS.map((point) => (
+                  <div key={point.title} className="rounded-2xl bg-lp-surface-card p-4">
+                    <h4 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
+                      {point.title}
+                    </h4>
+                    <p className="mt-1.5 text-sm leading-6 text-lp-text-secondary">{point.detail}</p>
+                  </div>
+                ))}
               </div>
             </BentoTile>
           </div>
