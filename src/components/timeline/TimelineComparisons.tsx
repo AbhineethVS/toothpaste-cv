@@ -10,6 +10,8 @@ import {
 import { SEVERITY_HEX, SEVERITY_LABEL, SEVERITY_RANK } from "@/lib/severity";
 import type { TimelineEntry } from "@/lib/timeline-storage";
 
+const TREND_COLOR = "#1f7a3f";
+
 function shortDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(new Date(value));
 }
@@ -63,8 +65,8 @@ function FlaggedTrendChart({ entries }: { entries: TimelineEntry[] }) {
       <svg viewBox={`0 0 ${width} ${height}`} className="h-28 w-full" role="img" aria-label="Flagged findings over time">
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.02" />
+            <stop offset="0%" stopColor={TREND_COLOR} stopOpacity="0.22" />
+            <stop offset="100%" stopColor={TREND_COLOR} stopOpacity="0.02" />
           </linearGradient>
         </defs>
         {[0, 0.5, 1].map((t) => {
@@ -83,10 +85,10 @@ function FlaggedTrendChart({ entries }: { entries: TimelineEntry[] }) {
           );
         })}
         {areaPath && <path d={areaPath} fill={`url(#${gradientId})`} />}
-        <path d={linePath} fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={linePath} fill="none" stroke={TREND_COLOR} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((point) => (
           <g key={point.at}>
-            <circle cx={point.x} cy={point.y} r="4.5" fill="var(--surface-card)" stroke="var(--accent)" strokeWidth="2" />
+            <circle cx={point.x} cy={point.y} r="4.5" fill="var(--surface-card)" stroke={TREND_COLOR} strokeWidth="2" />
             <text
               x={point.x}
               y={point.y - 10}

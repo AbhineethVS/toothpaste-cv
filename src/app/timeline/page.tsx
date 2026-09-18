@@ -146,7 +146,7 @@ export default function TimelinePage() {
           <>
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1f7a3f]/10 px-3 py-1.5 text-xs font-semibold text-[#1f7a3f]">
                   <LatestIcon className="h-3.5 w-3.5" strokeWidth={2.25} />
                   {latestTone?.label ?? "No baseline yet"}
                 </span>
