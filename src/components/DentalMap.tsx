@@ -1,5 +1,5 @@
-import type { Severity } from "@/lib/analysis-schema";
-import { toothSeverities, type Findings } from "@/lib/report-metrics";
+import type { FindingKey, Severity } from "@/lib/analysis-schema";
+import { findingKeyForGroup, toothSeverities, type Findings } from "@/lib/report-metrics";
 import { SEVERITY_HEX, SEVERITY_LABEL, SEVERITIES_DISPLAY } from "@/lib/severity";
 import {
   ARCH_LABEL_POSITIONS,
@@ -19,7 +19,17 @@ const TINT_OPACITY: Record<Severity, number> = {
   notable: 0.75,
 };
 
-function Tooth({ tooth, severity }: { tooth: ToothPosition; severity: Severity }) {
+function Tooth({
+  tooth,
+  severity,
+  isSelected,
+  onSelect,
+}: {
+  tooth: ToothPosition;
+  severity: Severity;
+  isSelected: boolean;
+  onSelect?: () => void;
+}) {
   const transform = `translate(${tooth.x} ${tooth.y}) rotate(${tooth.rotation})`;
   const x = -tooth.width / 2;
   const y = -tooth.height / 2;
@@ -27,7 +37,11 @@ function Tooth({ tooth, severity }: { tooth: ToothPosition; severity: Severity }
   const affected = severity !== "none";
 
   return (
-    <g transform={transform}>
+    <g
+      transform={transform}
+      onClick={onSelect}
+      className={onSelect ? "cursor-pointer" : undefined}
+    >
       <rect
         x={x}
         y={y}
@@ -48,7 +62,20 @@ function Tooth({ tooth, severity }: { tooth: ToothPosition; severity: Severity }
           fill={SEVERITY_HEX[severity]}
           fillOpacity={TINT_OPACITY[severity]}
           stroke={SEVERITY_HEX[severity]}
-          strokeWidth={1.75}
+          strokeWidth={isSelected ? 2.5 : 1.75}
+        />
+      )}
+      {isSelected && (
+        <rect
+          x={x - 2}
+          y={y - 2}
+          width={tooth.width + 4}
+          height={tooth.height + 4}
+          rx={radius + 2}
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth={1.5}
+          strokeDasharray="3 2"
         />
       )}
       <title>
@@ -58,10 +85,20 @@ function Tooth({ tooth, severity }: { tooth: ToothPosition; severity: Severity }
   );
 }
 
-export function DentalMap({ findings }: { findings: Findings }) {
+export function DentalMap({
+  findings,
+  selectedKey = null,
+  onSelectFinding,
+}: {
+  findings: Findings;
+  selectedKey?: FindingKey | null;
+  onSelectFinding?: (key: FindingKey) => void;
+}) {
   const groupSeverities = toothSeverities(findings);
   const severityFor = (tooth: ToothPosition): Severity =>
     groupSeverities.get(`${tooth.region}:${tooth.zone}`) ?? "none";
+  const keyFor = (tooth: ToothPosition): FindingKey | null =>
+    findingKeyForGroup(findings, tooth.region, tooth.zone);
 
   const teeth = [...UPPER_TEETH, ...LOWER_TEETH];
   const highlighted = teeth.filter((tooth) => severityFor(tooth) !== "none");
@@ -101,15 +138,28 @@ export function DentalMap({ findings }: { findings: Findings }) {
               key={`glow-${tooth.id}`}
               cx={tooth.x}
               cy={tooth.y}
-              rx={tooth.width * 0.8}
-              ry={tooth.height * 0.8}
+              rx={tooth.width * (keyFor(tooth) === selectedKey ? 1.05 : 0.8)}
+              ry={tooth.height * (keyFor(tooth) === selectedKey ? 1.05 : 0.8)}
               fill={SEVERITY_HEX[severityFor(tooth)]}
             />
           ))}
         </g>
 
         {teeth.map((tooth) => (
-          <Tooth key={tooth.id} tooth={tooth} severity={severityFor(tooth)} />
+          <Tooth
+            key={tooth.id}
+            tooth={tooth}
+            severity={severityFor(tooth)}
+            isSelected={severityFor(tooth) !== "none" && keyFor(tooth) === selectedKey}
+            onSelect={
+              onSelectFinding && severityFor(tooth) !== "none"
+                ? () => {
+                    const key = keyFor(tooth);
+                    if (key) onSelectFinding(key);
+                  }
+                : undefined
+            }
+          />
         ))}
 
         <text

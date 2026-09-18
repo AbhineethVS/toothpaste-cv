@@ -95,6 +95,36 @@
   --lp-border-subtle: rgba(255, 255, 255, 0.08);
 }
 
+/* Report page only -- forced dark "clinical-tech" theme, independent of system
+   color scheme. Reuses the same variable names the report components already
+   consume, so no component-level color logic needs to change. */
+.theme-report {
+  --surface-page: #0a0e17;
+  --surface-card: #111827;
+  --ink-primary: #f8fafc;
+  --ink-secondary: #94a3b8;
+  --ink-muted: #64748b;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --accent: #3b82f6;
+  --accent-ink: #ffffff;
+
+  --status-good: #22c55e;
+  --status-warning: #eab308;
+  --status-serious: #f97316;
+  --status-critical: #ef4444;
+  --status-good-text: #22c55e;
+  --status-warning-text: #eab308;
+  --status-serious-text: #f97316;
+  --status-critical-text: #ef4444;
+
+  --tooth-base: #e9e4d6;
+  --tooth-edge: rgba(0, 0, 0, 0.35);
+  --gum: #9e5763;
+
+  background: var(--surface-page);
+  color: var(--ink-primary);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --surface-page: #0d0d0d;

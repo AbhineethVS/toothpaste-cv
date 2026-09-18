@@ -4,6 +4,7 @@ import type {
   Finding,
   FindingKey,
   Severity,
+  Zone,
 } from "@/lib/analysis-schema";
 import { ARCH_REGIONS, DIAGNOSTIC_DEFS } from "@/lib/analysis-schema";
 import type { CaptureStepId } from "@/lib/capture-steps";
@@ -110,6 +111,28 @@ export function toothSeverities(findings: Findings): Map<string, Severity> {
   }
 
   return byTooth;
+}
+
+/**
+ * Which finding (if any) a given tooth-diagram group belongs to, so a click
+ * on the map can select the same finding as the list -- reuses the region
+ * zone data findings already carry, never invented tooth coordinates.
+ */
+export function findingKeyForGroup(
+  findings: Findings,
+  region: ArchRegion,
+  zone: Exclude<Zone, "all">
+): FindingKey | null {
+  const candidates = toEntries(findings).filter(
+    ({ finding }) =>
+      finding.severity !== "none" &&
+      finding.region === region &&
+      (finding.zone === "all" || finding.zone === zone)
+  );
+  if (candidates.length === 0) return null;
+
+  candidates.sort((a, b) => SEVERITY_RANK[b.finding.severity] - SEVERITY_RANK[a.finding.severity]);
+  return candidates[0].key;
 }
 
 export interface Urgency {
