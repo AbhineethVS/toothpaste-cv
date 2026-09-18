@@ -122,6 +122,8 @@ export default function ReportPage() {
   const isSavedView = Boolean(savedEntryId);
 
   useEffect(() => {
+    // Saved reports and capture photos are browser-only state read after hydration.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const entryId = readEntryIdFromUrl();
     if (entryId) {
       const entry = getTimelineEntry(entryId);
@@ -150,6 +152,7 @@ export default function ReportPage() {
       return;
     }
     setPhotos(sessionPhotos);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [router]);
 
   useEffect(() => {

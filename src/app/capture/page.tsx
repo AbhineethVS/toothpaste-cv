@@ -199,10 +199,13 @@ export default function CapturePage() {
   const allCaptured = photos.every((photo) => photo !== null);
 
   useEffect(() => {
+    // Consent lives in localStorage, so it has to be read after hydration.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const consented = hasLegalConsent();
     setHasConsent(consented);
     setConsentChecked(consented);
     setConsentReady(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   useEffect(() => {

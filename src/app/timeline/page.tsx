@@ -79,8 +79,11 @@ export default function TimelinePage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Timeline entries are localStorage-backed, so load them after hydration.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setEntries(readTimeline());
     setReady(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   const latest = entries[0] ?? null;

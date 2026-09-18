@@ -1,34 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --surface-page: #f9f9f7;
-  --surface-card: #fcfcfb;
-  --ink-primary: #0b0b0b;
-  --ink-secondary: #52514e;
-  --ink-muted: #898781;
-  --border-subtle: rgba(11, 11, 11, 0.1);
-  --accent: #2a78d6;
-  --accent-ink: #ffffff;
+  --surface-page: #092715;
+  --surface-card: #10361f;
+  --ink-primary: #f7fff1;
+  --ink-secondary: #cfe3c8;
+  --ink-muted: #8fac91;
+  --border-subtle: rgba(205, 255, 126, 0.16);
+  --accent: #caff63;
+  --accent-ink: #102414;
 
-  --status-good: #0ca30c;
-  --status-warning: #fab219;
-  --status-serious: #ec835a;
-  --status-critical: #d03b3b;
+  --status-good: #60e38b;
+  --status-warning: #f7d46a;
+  --status-serious: #f59b61;
+  --status-critical: #ff6b6b;
 
   /*
    * Status hues above are for marks (fills, dots, rings) and clear the 3:1
    * mark rule. As small text they don't, so labels use these darker steps --
    * each measured at or above 4.5:1 against this mode's surface.
    */
-  --status-good-text: #006300;
-  --status-warning-text: #8a5c00;
-  --status-serious-text: #a8451f;
-  --status-critical-text: #d03b3b;
+  --status-good-text: #8dffad;
+  --status-warning-text: #ffe28a;
+  --status-serious-text: #ffb27c;
+  --status-critical-text: #ff8d8d;
 
   /* Dental map: teeth stay ivory in both modes so they still read as teeth. */
-  --tooth-base: #f3efe4;
-  --tooth-edge: rgba(11, 11, 11, 0.22);
-  --gum: #c9737f;
+  --tooth-base: #f8f2df;
+  --tooth-edge: rgba(202, 255, 99, 0.28);
+  --gum: #d9828d;
 }
 
 @theme inline {
@@ -96,44 +96,44 @@
 }
 
 .theme-minimal {
-  --lp-surface: #f7f5ef;
-  --lp-surface-raised: #fffcf6;
-  --lp-surface-card: rgba(255, 252, 246, 0.86);
-  --lp-surface-container: #f0ece2;
-  --lp-surface-container-high: #ffffff;
-  --lp-surface-container-low: #f6f1e8;
-  --lp-text-primary: #1e2524;
-  --lp-text-secondary: #5d6661;
-  --lp-text-muted: #8a918b;
-  --lp-primary: #2f6f73;
-  --lp-primary-container: #235f64;
-  --lp-on-primary-container: #ffffff;
-  --lp-secondary: #407a5a;
-  --lp-tertiary: #6e6a50;
-  --lp-status-warning: #a96719;
-  --lp-status-danger: #b9423f;
-  --lp-status-success: #387b57;
-  --lp-border-subtle: rgba(30, 37, 36, 0.12);
+  --lp-surface: #092715;
+  --lp-surface-raised: #0d321b;
+  --lp-surface-card: rgba(15, 54, 30, 0.9);
+  --lp-surface-container: #143d25;
+  --lp-surface-container-high: #1d4d30;
+  --lp-surface-container-low: #0f321d;
+  --lp-text-primary: #f7fff1;
+  --lp-text-secondary: #cfe3c8;
+  --lp-text-muted: #8fac91;
+  --lp-primary: #ddff85;
+  --lp-primary-container: #caff63;
+  --lp-on-primary-container: #102414;
+  --lp-secondary: #62e48e;
+  --lp-tertiary: #bfff64;
+  --lp-status-warning: #f8d46c;
+  --lp-status-danger: #ff6b6b;
+  --lp-status-success: #62e48e;
+  --lp-border-subtle: rgba(205, 255, 126, 0.16);
 }
 
 .theme-capture {
-  --surface-page: #f7f5ef;
-  --surface-card: #fffcf6;
-  --ink-primary: #1e2524;
-  --ink-secondary: #5d6661;
-  --ink-muted: #8a918b;
-  --border-subtle: rgba(30, 37, 36, 0.12);
-  --accent: #235f64;
-  --accent-ink: #ffffff;
+  --surface-page: #092715;
+  --surface-card: #10361f;
+  --ink-primary: #f7fff1;
+  --ink-secondary: #cfe3c8;
+  --ink-muted: #8fac91;
+  --border-subtle: rgba(205, 255, 126, 0.16);
+  --accent: #caff63;
+  --accent-ink: #102414;
 
-  --status-good: #407a5a;
-  --status-warning: #a96719;
-  --status-serious: #b96034;
-  --status-critical: #b9423f;
-  --status-good-text: #2f6849;
-  --status-warning-text: #8a5314;
-  --status-serious-text: #984622;
-  --status-critical-text: #a63835;
+  --status-good: #62e48e;
+  --status-warning: #f8d46c;
+  --status-serious: #f59b61;
+  --status-critical: #ff6b6b;
+  --status-good-text: #8dffad;
+  --status-warning-text: #ffe28a;
+  --status-serious-text: #ffb27c;
+  --status-critical-text: #ff8d8d;
 
   background: var(--surface-page);
   color: var(--ink-primary);
@@ -142,27 +142,27 @@
 /* Report page only. Reuses the same variable names the report components already
    consume, so no component-level color logic needs to change. */
 .theme-report {
-  --surface-page: #f7f5ef;
-  --surface-card: #fffcf6;
-  --ink-primary: #1e2524;
-  --ink-secondary: #5d6661;
-  --ink-muted: #8a918b;
-  --border-subtle: rgba(30, 37, 36, 0.12);
-  --accent: #235f64;
-  --accent-ink: #ffffff;
+  --surface-page: #092715;
+  --surface-card: #10361f;
+  --ink-primary: #f7fff1;
+  --ink-secondary: #cfe3c8;
+  --ink-muted: #8fac91;
+  --border-subtle: rgba(205, 255, 126, 0.16);
+  --accent: #caff63;
+  --accent-ink: #102414;
 
-  --status-good: #407a5a;
-  --status-warning: #a96719;
-  --status-serious: #b96034;
-  --status-critical: #b9423f;
-  --status-good-text: #2f6849;
-  --status-warning-text: #8a5314;
-  --status-serious-text: #984622;
-  --status-critical-text: #a63835;
+  --status-good: #62e48e;
+  --status-warning: #f8d46c;
+  --status-serious: #f59b61;
+  --status-critical: #ff6b6b;
+  --status-good-text: #8dffad;
+  --status-warning-text: #ffe28a;
+  --status-serious-text: #ffb27c;
+  --status-critical-text: #ff8d8d;
 
   --tooth-base: #e9e4d6;
-  --tooth-edge: rgba(0, 0, 0, 0.35);
-  --gum: #9e5763;
+  --tooth-edge: rgba(202, 255, 99, 0.28);
+  --gum: #d9828d;
 
   background: var(--surface-page);
   color: var(--ink-primary);
@@ -170,19 +170,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --surface-page: #0d0d0d;
-    --surface-card: #1a1a19;
-    --ink-primary: #ffffff;
-    --ink-secondary: #c3c2b7;
-    --ink-muted: #898781;
-    --border-subtle: rgba(255, 255, 255, 0.1);
-    --accent: #3987e5;
-    --accent-ink: #ffffff;
+    --surface-page: #092715;
+    --surface-card: #10361f;
+    --ink-primary: #f7fff1;
+    --ink-secondary: #cfe3c8;
+    --ink-muted: #8fac91;
+    --border-subtle: rgba(205, 255, 126, 0.16);
+    --accent: #caff63;
+    --accent-ink: #102414;
 
-    --status-good-text: #0ca30c;
-    --status-warning-text: #fab219;
-    --status-serious-text: #ec835a;
-    --status-critical-text: #e66767;
+    --status-good-text: #8dffad;
+    --status-warning-text: #ffe28a;
+    --status-serious-text: #ffb27c;
+    --status-critical-text: #ff8d8d;
 
     --tooth-base: #e9e4d6;
     --tooth-edge: rgba(0, 0, 0, 0.3);
@@ -210,8 +210,8 @@ body {
 body:has(.theme-minimal),
 body:has(.theme-capture),
 body:has(.theme-report) {
-  background: #f7f5ef;
-  color: #1e2524;
+  background: #092715;
+  color: #f7fff1;
 }
 
 /* Themed app shells always paint edge-to-edge so dark-mode body never shows

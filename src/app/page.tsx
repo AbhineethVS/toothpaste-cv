@@ -106,7 +106,7 @@ function BentoTile({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card shadow-[0_18px_50px_rgba(42,54,71,0.08)] ${className}`}
+      className={`relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card shadow-[0_24px_70px_rgba(0,0,0,0.24)] ${className}`}
     >
       {children}
     </div>
@@ -116,13 +116,13 @@ function BentoTile({
 export default function Home() {
   return (
     <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
-      <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/90 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <span className="font-lp-heading text-lg font-bold tracking-tight">
-              toothpaste<span className="text-lp-tertiary">.cv</span>
+              toothpaste<span className="text-lp-primary-container">.cv</span>
             </span>
-            <div className="hidden items-center gap-1.5 rounded-full border border-lp-border-subtle bg-lp-surface-container-high px-2.5 py-1 sm:flex">
+            <div className="hidden items-center gap-1.5 rounded-full border border-lp-border-subtle bg-lp-surface-container-high/80 px-2.5 py-1 sm:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lp-secondary" />
               <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
                 2-min home check
@@ -130,11 +130,11 @@ export default function Home() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_8px_24px_rgba(42,54,71,0.08)] hover:text-lp-text-primary" />
+            <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card/80 text-lp-text-secondary shadow-[0_10px_30px_rgba(0,0,0,0.18)] hover:text-lp-text-primary" />
             <AuthButton />
             <Link
               href="/capture"
-              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary sm:px-4"
+              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_34px_rgba(202,255,99,0.2)] transition-colors hover:bg-lp-primary sm:px-4"
             >
               Start Screening
             </Link>
@@ -149,15 +149,15 @@ export default function Home() {
             src="/examples/upper-arch.jpg"
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.08] saturate-50"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.1] saturate-50"
           />
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-gradient-to-b from-lp-surface/70 via-lp-surface/96 to-lp-surface" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_74%_14%,rgba(202,255,99,0.22),transparent_34%),linear-gradient(180deg,rgba(9,39,21,0.68),rgba(9,39,21,0.96)_55%,#092715)]" />
 
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
             <BentoTile className="flex min-h-[440px] flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:row-span-2">
               <div className="relative z-10">
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-lp-surface-container-high/80 px-4 py-1.5 shadow-[0_8px_24px_rgba(42,54,71,0.08)] backdrop-blur-md">
-                  <span className="h-2 w-2 rounded-full bg-lp-secondary shadow-[0_0_0_3px_rgba(64,122,90,0.12)]" />
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-lp-border-subtle bg-lp-surface-container-high/80 px-4 py-1.5 shadow-[0_12px_34px_rgba(0,0,0,0.18)] backdrop-blur-md">
+                  <span className="h-2 w-2 rounded-full bg-lp-primary-container shadow-[0_0_0_4px_rgba(202,255,99,0.14)]" />
                   <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-primary">
                     Free · smartphone or web · no install
                   </span>
@@ -176,14 +176,14 @@ export default function Home() {
                 <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
                   <Link
                     href="/capture"
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_28px_rgba(35,95,100,0.18)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_12px_28px_rgba(35,95,100,0.22)] sm:w-auto"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_14px_34px_rgba(202,255,99,0.22)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_16px_42px_rgba(202,255,99,0.28)] sm:w-auto"
                   >
                     Start screening
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <a
                     href="#preview"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_8px_24px_rgba(42,54,71,0.08)] transition-colors hover:bg-lp-surface-container sm:w-auto"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-lp-border-subtle bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_12px_32px_rgba(0,0,0,0.18)] transition-colors hover:bg-lp-surface-container sm:w-auto"
                   >
                     <Eye className="h-4 w-4 text-lp-tertiary" />
                     See sample report
@@ -209,13 +209,13 @@ export default function Home() {
                 <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
                   Guided capture
                 </span>
-                <span className="flex items-center gap-1 rounded-full bg-lp-secondary/15 px-2.5 py-1 text-[11px] font-semibold text-lp-secondary">
+                <span className="flex items-center gap-1 rounded-full bg-lp-primary-container/15 px-2.5 py-1 text-[11px] font-semibold text-lp-primary">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lp-secondary" />
                   In frame
                 </span>
               </div>
 
-              <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black">
+              <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black shadow-[0_28px_70px_rgba(0,0,0,0.32)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/examples/front-bite.jpg"
