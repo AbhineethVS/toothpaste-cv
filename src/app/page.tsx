@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import {
   ArrowRight,
   Activity,
@@ -83,6 +86,14 @@ const TRUST_SIGNALS = [
   { icon: Info, label: "Triage, not medical diagnosis", tone: "text-lp-tertiary" },
 ];
 
+const PREVIEW_SHOTS = [
+  { label: "Front bite", src: "/tooth-sides/front-bite.png" },
+  { label: "Upper arch", src: "/tooth-sides/upper-arc.png" },
+  { label: "Lower arch", src: "/tooth-sides/lower-arc.png" },
+  { label: "Left side", src: "/tooth-sides/left-buccal.png" },
+  { label: "Right side", src: "/tooth-sides/right-buccal.png" },
+];
+
 const TOOTHPASTE_PROVIDES = [
   "Immediate preliminary screening of visible outer enamel and smile architecture.",
   "Identification of visual irregularities that warrant clinical consultation.",
@@ -114,6 +125,9 @@ function BentoTile({
 }
 
 export default function Home() {
+  const [activePreviewIndex, setActivePreviewIndex] = useState(0);
+  const activePreview = PREVIEW_SHOTS[activePreviewIndex];
+
   return (
     <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
       <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/95 backdrop-blur-xl">
@@ -122,12 +136,6 @@ export default function Home() {
             <span className="font-lp-heading text-lg font-bold tracking-tight">
               toothpaste<span className="text-lp-primary-container">.cv</span>
             </span>
-            <div className="hidden items-center gap-1.5 rounded-full border border-lp-border-subtle bg-lp-surface-container-high/80 px-2.5 py-1 sm:flex">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lp-secondary" />
-              <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
-                2-min home check
-              </span>
-            </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_10px_30px_rgba(13,50,27,0.08)] hover:text-lp-text-primary" />
@@ -143,30 +151,23 @@ export default function Home() {
       </header>
 
       <main className="flex w-full min-w-0 flex-1 flex-col">
-        <section className="carestack-hero relative isolate w-full overflow-hidden bg-[#0b2b17] px-5 py-8 sm:px-6 sm:py-12">
+        <section className="relative isolate w-full overflow-hidden bg-[#f6fbef] px-5 py-8 sm:px-6 sm:py-12">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/examples/upper-arch.jpg"
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.1] saturate-50"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.08] saturate-50"
           />
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_74%_14%,rgba(202,255,99,0.22),transparent_34%),linear-gradient(180deg,rgba(9,39,21,0.62),rgba(9,39,21,0.96)_55%,#0b2b17)]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_78%_10%,rgba(202,255,99,0.32),transparent_34%),linear-gradient(180deg,rgba(246,251,239,0.68),rgba(246,251,239,0.97)_55%,#ffffff)]" />
 
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
             <BentoTile className="flex min-h-[440px] flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:row-span-2">
               <div className="relative z-10">
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-lp-border-subtle bg-lp-surface-container-high/80 px-4 py-1.5 shadow-[0_12px_34px_rgba(0,0,0,0.18)] backdrop-blur-md">
-                  <span className="h-2 w-2 rounded-full bg-lp-primary-container shadow-[0_0_0_4px_rgba(202,255,99,0.14)]" />
-                  <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-primary">
-                    Free · smartphone or web · no install
-                  </span>
-                </div>
-
-                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-[#f7fff1] sm:text-5xl lg:text-6xl">
+                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-lp-text-primary sm:text-5xl lg:text-6xl">
                   A simple oral health check from home.
                 </h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-[#d7e8d1] sm:text-lg sm:leading-8">
+                <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary sm:text-lg sm:leading-8">
                   Take five guided photos and receive a plain-English visual review of visible
                   enamel, gums, bite, spacing, staining, and more.
                 </p>
@@ -209,22 +210,18 @@ export default function Home() {
                 <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
                   Guided capture
                 </span>
-                <span className="flex items-center gap-1 rounded-full bg-lp-primary-container/15 px-2.5 py-1 text-[11px] font-semibold text-lp-primary">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lp-secondary" />
-                  In frame
-                </span>
               </div>
 
               <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black shadow-[0_28px_70px_rgba(0,0,0,0.32)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/examples/front-bite.jpg"
-                  alt="Example front bite framing"
+                  src={activePreview.src}
+                  alt={`Example ${activePreview.label.toLowerCase()} framing`}
                   className="absolute inset-0 h-full w-full object-cover opacity-70"
                 />
                 <div className="absolute inset-x-4 top-4 flex items-center justify-between">
                   <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white backdrop-blur-md">
-                    Shot 1 of 5
+                    Shot {activePreviewIndex + 1} of 5 · {activePreview.label}
                   </span>
                   <Camera className="h-5 w-5 text-white drop-shadow" />
                 </div>
@@ -244,17 +241,20 @@ export default function Home() {
               </div>
 
               <div className="mt-4 grid grid-cols-5 gap-2">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <div
-                    key={n}
+                {PREVIEW_SHOTS.map((shot, index) => (
+                  <button
+                    type="button"
+                    key={shot.label}
+                    onClick={() => setActivePreviewIndex(index)}
+                    aria-label={`Show ${shot.label} preview`}
                     className={`flex h-11 items-center justify-center rounded-xl font-lp-heading text-xs font-bold ${
-                      n === 1
-                        ? "bg-lp-primary-container text-lp-on-primary-container"
-                        : "bg-lp-surface-container-low text-lp-text-muted"
+                      index === activePreviewIndex
+                        ? "bg-lp-primary text-white"
+                        : "bg-lp-surface-container-low text-lp-text-muted transition-colors hover:bg-lp-surface-container"
                     }`}
                   >
-                    {n}
-                  </div>
+                    {index + 1}
+                  </button>
                 ))}
               </div>
               <div className="mt-4 rounded-2xl bg-lp-surface-container-low p-4">

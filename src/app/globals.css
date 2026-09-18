@@ -116,33 +116,6 @@
   --lp-border-subtle: rgba(11, 43, 23, 0.12);
 }
 
-.carestack-hero {
-  --lp-surface-card: rgba(15, 54, 30, 0.82);
-  --lp-surface-container: #143d25;
-  --lp-surface-container-high: rgba(29, 77, 48, 0.86);
-  --lp-surface-container-low: rgba(15, 50, 29, 0.9);
-  --lp-text-primary: #f7fff1;
-  --lp-text-secondary: #d7e8d1;
-  --lp-text-muted: #9bb99d;
-  --lp-primary: #ddff85;
-  --lp-primary-container: #caff63;
-  --lp-secondary: #62e48e;
-  --lp-tertiary: #caff63;
-  --lp-border-subtle: rgba(205, 255, 126, 0.18);
-  --color-lp-surface-card: var(--lp-surface-card);
-  --color-lp-surface-container: var(--lp-surface-container);
-  --color-lp-surface-container-high: var(--lp-surface-container-high);
-  --color-lp-surface-container-low: var(--lp-surface-container-low);
-  --color-lp-text-primary: var(--lp-text-primary);
-  --color-lp-text-secondary: var(--lp-text-secondary);
-  --color-lp-text-muted: var(--lp-text-muted);
-  --color-lp-primary: var(--lp-primary);
-  --color-lp-primary-container: var(--lp-primary-container);
-  --color-lp-secondary: var(--lp-secondary);
-  --color-lp-tertiary: var(--lp-tertiary);
-  --color-lp-border-subtle: var(--lp-border-subtle);
-}
-
 .theme-capture {
   --surface-page: #ffffff;
   --surface-card: #fbfef8;
