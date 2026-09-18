@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import {
   ArrowRight,
   Activity,
@@ -157,14 +156,6 @@ const NEXT_ACTIONS = [
   },
 ];
 
-const PREVIEW_SHOTS = [
-  { label: "Front bite", src: "/tooth-sides/front-bite.png", objectPosition: "center center" },
-  { label: "Upper arch", src: "/tooth-sides/upper-arc.png", objectPosition: "center top" },
-  { label: "Lower arch", src: "/tooth-sides/lower-arc.png", objectPosition: "center bottom" },
-  { label: "Left side", src: "/tooth-sides/left-buccal.png", objectPosition: "left center" },
-  { label: "Right side", src: "/tooth-sides/right-buccal.png", objectPosition: "right center" },
-];
-
 const TOOTHPASTE_PROVIDES = [
   "Immediate preliminary screening of visible outer enamel and smile architecture.",
   "Identification of visual irregularities that warrant clinical consultation.",
@@ -195,10 +186,85 @@ function BentoTile({
   );
 }
 
-export default function Home() {
-  const [activePreviewIndex, setActivePreviewIndex] = useState(0);
-  const activePreview = PREVIEW_SHOTS[activePreviewIndex];
+function ReportWindowPreview() {
+  return (
+    <div className="overflow-hidden rounded-[26px] border border-lp-border-subtle bg-white shadow-[0_30px_90px_rgba(13,50,27,0.18)]">
+      <div className="flex items-center gap-2 border-b border-lp-border-subtle bg-[#f8fbf3] px-4 py-3.5">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+        <div className="ml-2 flex-1 rounded-full bg-white px-3 py-1 text-center font-mono text-[10px] text-lp-text-muted">
+          toothpaste.cv/report
+        </div>
+      </div>
 
+      <div className="min-h-[420px] bg-[#fbfdf8] p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-lp-heading text-[10px] font-bold uppercase tracking-[0.24em] text-lp-primary">
+              Visual oral health report
+            </p>
+            <h2 className="mt-2 font-lp-heading text-3xl font-bold leading-tight text-lp-text-primary">
+              Worth monitoring
+            </h2>
+          </div>
+          <span className="rounded-full bg-[#1f7a3f]/10 px-3 py-1.5 text-xs font-semibold text-[#1f7a3f]">
+            AI draft
+          </span>
+        </div>
+
+        <div className="mt-5 rounded-3xl bg-white p-4 shadow-sm">
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              ["6", "flagged"],
+              ["3", "views"],
+              ["PDF", "ready"],
+            ].map(([value, label]) => (
+              <div key={label} className="rounded-2xl bg-lp-surface-container-low px-3 py-3">
+                <p className="font-lp-heading text-2xl font-bold text-lp-text-primary">{value}</p>
+                <p className="mt-0.5 text-[10px] uppercase tracking-wider text-lp-text-muted">{label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {["front-bite", "left-buccal", "right-buccal"].map((name) => (
+              <div key={name} className="h-20 overflow-hidden rounded-2xl bg-lp-surface-container">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/tooth-sides/${name}.png`} alt="" className="h-full w-full object-cover opacity-85" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-2">
+          {[
+            ["Possible decay", "Upper right molar", "#d84d4d"],
+            ["Gum health", "Front gumline", "#d79a16"],
+            ["Crowding", "Lower front", "#1f7a3f"],
+          ].map(([title, detail, color]) => (
+            <div key={title} className="flex items-center justify-between rounded-2xl border border-lp-border-subtle bg-white px-3 py-3 shadow-sm">
+              <div>
+                <p className="text-sm font-semibold text-lp-text-primary">{title}</p>
+                <p className="mt-0.5 text-xs text-lp-text-muted">{detail}</p>
+              </div>
+              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between rounded-2xl bg-[#0d5a2b] px-4 py-3 text-white">
+          <span className="text-sm font-semibold">Dentist-ready summary</span>
+          <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-ink">
+            Download PDF
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
   return (
     <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
       <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/95 backdrop-blur-xl">
@@ -232,15 +298,14 @@ export default function Home() {
           />
           <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_78%_10%,rgba(202,255,99,0.32),transparent_34%),linear-gradient(180deg,rgba(246,251,239,0.68),rgba(246,251,239,0.97)_55%,#ffffff)]" />
 
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
-            <BentoTile className="flex min-h-[440px] flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:row-span-2">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">
+            <BentoTile className="flex min-h-[460px] flex-col justify-between p-6 sm:p-7 lg:col-span-5 lg:row-span-2 lg:min-h-[520px]">
               <div className="relative z-10">
-                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-lp-text-primary sm:text-5xl lg:text-6xl">
+                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-lp-text-primary lg:text-6xl">
                   Know when your smile needs a closer look.
                 </h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary sm:text-lg sm:leading-8">
-                  toothpaste.cv guides patients through five mouth photos, turns visible concerns
-                  into a plain-English report, and helps them decide the right next step.
+                <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary lg:text-lg lg:leading-8">
+                  Take mouth photos. Get a visual report in seconds.
                 </p>
               </div>
 
@@ -276,68 +341,15 @@ export default function Home() {
               </div>
             </BentoTile>
 
-            <BentoTile className="min-h-[440px] p-4 lg:col-span-5 lg:row-span-2">
+            <BentoTile className="min-h-[460px] p-4 lg:col-span-7 lg:row-span-2 lg:min-h-[520px]">
               <div className="mb-3 flex items-center justify-between">
                 <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
-                  Guided capture
+                  Report preview
                 </span>
               </div>
 
-              <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black shadow-[0_28px_70px_rgba(0,0,0,0.32)]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activePreview.src}
-                  alt={`Example ${activePreview.label.toLowerCase()} framing`}
-                  className="absolute inset-0 h-full w-full object-cover opacity-70"
-                  style={{ objectPosition: activePreview.objectPosition }}
-                />
-                <div className="absolute inset-x-4 top-4 flex items-center justify-between">
-                  <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white backdrop-blur-md">
-                    Shot {activePreviewIndex + 1} of 5 · {activePreview.label}
-                  </span>
-                  <Camera className="h-5 w-5 text-white drop-shadow" />
-                </div>
-                <svg
-                  className="pointer-events-none absolute inset-0 h-full w-full text-lp-secondary opacity-90"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeDasharray="4 4"
-                  strokeWidth={1.5}
-                  viewBox="0 0 200 200"
-                >
-                  <path d="M 20 40 L 20 20 L 40 20" strokeDasharray="0" strokeWidth={2} />
-                  <path d="M 180 40 L 180 20 L 160 20" strokeDasharray="0" strokeWidth={2} />
-                  <path d="M 20 160 L 20 180 L 40 180" strokeDasharray="0" strokeWidth={2} />
-                  <path d="M 180 160 L 180 180 L 160 180" strokeDasharray="0" strokeWidth={2} />
-                </svg>
-              </div>
+              <ReportWindowPreview />
 
-              <div className="mt-4 grid grid-cols-5 gap-2">
-                {PREVIEW_SHOTS.map((shot, index) => (
-                  <button
-                    type="button"
-                    key={shot.label}
-                    onClick={() => setActivePreviewIndex(index)}
-                    aria-label={`Show ${shot.label} preview`}
-                    className={`flex h-11 items-center justify-center rounded-xl font-lp-heading text-xs font-bold ${
-                      index === activePreviewIndex
-                        ? "bg-lp-primary text-white"
-                        : "bg-lp-surface-container-low text-lp-text-muted transition-colors hover:bg-lp-surface-container"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-4 rounded-2xl bg-lp-surface-container-low p-4">
-                <p className="font-lp-heading text-sm font-semibold text-lp-text-primary">
-                  Adaptive guidance for tricky angles
-                </p>
-                <p className="mt-1 text-sm leading-6 text-lp-text-secondary">
-                  The required five views stay consistent, while each step coaches the user on
-                  distance, angle, lighting, and retakes.
-                </p>
-              </div>
             </BentoTile>
 
             <BentoTile className="flex min-h-44 flex-col justify-between bg-lp-surface-container p-5 lg:col-span-3">
