@@ -106,7 +106,7 @@ function BentoTile({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card shadow-[0_24px_70px_rgba(0,0,0,0.24)] ${className}`}
+      className={`relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card shadow-[0_20px_60px_rgba(13,50,27,0.1)] ${className}`}
     >
       {children}
     </div>
@@ -116,7 +116,7 @@ function BentoTile({
 export default function Home() {
   return (
     <div className="theme-minimal flex w-full min-w-0 flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
-      <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 w-full border-b border-lp-border-subtle bg-lp-surface/95 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <span className="font-lp-heading text-lg font-bold tracking-tight">
@@ -130,7 +130,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card/80 text-lp-text-secondary shadow-[0_10px_30px_rgba(0,0,0,0.18)] hover:text-lp-text-primary" />
+            <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_10px_30px_rgba(13,50,27,0.08)] hover:text-lp-text-primary" />
             <AuthButton />
             <Link
               href="/capture"
@@ -143,7 +143,7 @@ export default function Home() {
       </header>
 
       <main className="flex w-full min-w-0 flex-1 flex-col">
-        <section className="relative isolate w-full overflow-hidden px-5 py-6 sm:px-6 sm:py-10">
+        <section className="carestack-hero relative isolate w-full overflow-hidden bg-[#0b2b17] px-5 py-8 sm:px-6 sm:py-12">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/examples/upper-arch.jpg"
@@ -151,7 +151,7 @@ export default function Home() {
             aria-hidden
             className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.1] saturate-50"
           />
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_74%_14%,rgba(202,255,99,0.22),transparent_34%),linear-gradient(180deg,rgba(9,39,21,0.68),rgba(9,39,21,0.96)_55%,#092715)]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-[radial-gradient(circle_at_74%_14%,rgba(202,255,99,0.22),transparent_34%),linear-gradient(180deg,rgba(9,39,21,0.62),rgba(9,39,21,0.96)_55%,#0b2b17)]" />
 
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
             <BentoTile className="flex min-h-[440px] flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:row-span-2">
@@ -163,10 +163,10 @@ export default function Home() {
                   </span>
                 </div>
 
-                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-[#f7fff1] sm:text-5xl lg:text-6xl">
                   A simple oral health check from home.
                 </h1>
-                <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary sm:text-lg sm:leading-8">
+                <p className="mt-5 max-w-xl text-base leading-7 text-[#d7e8d1] sm:text-lg sm:leading-8">
                   Take five guided photos and receive a plain-English visual review of visible
                   enamel, gums, bite, spacing, staining, and more.
                 </p>
@@ -249,7 +249,7 @@ export default function Home() {
                     key={n}
                     className={`flex h-11 items-center justify-center rounded-xl font-lp-heading text-xs font-bold ${
                       n === 1
-                        ? "bg-lp-primary-container text-white"
+                        ? "bg-lp-primary-container text-lp-on-primary-container"
                         : "bg-lp-surface-container-low text-lp-text-muted"
                     }`}
                   >

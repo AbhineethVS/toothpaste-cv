@@ -1,33 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --surface-page: #092715;
-  --surface-card: #10361f;
-  --ink-primary: #f7fff1;
-  --ink-secondary: #cfe3c8;
-  --ink-muted: #8fac91;
-  --border-subtle: rgba(205, 255, 126, 0.16);
+  --surface-page: #ffffff;
+  --surface-card: #fbfef8;
+  --ink-primary: #101610;
+  --ink-secondary: #4c5c4f;
+  --ink-muted: #7d8b7f;
+  --border-subtle: rgba(11, 43, 23, 0.12);
   --accent: #caff63;
   --accent-ink: #102414;
 
-  --status-good: #60e38b;
-  --status-warning: #f7d46a;
+  --status-good: #2fa861;
+  --status-warning: #d79a16;
   --status-serious: #f59b61;
-  --status-critical: #ff6b6b;
+  --status-critical: #d84d4d;
 
   /*
    * Status hues above are for marks (fills, dots, rings) and clear the 3:1
    * mark rule. As small text they don't, so labels use these darker steps --
    * each measured at or above 4.5:1 against this mode's surface.
    */
-  --status-good-text: #8dffad;
-  --status-warning-text: #ffe28a;
-  --status-serious-text: #ffb27c;
-  --status-critical-text: #ff8d8d;
+  --status-good-text: #15733f;
+  --status-warning-text: #8a5c00;
+  --status-serious-text: #a8451f;
+  --status-critical-text: #c53d3d;
 
   /* Dental map: teeth stay ivory in both modes so they still read as teeth. */
   --tooth-base: #f8f2df;
-  --tooth-edge: rgba(202, 255, 99, 0.28);
+  --tooth-edge: rgba(11, 43, 23, 0.24);
   --gum: #d9828d;
 }
 
@@ -96,44 +96,71 @@
 }
 
 .theme-minimal {
-  --lp-surface: #092715;
-  --lp-surface-raised: #0d321b;
-  --lp-surface-card: rgba(15, 54, 30, 0.9);
-  --lp-surface-container: #143d25;
-  --lp-surface-container-high: #1d4d30;
-  --lp-surface-container-low: #0f321d;
-  --lp-text-primary: #f7fff1;
-  --lp-text-secondary: #cfe3c8;
-  --lp-text-muted: #8fac91;
-  --lp-primary: #ddff85;
+  --lp-surface: #ffffff;
+  --lp-surface-raised: #f8fbf3;
+  --lp-surface-card: #ffffff;
+  --lp-surface-container: #f0f7ea;
+  --lp-surface-container-high: #f8fff0;
+  --lp-surface-container-low: #eef6e7;
+  --lp-text-primary: #101610;
+  --lp-text-secondary: #4c5c4f;
+  --lp-text-muted: #7d8b7f;
+  --lp-primary: #0d5a2b;
   --lp-primary-container: #caff63;
   --lp-on-primary-container: #102414;
+  --lp-secondary: #1f9b58;
+  --lp-tertiary: #5c8b1f;
+  --lp-status-warning: #d79a16;
+  --lp-status-danger: #d84d4d;
+  --lp-status-success: #1f9b58;
+  --lp-border-subtle: rgba(11, 43, 23, 0.12);
+}
+
+.carestack-hero {
+  --lp-surface-card: rgba(15, 54, 30, 0.82);
+  --lp-surface-container: #143d25;
+  --lp-surface-container-high: rgba(29, 77, 48, 0.86);
+  --lp-surface-container-low: rgba(15, 50, 29, 0.9);
+  --lp-text-primary: #f7fff1;
+  --lp-text-secondary: #d7e8d1;
+  --lp-text-muted: #9bb99d;
+  --lp-primary: #ddff85;
+  --lp-primary-container: #caff63;
   --lp-secondary: #62e48e;
-  --lp-tertiary: #bfff64;
-  --lp-status-warning: #f8d46c;
-  --lp-status-danger: #ff6b6b;
-  --lp-status-success: #62e48e;
-  --lp-border-subtle: rgba(205, 255, 126, 0.16);
+  --lp-tertiary: #caff63;
+  --lp-border-subtle: rgba(205, 255, 126, 0.18);
+  --color-lp-surface-card: var(--lp-surface-card);
+  --color-lp-surface-container: var(--lp-surface-container);
+  --color-lp-surface-container-high: var(--lp-surface-container-high);
+  --color-lp-surface-container-low: var(--lp-surface-container-low);
+  --color-lp-text-primary: var(--lp-text-primary);
+  --color-lp-text-secondary: var(--lp-text-secondary);
+  --color-lp-text-muted: var(--lp-text-muted);
+  --color-lp-primary: var(--lp-primary);
+  --color-lp-primary-container: var(--lp-primary-container);
+  --color-lp-secondary: var(--lp-secondary);
+  --color-lp-tertiary: var(--lp-tertiary);
+  --color-lp-border-subtle: var(--lp-border-subtle);
 }
 
 .theme-capture {
-  --surface-page: #092715;
-  --surface-card: #10361f;
-  --ink-primary: #f7fff1;
-  --ink-secondary: #cfe3c8;
-  --ink-muted: #8fac91;
-  --border-subtle: rgba(205, 255, 126, 0.16);
+  --surface-page: #ffffff;
+  --surface-card: #fbfef8;
+  --ink-primary: #101610;
+  --ink-secondary: #4c5c4f;
+  --ink-muted: #7d8b7f;
+  --border-subtle: rgba(11, 43, 23, 0.12);
   --accent: #caff63;
   --accent-ink: #102414;
 
-  --status-good: #62e48e;
-  --status-warning: #f8d46c;
+  --status-good: #1f9b58;
+  --status-warning: #d79a16;
   --status-serious: #f59b61;
-  --status-critical: #ff6b6b;
-  --status-good-text: #8dffad;
-  --status-warning-text: #ffe28a;
-  --status-serious-text: #ffb27c;
-  --status-critical-text: #ff8d8d;
+  --status-critical: #d84d4d;
+  --status-good-text: #15733f;
+  --status-warning-text: #8a5c00;
+  --status-serious-text: #a8451f;
+  --status-critical-text: #c53d3d;
 
   background: var(--surface-page);
   color: var(--ink-primary);
@@ -142,26 +169,26 @@
 /* Report page only. Reuses the same variable names the report components already
    consume, so no component-level color logic needs to change. */
 .theme-report {
-  --surface-page: #092715;
-  --surface-card: #10361f;
-  --ink-primary: #f7fff1;
-  --ink-secondary: #cfe3c8;
-  --ink-muted: #8fac91;
-  --border-subtle: rgba(205, 255, 126, 0.16);
+  --surface-page: #ffffff;
+  --surface-card: #fbfef8;
+  --ink-primary: #101610;
+  --ink-secondary: #4c5c4f;
+  --ink-muted: #7d8b7f;
+  --border-subtle: rgba(11, 43, 23, 0.12);
   --accent: #caff63;
   --accent-ink: #102414;
 
-  --status-good: #62e48e;
-  --status-warning: #f8d46c;
+  --status-good: #1f9b58;
+  --status-warning: #d79a16;
   --status-serious: #f59b61;
-  --status-critical: #ff6b6b;
-  --status-good-text: #8dffad;
-  --status-warning-text: #ffe28a;
-  --status-serious-text: #ffb27c;
-  --status-critical-text: #ff8d8d;
+  --status-critical: #d84d4d;
+  --status-good-text: #15733f;
+  --status-warning-text: #8a5c00;
+  --status-serious-text: #a8451f;
+  --status-critical-text: #c53d3d;
 
   --tooth-base: #e9e4d6;
-  --tooth-edge: rgba(202, 255, 99, 0.28);
+  --tooth-edge: rgba(11, 43, 23, 0.24);
   --gum: #d9828d;
 
   background: var(--surface-page);
@@ -170,19 +197,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --surface-page: #092715;
-    --surface-card: #10361f;
-    --ink-primary: #f7fff1;
-    --ink-secondary: #cfe3c8;
-    --ink-muted: #8fac91;
-    --border-subtle: rgba(205, 255, 126, 0.16);
+    --surface-page: #ffffff;
+    --surface-card: #fbfef8;
+    --ink-primary: #101610;
+    --ink-secondary: #4c5c4f;
+    --ink-muted: #7d8b7f;
+    --border-subtle: rgba(11, 43, 23, 0.12);
     --accent: #caff63;
     --accent-ink: #102414;
 
-    --status-good-text: #8dffad;
-    --status-warning-text: #ffe28a;
-    --status-serious-text: #ffb27c;
-    --status-critical-text: #ff8d8d;
+    --status-good-text: #15733f;
+    --status-warning-text: #8a5c00;
+    --status-serious-text: #a8451f;
+    --status-critical-text: #c53d3d;
 
     --tooth-base: #e9e4d6;
     --tooth-edge: rgba(0, 0, 0, 0.3);
@@ -210,8 +237,8 @@ body {
 body:has(.theme-minimal),
 body:has(.theme-capture),
 body:has(.theme-report) {
-  background: #092715;
-  color: #f7fff1;
+  background: #ffffff;
+  color: #101610;
 }
 
 /* Themed app shells always paint edge-to-edge so dark-mode body never shows
