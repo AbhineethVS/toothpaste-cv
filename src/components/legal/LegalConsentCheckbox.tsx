@@ -24,11 +24,19 @@ export function LegalConsentCheckbox({
       />
       <span>
         I agree to the{" "}
-        <Link href="/terms" className="font-medium text-accent underline-offset-2 hover:underline" target="_blank">
+        <Link
+          href="/terms"
+          className="font-medium text-[#1f7a3f] underline-offset-2 hover:text-[#165c2f] hover:underline"
+          target="_blank"
+        >
           Terms of Use
         </Link>{" "}
         and{" "}
-        <Link href="/privacy" className="font-medium text-accent underline-offset-2 hover:underline" target="_blank">
+        <Link
+          href="/privacy"
+          className="font-medium text-[#1f7a3f] underline-offset-2 hover:text-[#165c2f] hover:underline"
+          target="_blank"
+        >
           Privacy Policy
         </Link>
         , and I understand toothpaste.cv is a visual screening tool only — not a medical diagnosis or dental advice.
