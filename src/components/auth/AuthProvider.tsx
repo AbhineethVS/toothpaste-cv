@@ -45,8 +45,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase]);
 
   const signOut = useCallback(async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
+    if (!supabase) {
+      setSession(null);
+      return;
+    }
+    await supabase.auth.signOut({ scope: "global" });
     setSession(null);
   }, [supabase]);
 

@@ -15,7 +15,8 @@ import {
   Upload,
 } from "lucide-react";
 import { CAPTURE_STEPS, type CaptureStepId } from "@/lib/capture-steps";
-import { captureVideoFrame, compressImage } from "@/lib/compress-image";
+import { compressImage, captureVideoFrame } from "@/lib/compress-image";
+import { TimelineNavButton } from "@/components/auth/TimelineNavButton";
 
 type CameraStatus = "starting" | "ready" | "error";
 type CaptureMode = "camera" | "upload";
@@ -325,9 +326,12 @@ export default function CapturePage() {
               {completedCount} of {CAPTURE_STEPS.length} complete
             </p>
           </div>
-          <span className="shrink-0 rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
-            Step {activeIndex + 1}
-          </span>
+          <div className="flex shrink-0 items-center gap-2">
+            <TimelineNavButton />
+            <span className="rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-secondary">
+              Step {activeIndex + 1}
+            </span>
+          </div>
         </div>
       </header>
 
