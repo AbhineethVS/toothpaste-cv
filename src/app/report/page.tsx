@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Download, Plus } from "lucide-react";
+import { Clock3, Download, Plus, Save } from "lucide-react";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import type { AnalysisResult } from "@/lib/analysis-schema";
 import { clearEntries, flaggedEntries, urgency } from "@/lib/report-metrics";
+import { saveTimelineEntry } from "@/lib/timeline-storage";
 import { SEVERITY_ICON, SEVERITY_TEXT_CLASS, SEVERITY_WASH_CLASS } from "@/lib/severity";
 import { Sidebar, MobileStepStrip } from "@/components/report/Sidebar";
 import { Tabs, type ReportTabId } from "@/components/report/Tabs";
@@ -93,6 +94,8 @@ export default function ReportPage() {
   const [analysisSeconds, setAnalysisSeconds] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<ReportTabId>("summary");
   const [isExporting, setIsExporting] = useState(false);
+  const [isSavingTimeline, setIsSavingTimeline] = useState(false);
+  const [timelineStatus, setTimelineStatus] = useState<"idle" | "saved" | "error">("idle");
   const [exportError, setExportError] = useState<string | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
 
@@ -190,6 +193,20 @@ export default function ReportPage() {
     }
   }
 
+  async function handleSaveTimeline() {
+    if (!result || !photos) return;
+    setIsSavingTimeline(true);
+    setTimelineStatus("idle");
+    try {
+      await saveTimelineEntry(result, photos);
+      setTimelineStatus("saved");
+    } catch {
+      setTimelineStatus("error");
+    } finally {
+      setIsSavingTimeline(false);
+    }
+  }
+
   return (
     <div className="theme-report flex min-h-screen flex-col bg-surface-page">
       <header className="border-b border-border-subtle bg-surface-page/80 backdrop-blur-xl">
@@ -201,6 +218,23 @@ export default function ReportPage() {
             <p className="mt-0.5 text-xs text-ink-muted">Visual screening report</p>
           </div>
           <div className="flex items-center gap-2.5">
+            <Link
+              href="/timeline"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-4 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary"
+            >
+              <Clock3 className="h-4 w-4" strokeWidth={2.25} />
+              Timeline
+            </Link>
+            {status === "done" && result && (
+              <button
+                onClick={handleSaveTimeline}
+                disabled={isSavingTimeline || timelineStatus === "saved"}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-4 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary disabled:opacity-55"
+              >
+                <Save className="h-4 w-4" strokeWidth={2.25} />
+                {isSavingTimeline ? "Saving..." : timelineStatus === "saved" ? "Saved" : "Save"}
+              </button>
+            )}
             {status === "done" && result && (
               <button
                 onClick={handleExportPdf}
@@ -223,6 +257,16 @@ export default function ReportPage() {
       </header>
       {exportError && (
         <p className="px-5 pt-2 text-right text-xs text-status-critical-text sm:px-6">{exportError}</p>
+      )}
+      {timelineStatus === "error" && (
+        <p className="px-5 pt-2 text-right text-xs text-status-critical-text sm:px-6">
+          Couldn&apos;t save this screening to your timeline.
+        </p>
+      )}
+      {timelineStatus === "saved" && (
+        <p className="px-5 pt-2 text-right text-xs text-status-good-text sm:px-6">
+          Saved to your oral health timeline.
+        </p>
       )}
 
       <div className="mx-auto flex w-full max-w-6xl flex-1">
