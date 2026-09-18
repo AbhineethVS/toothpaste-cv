@@ -20,7 +20,6 @@ import {
   Layers,
   Leaf,
   Lock,
-  PlayCircle,
   Ruler,
   ShieldAlert,
   Sparkles,
@@ -130,21 +129,6 @@ const FAQ_ITEMS = [
     question: "What can it not see?",
     answer:
       "Anything under the surface: cavities between teeth, pocket depth, root issues, and treatment planning all still need a clinical exam.",
-  },
-];
-
-const TECH_POINTS = [
-  {
-    title: "Structured vision output",
-    detail: "Findings are forced into a typed schema: severity, region, zone, and location label.",
-  },
-  {
-    title: "Conservative severity rubric",
-    detail: "Mild / moderate / notable anchors reduce random swings on borderline photos.",
-  },
-  {
-    title: "Local timeline",
-    detail: "Saved screenings stay on-device so you can compare flagged trends across visits.",
   },
 ];
 
@@ -400,83 +384,61 @@ export default function Home() {
         </section>
 
         <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <BentoTile className="p-6 sm:p-8 lg:col-span-5">
-              <span className="font-lp-heading text-xs font-semibold uppercase tracking-wider text-lp-primary">
-                Conversion path
-              </span>
-              <h2 className="mt-2 font-lp-heading text-3xl font-bold">
-                Every report ends with one clear next step.
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-lp-text-secondary">
-                Patients should never leave with only a score. The report turns screening output
-                into a practical action based on concern level.
-              </p>
-              <Link
-                href="/capture"
-                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_30px_rgba(202,255,99,0.28),0_3px_14px_rgba(13,50,27,0.08)] transition-all duration-300 hover:brightness-105 hover:shadow-[0_0_0_5px_rgba(202,255,99,0.24),0_0_42px_rgba(202,255,99,0.76),0_18px_42px_rgba(13,50,27,0.12)] sm:w-auto"
-              >
-                <PlayCircle className="h-5 w-5" />
-                Start oral check
-              </Link>
-            </BentoTile>
-
-            <BentoTile className="p-6 lg:col-span-7">
-              <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
-                {NEXT_ACTIONS.map((action) => (
-                  <div key={action.title} className="rounded-2xl bg-lp-surface-container-low p-4">
-                    <action.icon className={`mb-3 h-5 w-5 ${action.tone}`} />
-                    <h3 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
-                      {action.title}
-                    </h3>
-                    <p className="mt-2 text-xs leading-5 text-lp-text-secondary">{action.detail}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                  <div className="mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-lp-secondary" />
-                    <h3 className="font-lp-heading text-lg font-semibold">
-                      What toothpaste.cv provides
-                    </h3>
-                  </div>
-                  <ul className="flex flex-col gap-3 text-sm text-lp-text-secondary">
-                    {TOOTHPASTE_PROVIDES.map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <Circle className="mt-1 h-3 w-3 shrink-0 fill-lp-secondary text-lp-secondary" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+          <BentoTile className="p-6">
+            <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {NEXT_ACTIONS.map((action) => (
+                <div key={action.title} className="rounded-2xl bg-lp-surface-container-low p-4">
+                  <action.icon className={`mb-3 h-5 w-5 ${action.tone}`} />
+                  <h3 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
+                    {action.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-5 text-lp-text-secondary">{action.detail}</p>
                 </div>
-
-                <div>
-                  <div className="mb-4 flex items-center gap-2">
-                    <ShieldAlert className="h-6 w-6 text-lp-status-warning" />
-                    <h3 className="font-lp-heading text-lg font-semibold">
-                      What requires a dentist
-                    </h3>
-                  </div>
-                  <ul className="flex flex-col gap-3 text-sm text-lp-text-secondary">
-                    {REQUIRES_DENTIST.map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <X className="mt-0.5 h-4 w-4 shrink-0 text-lp-status-warning" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <div className="mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="h-6 w-6 text-lp-secondary" />
+                  <h3 className="font-lp-heading text-lg font-semibold">
+                    What toothpaste.cv provides
+                  </h3>
                 </div>
+                <ul className="flex flex-col gap-3 text-sm text-lp-text-secondary">
+                  {TOOTHPASTE_PROVIDES.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <Circle className="mt-1 h-3 w-3 shrink-0 fill-lp-secondary text-lp-secondary" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </BentoTile>
-          </div>
+
+              <div>
+                <div className="mb-4 flex items-center gap-2">
+                  <ShieldAlert className="h-6 w-6 text-lp-status-warning" />
+                  <h3 className="font-lp-heading text-lg font-semibold">
+                    What requires a dentist
+                  </h3>
+                </div>
+                <ul className="flex flex-col gap-3 text-sm text-lp-text-secondary">
+                  {REQUIRES_DENTIST.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <X className="mt-0.5 h-4 w-4 shrink-0 text-lp-status-warning" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </BentoTile>
         </section>
 
         <section id="faq" className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6 sm:pb-16">
           <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
-                FAQ & technical
+                FAQ
               </span>
               <h2 className="mt-1 font-lp-heading text-3xl font-bold">
                 How the screening works — and what it is not.
@@ -484,48 +446,27 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <BentoTile className="p-5 sm:p-6 lg:col-span-7">
-              <div className="mb-4 flex items-center gap-2">
-                <HelpCircle className="h-4 w-4 text-lp-primary" />
-                <h3 className="font-lp-heading text-sm font-semibold uppercase tracking-wider text-lp-text-muted">
-                  Common questions
-                </h3>
-              </div>
-              <div className="divide-y divide-lp-border-subtle">
-                {FAQ_ITEMS.map((item) => (
-                  <details key={item.question} className="group py-3.5 first:pt-0 last:pb-0">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-lp-heading text-sm font-semibold text-lp-text-primary marker:content-none [&::-webkit-details-marker]:hidden">
-                      {item.question}
-                      <span className="shrink-0 text-lp-text-muted transition-transform group-open:rotate-45">
-                        +
-                      </span>
-                    </summary>
-                    <p className="mt-2 pr-8 text-sm leading-6 text-lp-text-secondary">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </BentoTile>
-
-            <BentoTile className="flex flex-col gap-4 bg-lp-surface-container p-5 sm:p-6 lg:col-span-5">
-              <div className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-lp-secondary" />
-                <h3 className="font-lp-heading text-sm font-semibold uppercase tracking-wider text-lp-text-muted">
-                  Under the hood
-                </h3>
-              </div>
-              <div className="flex flex-1 flex-col gap-3">
-                {TECH_POINTS.map((point) => (
-                  <div key={point.title} className="rounded-2xl bg-lp-surface-card p-4">
-                    <h4 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
-                      {point.title}
-                    </h4>
-                    <p className="mt-1.5 text-sm leading-6 text-lp-text-secondary">{point.detail}</p>
-                  </div>
-                ))}
-              </div>
-            </BentoTile>
-          </div>
+          <BentoTile className="p-5 sm:p-6">
+            <div className="mb-4 flex items-center gap-2">
+              <HelpCircle className="h-4 w-4 text-lp-primary" />
+              <h3 className="font-lp-heading text-sm font-semibold uppercase tracking-wider text-lp-text-muted">
+                Common questions
+              </h3>
+            </div>
+            <div className="divide-y divide-lp-border-subtle">
+              {FAQ_ITEMS.map((item) => (
+                <details key={item.question} className="group py-3.5 first:pt-0 last:pb-0">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-lp-heading text-sm font-semibold text-lp-text-primary marker:content-none [&::-webkit-details-marker]:hidden">
+                    {item.question}
+                    <span className="shrink-0 text-lp-text-muted transition-transform group-open:rotate-45">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-2 pr-8 text-sm leading-6 text-lp-text-secondary">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </BentoTile>
         </section>
       </main>
 
