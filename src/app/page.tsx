@@ -14,6 +14,9 @@ import {
   ClipboardCheck,
   Columns3,
   Eye,
+  FileText,
+  HelpCircle,
+  History,
   Info,
   Layers,
   Leaf,
@@ -22,6 +25,7 @@ import {
   Ruler,
   ShieldAlert,
   Sparkles,
+  Stethoscope,
   TriangleAlert,
   X,
   Zap,
@@ -59,24 +63,51 @@ const PREVIEW_FINDINGS: { key: FindingKey; tag: string; tone: PreviewTone; detai
   { key: "possibleDecay", tag: "Flagged", tone: "danger", detail: "Dark pit on upper right molar" },
 ];
 
-const HOW_IT_WORKS = [
+const CUSTOMER_JOURNEY = [
   {
     number: "01",
     icon: Camera,
     iconClass: "text-lp-secondary",
-    title: "Capture",
-    detail: "Five guided views with framing cues for front, upper, lower, and side shots.",
-    meta: "About a minute",
+    title: "Start with the concern",
+    detail: "The page makes the problem obvious: users want to know whether visible changes need attention.",
+    meta: "Attention",
     metaIcon: Zap,
   },
   {
     number: "02",
     icon: ClipboardCheck,
     iconClass: "text-lp-tertiary",
-    title: "Review",
-    detail: "A visual scorecard explains surface flags across nine oral health categories.",
-    meta: "Results in seconds",
+    title: "Take five guided photos",
+    detail: "Front bite, upper arch, lower arch, and side views are framed as one clear capture flow.",
+    meta: "Understanding",
     metaIcon: Sparkles,
+  },
+  {
+    number: "03",
+    icon: FileText,
+    iconClass: "text-lp-primary",
+    title: "Read a plain report",
+    detail: "Users see severity, photo evidence, dental map context, and simple next-step language.",
+    meta: "Trust",
+    metaIcon: BadgeCheck,
+  },
+  {
+    number: "04",
+    icon: History,
+    iconClass: "text-lp-secondary",
+    title: "Track changes over time",
+    detail: "Saved reports become a timeline so repeat checks feel useful after the first visit.",
+    meta: "After the report",
+    metaIcon: CalendarCheck,
+  },
+  {
+    number: "05",
+    icon: Stethoscope,
+    iconClass: "text-lp-tertiary",
+    title: "Escalate when needed",
+    detail: "Higher concern reports can move toward dentist review instead of leaving the user guessing.",
+    meta: "Conversion",
+    metaIcon: ArrowRight,
   },
 ];
 
@@ -84,6 +115,46 @@ const TRUST_SIGNALS = [
   { icon: CheckCircle2, label: "No account required", tone: "text-lp-secondary" },
   { icon: Lock, label: "Zero photos stored permanently", tone: "text-lp-secondary" },
   { icon: Info, label: "Triage, not medical diagnosis", tone: "text-lp-tertiary" },
+];
+
+const CONSIDERATION_POINTS = [
+  {
+    question: "Hard to take the upper arch?",
+    answer: "The capture flow gives angle-specific coaching while still keeping the required five-photo format.",
+  },
+  {
+    question: "No teeth visible in the upload?",
+    answer: "Image validation asks the user to retake or re-upload a clearer mouth photo before analysis.",
+  },
+  {
+    question: "Missing teeth or gum-only concerns?",
+    answer: "The report can explain visibility limits and guide users toward dentist review for gum symptoms.",
+  },
+  {
+    question: "Is this a diagnosis?",
+    answer: "No. It is positioned as early visual triage that helps users decide when to consult a dentist.",
+  },
+];
+
+const NEXT_ACTIONS = [
+  {
+    title: "Low concern",
+    detail: "Save the report, compare future checks, and keep routine hygiene habits visible.",
+    icon: CheckCircle2,
+    tone: "text-lp-secondary",
+  },
+  {
+    title: "Medium concern",
+    detail: "Monitor the area, retake photos later, and prepare better questions for a dentist.",
+    icon: History,
+    tone: "text-lp-tertiary",
+  },
+  {
+    title: "High concern",
+    detail: "Move toward dentist review or referral with the user's explicit consent.",
+    icon: Stethoscope,
+    tone: "text-lp-status-warning",
+  },
 ];
 
 const PREVIEW_SHOTS = [
@@ -165,11 +236,11 @@ export default function Home() {
             <BentoTile className="flex min-h-[440px] flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:row-span-2">
               <div className="relative z-10">
                 <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight text-lp-text-primary sm:text-5xl lg:text-6xl">
-                  A simple oral health check from home.
+                  Know when your smile needs a closer look.
                 </h1>
                 <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary sm:text-lg sm:leading-8">
-                  Take five guided photos and receive a plain-English visual review of visible
-                  enamel, gums, bite, spacing, staining, and more.
+                  toothpaste.cv guides patients through five mouth photos, turns visible concerns
+                  into a plain-English report, and helps them decide the right next step.
                 </p>
               </div>
 
@@ -179,7 +250,7 @@ export default function Home() {
                     href="/capture"
                     className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_14px_34px_rgba(202,255,99,0.22)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_16px_42px_rgba(202,255,99,0.28)] sm:w-auto"
                   >
-                    Start screening
+                    Start oral check
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <a
@@ -187,7 +258,7 @@ export default function Home() {
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-lp-border-subtle bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_12px_32px_rgba(0,0,0,0.18)] transition-colors hover:bg-lp-surface-container sm:w-auto"
                   >
                     <Eye className="h-4 w-4 text-lp-tertiary" />
-                    See sample report
+                    View sample report
                   </a>
                 </div>
 
@@ -260,11 +331,11 @@ export default function Home() {
               </div>
               <div className="mt-4 rounded-2xl bg-lp-surface-container-low p-4">
                 <p className="font-lp-heading text-sm font-semibold text-lp-text-primary">
-                  Photo guidance for self-capture
+                  Adaptive guidance for tricky angles
                 </p>
                 <p className="mt-1 text-sm leading-6 text-lp-text-secondary">
-                  Each view includes framing cues, with upload available whenever camera access is
-                  unavailable.
+                  The required five views stay consistent, while each step coaches the user on
+                  distance, angle, lighting, and retakes.
                 </p>
               </div>
             </BentoTile>
@@ -317,6 +388,52 @@ export default function Home() {
                 from a licensed dentist.
               </p>
             </BentoTile>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div>
+              <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
+                Customer journey
+              </span>
+              <h2 className="mt-1 max-w-2xl font-lp-heading text-3xl font-bold">
+                From first concern to a confident next step.
+              </h2>
+            </div>
+            <Link
+              href="/capture"
+              className="inline-flex items-center justify-center gap-2 self-start rounded-full border border-lp-border-subtle bg-lp-surface-card px-4 py-2 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_10px_30px_rgba(13,50,27,0.08)] transition-colors hover:bg-lp-surface-container sm:self-auto"
+            >
+              Start the flow
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+            {CUSTOMER_JOURNEY.map((step) => (
+              <BentoTile
+                key={step.number}
+                className="flex min-h-64 flex-col justify-between p-5 transition-colors duration-300 hover:bg-lp-surface-container"
+              >
+                <div>
+                  <div className="mb-5 flex items-center justify-between gap-3">
+                    <span className="font-lp-heading text-3xl font-bold text-lp-text-muted">
+                      {step.number}
+                    </span>
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-lp-surface-container-high">
+                      <step.icon className={`h-5 w-5 ${step.iconClass}`} />
+                    </div>
+                  </div>
+                  <h3 className="font-lp-heading text-lg font-semibold">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-lp-text-secondary">{step.detail}</p>
+                </div>
+                <div className="mt-6 flex items-center gap-2 text-sm text-lp-text-muted">
+                  <step.metaIcon className="h-4 w-4 text-lp-secondary" />
+                  {step.meta}
+                </div>
+              </BentoTile>
+            ))}
           </div>
         </section>
 
@@ -417,31 +534,34 @@ export default function Home() {
 
         <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            {HOW_IT_WORKS.map((step) => (
-              <BentoTile
-                key={step.number}
-                className="flex min-h-56 flex-col justify-between p-6 transition-colors duration-300 hover:bg-lp-surface-container sm:p-7 lg:col-span-6"
-              >
-                <div>
-                  <div className="mb-5 flex items-center justify-between">
-                    <span className="font-lp-heading text-3xl font-bold text-lp-text-muted">
-                      {step.number}
-                    </span>
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lp-surface-container-high">
-                      <step.icon className={`h-5 w-5 ${step.iconClass}`} />
+            <BentoTile className="p-6 sm:p-7 lg:col-span-5">
+              <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
+                Consideration
+              </span>
+              <h2 className="mt-2 font-lp-heading text-3xl font-bold">
+                The common doubts are answered before the user gets stuck.
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-lp-text-secondary">
+                The experience should make edge cases feel expected: difficult camera angles,
+                invalid images, missing teeth, and the boundary between screening and diagnosis.
+              </p>
+            </BentoTile>
+
+            <BentoTile className="p-4 sm:p-5 lg:col-span-7">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {CONSIDERATION_POINTS.map((item) => (
+                  <div key={item.question} className="rounded-2xl bg-lp-surface-container-low p-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 shrink-0 text-lp-primary" />
+                      <h3 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
+                        {item.question}
+                      </h3>
                     </div>
+                    <p className="text-sm leading-6 text-lp-text-secondary">{item.answer}</p>
                   </div>
-                  <h3 className="font-lp-heading text-2xl font-semibold">{step.title}</h3>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-lp-text-secondary">
-                    {step.detail}
-                  </p>
-                </div>
-                <div className="mt-6 flex items-center gap-2 text-sm text-lp-text-muted">
-                  <step.metaIcon className="h-4 w-4 text-lp-secondary" />
-                  {step.meta}
-                </div>
-              </BentoTile>
-            ))}
+                ))}
+              </div>
+            </BentoTile>
           </div>
         </section>
 
@@ -481,25 +601,36 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
             <BentoTile className="p-6 sm:p-8 lg:col-span-5">
               <span className="font-lp-heading text-xs font-semibold uppercase tracking-wider text-lp-primary">
-                Clinical transparency
+                Conversion path
               </span>
               <h2 className="mt-2 font-lp-heading text-3xl font-bold">
-                Designed for early awareness, not over-diagnosis.
+                Every report ends with one clear next step.
               </h2>
               <p className="mt-4 text-sm leading-6 text-lp-text-secondary">
-                The experience keeps the clinical boundary visible while still giving people a clear
-                next step.
+                Patients should never leave with only a score. The report turns screening output
+                into a practical action based on concern level.
               </p>
               <Link
                 href="/capture"
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_28px_rgba(35,95,100,0.18)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_12px_28px_rgba(35,95,100,0.22)] sm:w-auto"
               >
                 <PlayCircle className="h-5 w-5" />
-                Start screening
+                Start oral check
               </Link>
             </BentoTile>
 
             <BentoTile className="p-6 lg:col-span-7">
+              <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+                {NEXT_ACTIONS.map((action) => (
+                  <div key={action.title} className="rounded-2xl bg-lp-surface-container-low p-4">
+                    <action.icon className={`mb-3 h-5 w-5 ${action.tone}`} />
+                    <h3 className="font-lp-heading text-sm font-semibold text-lp-text-primary">
+                      {action.title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-5 text-lp-text-secondary">{action.detail}</p>
+                  </div>
+                ))}
+              </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <div className="mb-4 flex items-center gap-2">
