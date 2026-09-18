@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { DIAGNOSTIC_DEFS, type FindingKey } from "@/lib/analysis-schema";
 import { AuthButton } from "@/components/auth/AuthButton";
+import { TimelineNavButton } from "@/components/auth/TimelineNavButton";
 
 const DETECTION_ICONS: Record<FindingKey, typeof Columns3> = {
   crowding: Columns3,
@@ -129,7 +130,8 @@ export default function Home() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <AuthButton className="max-sm:hidden" />
+            <TimelineNavButton className="border-lp-border-subtle bg-lp-surface-card text-lp-text-secondary shadow-[0_8px_24px_rgba(42,54,71,0.08)] hover:text-lp-text-primary" />
+            <AuthButton />
             <Link
               href="/capture"
               className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-3 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary sm:px-4"

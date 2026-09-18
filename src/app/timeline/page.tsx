@@ -99,7 +99,7 @@ export default function TimelinePage() {
             <p className="text-xs text-ink-muted">{entries.length} saved screenings</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <AuthButton className="max-sm:hidden" />
+            <AuthButton />
             <Link
               href="/capture"
               className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90 sm:px-4"

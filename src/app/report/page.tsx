@@ -16,8 +16,18 @@ import { FindingsTab } from "@/components/report/FindingsTab";
 import { PhotosTab } from "@/components/report/PhotosTab";
 import { ReportTab } from "@/components/report/ReportTab";
 import { AuthButton } from "@/components/auth/AuthButton";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { SignInRequiredModal } from "@/components/auth/SignInRequiredModal";
+import { TimelineNavButton } from "@/components/auth/TimelineNavButton";
 
 type Status = "loading" | "error" | "done";
+type AuthGateAction = "timeline" | "save" | null;
+
+const AUTH_GATE_COPY: Record<Exclude<AuthGateAction, null>, string> = {
+  timeline:
+    "Your timeline is your personal dashboard of saved screenings. Sign in to open it and track changes over time.",
+  save: "Sign in to save this screening to your timeline so you can compare results across visits.",
+};
 
 function readStoredPhotos(): string[] | null {
   if (typeof window === "undefined") return null;
@@ -87,6 +97,7 @@ function ReportOverview({
 
 export default function ReportPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [photos] = useState<string[] | null>(readStoredPhotos);
   const [status, setStatus] = useState<Status>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -98,6 +109,7 @@ export default function ReportPage() {
   const [isSavingTimeline, setIsSavingTimeline] = useState(false);
   const [timelineStatus, setTimelineStatus] = useState<"idle" | "saved" | "error">("idle");
   const [exportError, setExportError] = useState<string | null>(null);
+  const [authGate, setAuthGate] = useState<AuthGateAction>(null);
   const exportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -196,6 +208,10 @@ export default function ReportPage() {
 
   async function handleSaveTimeline() {
     if (!result || !photos) return;
+    if (!user) {
+      setAuthGate("save");
+      return;
+    }
     setIsSavingTimeline(true);
     setTimelineStatus("idle");
     try {
@@ -206,6 +222,14 @@ export default function ReportPage() {
     } finally {
       setIsSavingTimeline(false);
     }
+  }
+
+  function handleTimelineClick() {
+    if (!user) {
+      setAuthGate("timeline");
+      return;
+    }
+    router.push("/timeline");
   }
 
   return (
@@ -219,14 +243,19 @@ export default function ReportPage() {
             <p className="mt-0.5 text-xs text-ink-muted">Visual screening report</p>
           </div>
           <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-2.5">
-            <AuthButton className="max-sm:hidden" />
-            <Link
-              href="/timeline"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary sm:px-4"
-            >
-              <Clock3 className="h-4 w-4" strokeWidth={2.25} />
-              Timeline
-            </Link>
+            <AuthButton />
+            {user ? (
+              <TimelineNavButton />
+            ) : (
+              <button
+                type="button"
+                onClick={handleTimelineClick}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary sm:px-4"
+              >
+                <Clock3 className="h-4 w-4" strokeWidth={2.25} />
+                Timeline
+              </button>
+            )}
             {status === "done" && result && (
               <button
                 onClick={handleSaveTimeline}
@@ -259,6 +288,11 @@ export default function ReportPage() {
           </div>
         </div>
       </header>
+      <SignInRequiredModal
+        open={authGate !== null}
+        reason={authGate ? AUTH_GATE_COPY[authGate] : ""}
+        onClose={() => setAuthGate(null)}
+      />
       {exportError && (
         <p className="px-5 pt-2 text-right text-xs text-status-critical-text sm:px-6">{exportError}</p>
       )}
