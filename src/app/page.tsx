@@ -223,12 +223,12 @@ export default function Home() {
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/"
-              aria-hidden={!isScrolled}
-              className={`font-lp-heading text-lg font-bold tracking-tight text-lp-text-primary transition-all duration-300 hover:opacity-80 ${
-                isScrolled ? "opacity-100" : "pointer-events-none opacity-0"
+              className={`font-lp-heading text-lg font-bold tracking-tight transition-colors duration-300 hover:opacity-80 ${
+                isScrolled ? "text-lp-text-primary" : "text-white"
               }`}
             >
-              toothpaste<span className="text-[#7ea51f]">.cv</span>
+              toothpaste
+              <span className={isScrolled ? "text-[#7ea51f]" : "text-white"}>.cv</span>
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-2">
