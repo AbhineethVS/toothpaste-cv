@@ -18,7 +18,7 @@ function Panel({
   centered?: boolean;
 }) {
   return (
-    <section className="flex h-full flex-col rounded-2xl border border-border-subtle bg-surface-card p-5">
+    <section className="flex h-full flex-col rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
       <h2 className="text-sm font-semibold text-ink-primary">{title}</h2>
       {subtitle && <p className="mt-0.5 text-xs text-ink-muted">{subtitle}</p>}
       <div className={`mt-4 ${centered ? "flex flex-1 items-center" : ""}`}>{children}</div>
@@ -34,7 +34,9 @@ function Panel({
 export function ReportTab({ result, photos }: { result: AnalysisResult; photos: string[] }) {
   return (
     <div>
-      <p className="max-w-3xl text-sm leading-6 text-ink-secondary">{result.overallSummary}</p>
+      <div className="rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
+        <p className="max-w-3xl text-sm leading-6 text-ink-secondary">{result.overallSummary}</p>
+      </div>
 
       <div className="mt-5">
         <StatRow findings={result.findings} />
@@ -51,7 +53,7 @@ export function ReportTab({ result, photos }: { result: AnalysisResult; photos: 
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
-        <Panel title="Clinical images" subtitle={`AI analysed ${CAPTURE_STEPS.length} images`}>
+        <Panel title="Clinical images" subtitle={`${CAPTURE_STEPS.length} photos reviewed`}>
           <ClinicalImages findings={result.findings} photos={photos} />
         </Panel>
 

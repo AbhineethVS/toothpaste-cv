@@ -17,7 +17,7 @@ export function FindingsList({
   const flagged = flaggedEntries(findings);
 
   return (
-    <div className="rounded-2xl border border-border-subtle bg-surface-card p-4">
+    <div className="rounded-[24px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
       <h2 className="text-sm font-semibold text-ink-primary">Key findings ({flagged.length})</h2>
 
       {flagged.length === 0 ? (
@@ -33,7 +33,7 @@ export function FindingsList({
                 className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${
                   isSelected
                     ? "border-accent bg-accent/10"
-                    : "border-transparent hover:bg-ink-primary/[0.05]"
+                    : "border-transparent bg-surface-page/70 hover:border-border-subtle"
                 }`}
               >
                 <span

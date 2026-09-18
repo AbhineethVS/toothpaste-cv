@@ -15,7 +15,7 @@ export function SummaryTab({ result, photos }: { result: AnalysisResult; photos:
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
-      <div className="rounded-2xl border border-border-subtle bg-surface-card p-5">
+      <div className="rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
         <h2 className="text-lg font-semibold text-ink-primary">Dental map</h2>
         <p className="mt-0.5 text-xs text-ink-muted">
           {flagged.length > 0

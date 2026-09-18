@@ -72,7 +72,7 @@ function Ring({ segments, total }: { segments: { value: number; color: string }[
 
 function StatCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-border-subtle bg-surface-card p-4">
+    <div className="flex items-center gap-4 rounded-[24px] border border-border-subtle bg-surface-card p-4 shadow-[0_14px_36px_rgba(42,54,71,0.07)]">
       {children}
     </div>
   );
@@ -174,7 +174,7 @@ export function StatRow({ findings }: { findings: Findings }) {
           <p className="text-xl font-semibold tabular-nums text-ink-primary">
             {CAPTURE_STEPS.length}
           </p>
-          <p className="mt-0.5 text-sm text-ink-secondary">Photos analysed</p>
+          <p className="mt-0.5 text-sm text-ink-secondary">Photos reviewed</p>
         </div>
       </StatCard>
     </div>

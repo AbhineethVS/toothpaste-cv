@@ -139,27 +139,26 @@
   color: var(--ink-primary);
 }
 
-/* Report page only -- forced dark "clinical-tech" theme, independent of system
-   color scheme. Reuses the same variable names the report components already
+/* Report page only. Reuses the same variable names the report components already
    consume, so no component-level color logic needs to change. */
 .theme-report {
-  --surface-page: #0a0e17;
-  --surface-card: #111827;
-  --ink-primary: #f8fafc;
-  --ink-secondary: #94a3b8;
-  --ink-muted: #64748b;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --accent: #3b82f6;
+  --surface-page: #f7f5ef;
+  --surface-card: #fffcf6;
+  --ink-primary: #1e2524;
+  --ink-secondary: #5d6661;
+  --ink-muted: #8a918b;
+  --border-subtle: rgba(30, 37, 36, 0.12);
+  --accent: #235f64;
   --accent-ink: #ffffff;
 
-  --status-good: #22c55e;
-  --status-warning: #eab308;
-  --status-serious: #f97316;
-  --status-critical: #ef4444;
-  --status-good-text: #22c55e;
-  --status-warning-text: #eab308;
-  --status-serious-text: #f97316;
-  --status-critical-text: #ef4444;
+  --status-good: #407a5a;
+  --status-warning: #a96719;
+  --status-serious: #b96034;
+  --status-critical: #b9423f;
+  --status-good-text: #2f6849;
+  --status-warning-text: #8a5314;
+  --status-serious-text: #984622;
+  --status-critical-text: #a63835;
 
   --tooth-base: #e9e4d6;
   --tooth-edge: rgba(0, 0, 0, 0.35);

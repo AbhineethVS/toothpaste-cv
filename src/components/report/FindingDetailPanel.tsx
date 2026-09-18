@@ -29,7 +29,7 @@ export function FindingDetailPanel({
   }
 
   return (
-    <div className="rounded-2xl border border-border-subtle bg-surface-card p-4">
+    <div className="rounded-[24px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
       <div className="flex items-start justify-between gap-3">
         <h2 className="text-sm font-semibold text-ink-primary">{label}</h2>
         <span
@@ -50,7 +50,7 @@ export function FindingDetailPanel({
       </div>
 
       <div
-        className="relative mt-3 overflow-hidden rounded-xl"
+        className="relative mt-3 overflow-hidden rounded-2xl"
         style={{ boxShadow: `inset 0 0 0 2px ${isSourcePhoto ? SEVERITY_HEX[finding.severity] : "transparent"}` }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -90,11 +90,11 @@ export function FindingDetailPanel({
       )}
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl bg-ink-primary/[0.04] p-3">
+        <div className="rounded-2xl bg-surface-page p-3">
           <p className="text-xs font-medium text-ink-muted">What was observed?</p>
           <p className="mt-1 text-sm text-ink-primary">{finding.summary}</p>
         </div>
-        <div className="rounded-xl bg-ink-primary/[0.04] p-3">
+        <div className="rounded-2xl bg-surface-page p-3">
           <p className="text-xs font-medium text-ink-muted">Severity</p>
           <div className="mt-2 flex gap-1.5">
             {Array.from({ length: SEVERITY_METER_STEPS }, (_, i) => (
@@ -111,7 +111,7 @@ export function FindingDetailPanel({
         </div>
       </div>
 
-      <div className="mt-3 flex items-start gap-2 rounded-xl border border-accent/30 bg-accent/10 px-3 py-2.5">
+      <div className="mt-3 flex items-start gap-2 rounded-2xl border border-accent/20 bg-accent/8 px-3 py-2.5">
         <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2.25} />
         <p className="text-xs leading-5 text-ink-secondary">
           This is a preliminary screening result, not a diagnosis. Please consult a licensed dentist

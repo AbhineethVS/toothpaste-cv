@@ -11,7 +11,7 @@ const TABS: { id: ReportTabId; label: string; icon: typeof LayoutGrid }[] = [
 
 export function Tabs({ active, onChange }: { active: ReportTabId; onChange: (tab: ReportTabId) => void }) {
   return (
-    <div className="flex gap-1 overflow-x-auto rounded-full border border-border-subtle bg-surface-card p-1">
+    <div className="flex gap-1 overflow-x-auto rounded-full border border-border-subtle bg-surface-card p-1 shadow-[0_10px_28px_rgba(42,54,71,0.06)]">
       {TABS.map(({ id, label, icon: Icon }) => {
         const isActive = active === id;
         return (
@@ -19,7 +19,9 @@ export function Tabs({ active, onChange }: { active: ReportTabId; onChange: (tab
             key={id}
             onClick={() => onChange(id)}
             className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
-              isActive ? "bg-accent text-accent-ink" : "text-ink-muted hover:text-ink-primary"
+              isActive
+                ? "bg-accent text-accent-ink shadow-[0_8px_20px_rgba(35,95,100,0.16)]"
+                : "text-ink-muted hover:bg-surface-page hover:text-ink-primary"
             }`}
           >
             <Icon className="h-4 w-4" strokeWidth={2.25} />
