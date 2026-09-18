@@ -1,13 +1,13 @@
 import type { ArchRegion, Zone } from "@/lib/analysis-schema";
 
 export const MAP_WIDTH = 360;
-export const MAP_HEIGHT = 440;
+export const MAP_HEIGHT = 360;
 
 const CENTER_X = MAP_WIDTH / 2;
-const UPPER_CY = 165;
-const LOWER_CY = 265;
-const RADIUS_X = 118;
-const RADIUS_Y = 125;
+const UPPER_CY = 130;
+const LOWER_CY = 230;
+const RADIUS_X = 116;
+const RADIUS_Y = 90;
 const GUM_INSET = 13;
 
 /**

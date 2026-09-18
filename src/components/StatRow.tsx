@@ -18,8 +18,8 @@ import {
 } from "@/lib/severity";
 import { ToothIcon } from "@/components/ToothIcon";
 
-const RING_SIZE = 72;
-const RING_STROKE = 8;
+const RING_SIZE = 64;
+const RING_STROKE = 7;
 
 function Ring({ segments, total }: { segments: { value: number; color: string }[]; total: number }) {
   const radius = (RING_SIZE - RING_STROKE) / 2;
@@ -72,7 +72,7 @@ function Ring({ segments, total }: { segments: { value: number; color: string }[
 
 function StatCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-4 rounded-[24px] border border-border-subtle bg-surface-card p-4 shadow-[0_14px_36px_rgba(42,54,71,0.07)]">
+    <div className="flex min-h-28 items-center gap-3 rounded-[24px] border border-border-subtle bg-surface-card p-4 shadow-[0_14px_36px_rgba(42,54,71,0.07)] sm:gap-4">
       {children}
     </div>
   );
@@ -104,7 +104,7 @@ export function StatRow({ findings }: { findings: Findings }) {
   ].filter((item) => item.value > 0);
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-3 sm:grid-cols-2">
       <StatCard>
         <div className="relative shrink-0">
           <Ring
@@ -146,11 +146,11 @@ export function StatRow({ findings }: { findings: Findings }) {
         <IconBadge severity={affectedQuadrants > 0 ? "moderate" : "none"}>
           <ToothIcon className="h-6 w-6" />
         </IconBadge>
-        <div>
+        <div className="min-w-0">
           <p className="text-xl font-semibold tabular-nums text-ink-primary">
             {affectedQuadrants} <span className="text-ink-muted">/ {quadrants.length}</span>
           </p>
-          <p className="mt-0.5 text-sm text-ink-secondary">Quadrants with concerns</p>
+          <p className="mt-0.5 text-sm leading-5 text-ink-secondary">Quadrants with concerns</p>
         </div>
       </StatCard>
 
@@ -158,7 +158,7 @@ export function StatRow({ findings }: { findings: Findings }) {
         <IconBadge severity="none">
           <ShieldCheck className="h-6 w-6" strokeWidth={2} />
         </IconBadge>
-        <div>
+        <div className="min-w-0">
           <p className="text-xl font-semibold tabular-nums text-ink-primary">
             {clear} <span className="text-ink-muted">/ {DIAGNOSTIC_DEFS.length}</span>
           </p>
@@ -170,7 +170,7 @@ export function StatRow({ findings }: { findings: Findings }) {
         <IconBadge severity="none">
           <Camera className="h-6 w-6" strokeWidth={2} />
         </IconBadge>
-        <div>
+        <div className="min-w-0">
           <p className="text-xl font-semibold tabular-nums text-ink-primary">
             {CAPTURE_STEPS.length}
           </p>

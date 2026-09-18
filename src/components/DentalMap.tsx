@@ -104,10 +104,10 @@ export function DentalMap({
   const highlighted = teeth.filter((tooth) => severityFor(tooth) !== "none");
 
   return (
-    <div>
+    <div className="mx-auto max-w-[420px]">
       <svg
         viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-        className="w-full"
+        className="mx-auto w-full"
         role="img"
         aria-label="Diagram of the upper and lower dental arches with affected areas highlighted"
       >
@@ -196,7 +196,7 @@ export function DentalMap({
         </text>
       </svg>
 
-      <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2">
+      <div className="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1.5">
         {SEVERITIES_DISPLAY.map((severity) => (
           <span key={severity} className="flex items-center gap-1.5 text-xs text-ink-secondary">
             <span
@@ -207,7 +207,7 @@ export function DentalMap({
           </span>
         ))}
       </div>
-      <p className="mt-3 text-center text-xs leading-5 text-ink-muted">
+      <p className="mt-2 text-center text-xs leading-5 text-ink-muted">
         {highlighted.length === 0
           ? "Nothing was localised to a specific area of the mouth."
           : "Highlighted areas are approximate — this screening locates concerns by region, not by individual tooth."}

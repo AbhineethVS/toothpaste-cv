@@ -9,13 +9,13 @@ import {
 } from "@/lib/severity";
 import { archPath } from "@/lib/tooth-map";
 
-const MINI_WIDTH = 132;
-const MINI_HEIGHT = 116;
+const MINI_WIDTH = 112;
+const MINI_HEIGHT = 98;
 const MINI_CX = MINI_WIDTH / 2;
-const UPPER_CY = 40;
-const LOWER_CY = 78;
-const RX = 38;
-const RY = 28;
+const UPPER_CY = 34;
+const LOWER_CY = 66;
+const RX = 32;
+const RY = 24;
 const MIDLINE_GAP = 5;
 
 /** Each quadrant is half of one arch, with a small gap at the midline. */
@@ -81,10 +81,10 @@ export function QuadrantSummary({ findings }: { findings: Findings }) {
     const stat = stats.find((item) => item.region === region)!;
     const Icon = SEVERITY_ICON[stat.severity];
     return (
-      <div className="rounded-xl border border-border-subtle p-2.5">
+      <div className="rounded-xl border border-border-subtle bg-surface-page/70 p-2.5">
         <p className="text-xs font-medium text-ink-primary">{stat.label}</p>
         <p
-          className={`mt-1 flex items-center gap-1 text-xs font-medium ${SEVERITY_TEXT_CLASS[stat.severity]}`}
+          className={`mt-1 flex items-center gap-1 text-xs font-medium leading-4 ${SEVERITY_TEXT_CLASS[stat.severity]}`}
         >
           <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={2.25} />
           {SEVERITY_LABEL[stat.severity]}
@@ -101,12 +101,14 @@ export function QuadrantSummary({ findings }: { findings: Findings }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-center gap-8">
+      <div className="grid items-center gap-3 sm:grid-cols-[minmax(0,1fr)_112px_minmax(0,1fr)]">
         <div className="grid flex-1 gap-2">
           {cardFor("upper-right")}
           {cardFor("lower-right")}
         </div>
-        <MiniArch severities={severities} />
+        <div className="flex justify-center">
+          <MiniArch severities={severities} />
+        </div>
         <div className="grid flex-1 gap-2">
           {cardFor("upper-left")}
           {cardFor("lower-left")}
