@@ -6,6 +6,7 @@ import { ArrowLeft, Camera, Clock3, Sparkles, Trash2, TrendingDown, TrendingUp }
 import { clearTimeline, readTimeline, type TimelineEntry } from "@/lib/timeline-storage";
 import { clearEntries, flaggedEntries, urgency } from "@/lib/report-metrics";
 import { SEVERITY_ICON, SEVERITY_TEXT_CLASS, SEVERITY_WASH_CLASS } from "@/lib/severity";
+import { AuthButton } from "@/components/auth/AuthButton";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, {
@@ -97,13 +98,16 @@ export default function TimelinePage() {
             <p className="text-sm font-semibold text-ink-primary">Oral health timeline</p>
             <p className="text-xs text-ink-muted">{entries.length} saved screenings</p>
           </div>
-          <Link
-            href="/capture"
-            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90"
-          >
-            <Camera className="h-4 w-4" strokeWidth={2.25} />
-            New
-          </Link>
+          <div className="flex items-center gap-2">
+            <AuthButton className="hidden sm:inline-flex" />
+            <Link
+              href="/capture"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink shadow-[0_10px_24px_rgba(35,95,100,0.18)] transition-opacity hover:opacity-90"
+            >
+              <Camera className="h-4 w-4" strokeWidth={2.25} />
+              New
+            </Link>
+          </div>
         </div>
       </header>
 

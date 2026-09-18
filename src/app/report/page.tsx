@@ -15,6 +15,7 @@ import { SummaryTab } from "@/components/report/SummaryTab";
 import { FindingsTab } from "@/components/report/FindingsTab";
 import { PhotosTab } from "@/components/report/PhotosTab";
 import { ReportTab } from "@/components/report/ReportTab";
+import { AuthButton } from "@/components/auth/AuthButton";
 
 type Status = "loading" | "error" | "done";
 
@@ -218,6 +219,7 @@ export default function ReportPage() {
             <p className="mt-0.5 text-xs text-ink-muted">Visual screening report</p>
           </div>
           <div className="flex items-center gap-2.5">
+            <AuthButton className="hidden sm:inline-flex" />
             <Link
               href="/timeline"
               className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-4 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary"

@@ -24,6 +24,7 @@ import {
   Zap,
 } from "lucide-react";
 import { DIAGNOSTIC_DEFS, type FindingKey } from "@/lib/analysis-schema";
+import { AuthButton } from "@/components/auth/AuthButton";
 
 const DETECTION_ICONS: Record<FindingKey, typeof Columns3> = {
   crowding: Columns3,
@@ -127,12 +128,15 @@ export default function Home() {
               </span>
             </div>
           </div>
-          <Link
-            href="/capture"
-            className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-4 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary"
-          >
-            Start Screening
-          </Link>
+          <div className="flex items-center gap-2">
+            <AuthButton className="hidden sm:inline-flex" />
+            <Link
+              href="/capture"
+              className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-4 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary"
+            >
+              Start Screening
+            </Link>
+          </div>
         </div>
       </header>
 
