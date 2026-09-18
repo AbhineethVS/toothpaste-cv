@@ -51,7 +51,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Landing page only -- see .theme-obsidian below. Not used by capture/report. */
+  /* Landing page only -- see .theme-obsidian/.theme-minimal below. Not used by capture/report. */
   --color-lp-surface: var(--lp-surface);
   --color-lp-surface-raised: var(--lp-surface-raised);
   --color-lp-surface-card: var(--lp-surface-card);
@@ -93,6 +93,27 @@
   --lp-status-danger: #ef4444;
   --lp-status-success: #10b981;
   --lp-border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+.theme-minimal {
+  --lp-surface: #f7f5ef;
+  --lp-surface-raised: #fffcf6;
+  --lp-surface-card: rgba(255, 252, 246, 0.86);
+  --lp-surface-container: #f0ece2;
+  --lp-surface-container-high: #ffffff;
+  --lp-surface-container-low: #f6f1e8;
+  --lp-text-primary: #1e2524;
+  --lp-text-secondary: #5d6661;
+  --lp-text-muted: #8a918b;
+  --lp-primary: #2f6f73;
+  --lp-primary-container: #235f64;
+  --lp-on-primary-container: #ffffff;
+  --lp-secondary: #407a5a;
+  --lp-tertiary: #6e6a50;
+  --lp-status-warning: #a96719;
+  --lp-status-danger: #b9423f;
+  --lp-status-success: #387b57;
+  --lp-border-subtle: rgba(30, 37, 36, 0.12);
 }
 
 /* Report page only -- forced dark "clinical-tech" theme, independent of system

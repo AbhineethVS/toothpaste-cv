@@ -104,7 +104,7 @@ function BentoTile({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card shadow-xl ${className}`}
+      className={`relative overflow-hidden rounded-[24px] border border-lp-border-subtle bg-lp-surface-card shadow-[0_18px_50px_rgba(42,54,71,0.08)] ${className}`}
     >
       {children}
     </div>
@@ -113,8 +113,8 @@ function BentoTile({
 
 export default function Home() {
   return (
-    <div className="theme-obsidian flex flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
-      <header className="sticky top-0 z-50 border-b border-lp-border-subtle bg-lp-surface/85 backdrop-blur-xl">
+    <div className="theme-minimal flex flex-1 flex-col bg-lp-surface font-lp-body text-lp-text-primary">
+      <header className="sticky top-0 z-50 border-b border-lp-border-subtle bg-lp-surface/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-6">
           <div className="flex items-center gap-3">
             <span className="font-lp-heading text-lg font-bold tracking-tight">
@@ -123,13 +123,13 @@ export default function Home() {
             <div className="hidden items-center gap-1.5 rounded-full border border-lp-border-subtle bg-lp-surface-container-high px-2.5 py-1 sm:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lp-secondary" />
               <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-text-secondary">
-                v1 MVP · 2-min triage
+                2-min home check
               </span>
             </div>
           </div>
           <Link
             href="/capture"
-            className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-4 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors hover:bg-lp-primary"
+            className="inline-flex items-center justify-center rounded-full bg-lp-primary-container px-4 py-2 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_8px_24px_rgba(35,95,100,0.18)] transition-colors hover:bg-lp-primary"
           >
             Start Screening
           </Link>
@@ -137,26 +137,32 @@ export default function Home() {
       </header>
 
       <main className="flex flex-1 flex-col">
-        <section className="relative w-full overflow-hidden px-5 py-6 sm:px-6 sm:py-10">
-          <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[360px] w-[760px] -translate-x-1/2 bg-gradient-to-b from-lp-primary-container/18 via-lp-tertiary/10 to-transparent blur-[120px]" />
+        <section className="relative isolate w-full overflow-hidden px-5 py-6 sm:px-6 sm:py-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/examples/upper-arch.jpg"
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[620px] w-full object-cover opacity-[0.08] saturate-50"
+          />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[660px] bg-gradient-to-b from-lp-surface/70 via-lp-surface/96 to-lp-surface" />
 
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
             <BentoTile className="flex min-h-[440px] flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:row-span-2">
-              <div className="pointer-events-none absolute -right-24 -bottom-32 h-80 w-80 rounded-full bg-lp-tertiary/10 blur-[90px]" />
               <div className="relative z-10">
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-lp-surface-container-high/80 px-4 py-1.5 shadow-md backdrop-blur-md">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-lp-secondary shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-lp-surface-container-high/80 px-4 py-1.5 shadow-[0_8px_24px_rgba(42,54,71,0.08)] backdrop-blur-md">
+                  <span className="h-2 w-2 rounded-full bg-lp-secondary shadow-[0_0_0_3px_rgba(64,122,90,0.12)]" />
                   <span className="font-lp-heading text-[11px] font-semibold uppercase tracking-wider text-lp-primary">
                     Free · smartphone or web · no install
                   </span>
                 </div>
 
                 <h1 className="max-w-3xl font-lp-heading text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-                  Oral health screening, organized like a visual report.
+                  A simple oral health check from home.
                 </h1>
                 <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary sm:text-lg sm:leading-8">
-                  Take five guided photos and get a plain-English computer vision triage across
-                  visible enamel, gums, bite, spacing, staining, and more.
+                  Take five guided photos and receive a plain-English visual review of visible
+                  enamel, gums, bite, spacing, staining, and more.
                 </p>
               </div>
 
@@ -164,17 +170,17 @@ export default function Home() {
                 <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
                   <Link
                     href="/capture"
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-xl transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_0_28px_rgba(59,130,246,0.45)] sm:w-auto"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_28px_rgba(35,95,100,0.18)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_12px_28px_rgba(35,95,100,0.22)] sm:w-auto"
                   >
-                    Start Free Screening
+                    Start screening
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <a
                     href="#preview"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-md transition-colors hover:bg-lp-surface-container sm:w-auto"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-surface-container-high px-6 py-4 font-lp-heading text-sm font-semibold text-lp-text-primary shadow-[0_8px_24px_rgba(42,54,71,0.08)] transition-colors hover:bg-lp-surface-container sm:w-auto"
                   >
                     <Eye className="h-4 w-4 text-lp-tertiary" />
-                    See Sample Report
+                    See sample report
                   </a>
                 </div>
 
@@ -199,7 +205,7 @@ export default function Home() {
                 </span>
                 <span className="flex items-center gap-1 rounded-full bg-lp-secondary/15 px-2.5 py-1 text-[11px] font-semibold text-lp-secondary">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lp-secondary" />
-                  Aligned
+                  In frame
                 </span>
               </div>
 
@@ -247,11 +253,11 @@ export default function Home() {
               </div>
               <div className="mt-4 rounded-2xl bg-lp-surface-container-low p-4">
                 <p className="font-lp-heading text-sm font-semibold text-lp-text-primary">
-                  Live framing for self-capture
+                  Photo guidance for self-capture
                 </p>
                 <p className="mt-1 text-sm leading-6 text-lp-text-secondary">
-                  The prototype guides each view and keeps upload as a fallback when camera access
-                  is unavailable.
+                  Each view includes framing cues, with upload available whenever camera access is
+                  unavailable.
                 </p>
               </div>
             </BentoTile>
@@ -280,7 +286,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">
-                  Visual taxonomy
+                  Screening areas
                 </p>
                 <p className="mt-2 font-lp-heading text-4xl font-bold text-lp-text-primary">09</p>
                 <p className="mt-1 text-sm text-lp-text-secondary">screening categories</p>
@@ -314,7 +320,7 @@ export default function Home() {
                 Sample report
               </span>
               <h2 className="mt-1 font-lp-heading text-3xl font-bold">
-                A bento-style report preview, before you commit.
+                See the report format before you start.
               </h2>
             </div>
             <span className="self-start rounded-full bg-lp-secondary/15 px-2.5 py-1 font-lp-heading text-xs font-semibold text-lp-secondary sm:self-auto">
@@ -327,7 +333,7 @@ export default function Home() {
               <div className="mb-4 flex items-center justify-between border-b border-lp-border-subtle pb-3">
                 <span className="flex items-center gap-2 font-lp-heading text-sm font-semibold">
                   <BadgeCheck className="h-4 w-4 text-lp-primary" />
-                  Instant triage scorecard
+                  Visual report snapshot
                 </span>
                 <span className="font-mono text-xs text-lp-text-muted">6 of 9 shown</span>
               </div>
@@ -383,7 +389,7 @@ export default function Home() {
 
             <BentoTile className="bg-lp-surface-container-low p-5 lg:col-span-5">
               <p className="font-mono text-xs uppercase tracking-widest text-lp-text-muted">
-                Report output
+                What you get
               </p>
               <p className="mt-2 font-lp-heading text-xl font-semibold text-lp-text-primary">
                 Map, photo evidence, severity labels, and a PDF-ready summary.
@@ -436,13 +442,13 @@ export default function Home() {
           <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <span className="font-lp-heading text-xs font-semibold uppercase tracking-widest text-lp-tertiary">
-                Vision architecture
+                Screening areas
               </span>
-              <h2 className="mt-1 font-lp-heading text-3xl font-bold">What the screening detects</h2>
+              <h2 className="mt-1 font-lp-heading text-3xl font-bold">What the check looks for</h2>
             </div>
             <div className="inline-flex items-center gap-2 self-start rounded-full bg-lp-surface-card px-3 py-1.5 text-sm text-lp-text-muted">
               <ShieldAlert className="h-4 w-4 text-lp-primary" />
-              9 core visual categories
+              9 guided checks
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -479,10 +485,10 @@ export default function Home() {
               </p>
               <Link
                 href="/capture"
-                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-2xl transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_0_32px_rgba(59,130,246,0.5)] sm:w-auto"
+                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lp-primary-container px-8 py-4 font-lp-heading text-sm font-semibold text-lp-on-primary-container shadow-[0_12px_28px_rgba(35,95,100,0.18)] transition-all duration-300 hover:bg-lp-primary hover:shadow-[0_12px_28px_rgba(35,95,100,0.22)] sm:w-auto"
               >
                 <PlayCircle className="h-5 w-5" />
-                Launch Camera Screening
+                Start screening
               </Link>
             </BentoTile>
 
