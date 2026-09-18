@@ -323,7 +323,7 @@ export default function Home() {
                   Know when your smile needs a closer look.
                 </h1>
                 <p className="mt-5 max-w-xl text-base leading-7 text-lp-text-secondary lg:text-lg lg:leading-8">
-                  Take mouth photos. Get a visual report in seconds.
+                  Guided oral photos turn into a clear visual screening report — so you know what to watch and when to see a dentist.
                 </p>
               </div>
 
