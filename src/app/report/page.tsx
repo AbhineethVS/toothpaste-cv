@@ -308,7 +308,7 @@ export default function ReportPage() {
               <button
                 onClick={handleSaveTimeline}
                 disabled={isSavingTimeline || timelineStatus === "saved"}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-2 text-sm font-medium text-ink-secondary shadow-[0_8px_24px_rgba(42,54,71,0.06)] transition-colors hover:text-ink-primary disabled:opacity-55 sm:px-4"
+                className="inline-flex items-center gap-1.5 rounded-full bg-status-critical px-3 py-2 text-sm font-medium text-white shadow-[0_10px_24px_rgba(208,59,59,0.28)] transition-opacity hover:opacity-90 disabled:opacity-55 sm:px-4"
               >
                 <Save className="h-4 w-4" strokeWidth={2.25} />
                 {isSavingTimeline ? "Saving..." : timelineStatus === "saved" ? "Saved" : "Save"}

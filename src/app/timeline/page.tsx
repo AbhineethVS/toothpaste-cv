@@ -1,12 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Camera, ChevronRight, Clock3, Sparkles, Trash2, TrendingDown, TrendingUp } from "lucide-react";
-import { clearTimeline, readTimeline, timelineEntryHasFullReport, type TimelineEntry } from "@/lib/timeline-storage";
+import {
+  ArrowLeft,
+  Camera,
+  ChevronRight,
+  Clock3,
+  Sparkles,
+  Trash2,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
+import {
+  clearTimeline,
+  readTimeline,
+  timelineEntryHasFullReport,
+  type TimelineEntry,
+} from "@/lib/timeline-storage";
 import { clearEntries, flaggedEntries, urgency } from "@/lib/report-metrics";
 import { SEVERITY_ICON, SEVERITY_TEXT_CLASS, SEVERITY_WASH_CLASS } from "@/lib/severity";
 import { AuthButton } from "@/components/auth/AuthButton";
+import { TimelineComparisons } from "@/components/timeline/TimelineComparisons";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, {
@@ -60,7 +75,13 @@ function TrendBadge({ trend }: { trend: ReturnType<typeof trendFor> }) {
 }
 
 export default function TimelinePage() {
-  const [entries, setEntries] = useState<TimelineEntry[]>(() => readTimeline());
+  const [entries, setEntries] = useState<TimelineEntry[]>([]);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setEntries(readTimeline());
+    setReady(true);
+  }, []);
 
   const latest = entries[0] ?? null;
   const latestTone = latest ? urgency(latest.result.findings) : null;
@@ -96,7 +117,9 @@ export default function TimelinePage() {
           </Link>
           <div className="min-w-0 text-center">
             <p className="truncate text-sm font-semibold text-ink-primary">Oral health timeline</p>
-            <p className="text-xs text-ink-muted">{entries.length} saved screenings</p>
+            <p className="text-xs text-ink-muted">
+              {ready ? `${entries.length} saved screenings` : "Loading…"}
+            </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <AuthButton />
@@ -112,157 +135,126 @@ export default function TimelinePage() {
       </header>
 
       <main className="mx-auto w-full min-w-0 max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        <section className="rounded-[28px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)] sm:p-6">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1.5 text-sm font-medium text-accent">
-                <LatestIcon className="h-4 w-4" strokeWidth={2.25} />
-                {latestTone?.label ?? "No baseline yet"}
-              </div>
-              <h1 className="text-3xl font-semibold tracking-tight text-ink-primary">
-                Track visible changes over time.
-              </h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-ink-secondary sm:text-base sm:leading-7">
-                Save each screening to compare flagged areas, severity, and notes from one check to
-                the next. This timeline stays on this device for now.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
-              <div className="rounded-2xl bg-surface-page px-3 py-3">
-                <p className="text-xl font-semibold tabular-nums text-ink-primary">{entries.length}</p>
-                <p className="mt-0.5 text-xs text-ink-muted">saved</p>
-              </div>
-              <div className="rounded-2xl bg-surface-page px-3 py-3">
-                <p className="text-xl font-semibold tabular-nums text-ink-primary">
-                  {latest ? flaggedEntries(latest.result.findings).length : 0}
-                </p>
-                <p className="mt-0.5 text-xs text-ink-muted">latest flags</p>
-              </div>
-              <div className="rounded-2xl bg-surface-page px-3 py-3">
-                <p className="text-xl font-semibold tabular-nums text-ink-primary">
-                  {entries.length > 1 ? "On" : "New"}
-                </p>
-                <p className="mt-0.5 text-xs text-ink-muted">comparison</p>
-              </div>
-            </div>
+        {!ready ? (
+          <div className="flex justify-center py-24">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-border-subtle border-t-accent" />
           </div>
-        </section>
-
-        {entries.length === 0 ? (
-          <section className="mt-5 rounded-[28px] border border-dashed border-border-subtle bg-surface-card p-8 text-center shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Clock3 className="h-6 w-6" strokeWidth={2.25} />
-            </div>
-            <h2 className="mt-4 text-lg font-semibold text-ink-primary">No saved screenings yet</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink-secondary">
-              Complete a screening, then save the report to start your baseline.
-            </p>
-            <Link
-              href="/capture"
-              className="mt-5 inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink"
-            >
-              Start a screening
-            </Link>
-          </section>
         ) : (
-          <section className="mt-5">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 className="text-sm font-semibold text-ink-primary">Saved screenings</h2>
-              <button
-                onClick={handleClear}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-muted transition-colors hover:text-status-critical-text"
-              >
-                <Trash2 className="h-3.5 w-3.5" strokeWidth={2.25} />
-                Clear
-              </button>
+          <>
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent">
+                  <LatestIcon className="h-3.5 w-3.5" strokeWidth={2.25} />
+                  {latestTone?.label ?? "No baseline yet"}
+                </span>
+                {latest && (
+                  <span className="text-xs text-ink-muted">
+                    {flaggedEntries(latest.result.findings).length} flagged · {entries.length} saved
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="grid gap-4">
-              {timelineRows.map(({ entry, trend, flagged, clear, tone }) => {
-                const ToneIcon = SEVERITY_ICON[tone.severity];
-                const canOpenReport = timelineEntryHasFullReport(entry);
-                const cardClassName =
-                  "grid gap-4 rounded-[28px] border border-border-subtle bg-surface-card p-4 shadow-[0_18px_50px_rgba(42,54,71,0.08)] transition-colors md:grid-cols-[120px_minmax(0,1fr)]";
+            {entries.length === 0 ? (
+              <section className="rounded-[28px] border border-dashed border-border-subtle bg-surface-card p-8 text-center shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <Clock3 className="h-6 w-6" strokeWidth={2.25} />
+                </div>
+                <h2 className="mt-4 text-lg font-semibold text-ink-primary">No saved screenings yet</h2>
+                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink-secondary">
+                  Complete a screening, then save the report to start comparisons.
+                </p>
+                <Link
+                  href="/capture"
+                  className="mt-5 inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink"
+                >
+                  Start a screening
+                </Link>
+              </section>
+            ) : (
+              <>
+                <TimelineComparisons entries={entries} />
 
-                const cardBody = (
-                  <>
-                    <div className="aspect-square overflow-hidden rounded-2xl bg-surface-page">
-                      {entry.thumbnail ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={entry.thumbnail} alt="" className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-ink-muted">
-                          <Camera className="h-7 w-7" strokeWidth={2.25} />
-                        </div>
-                      )}
-                    </div>
+                <section className="mt-5">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h2 className="text-sm font-semibold text-ink-primary">Saved screenings</h2>
+                    <button
+                      onClick={handleClear}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-muted transition-colors hover:text-status-critical-text"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" strokeWidth={2.25} />
+                      Clear
+                    </button>
+                  </div>
 
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-semibold text-ink-primary">{formatDate(entry.createdAt)}</p>
-                          <p className="mt-0.5 text-xs text-ink-muted">
-                            {flagged.length} flagged · {clear.length} clear
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <TrendBadge trend={trend} />
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${SEVERITY_WASH_CLASS[tone.severity]} ${SEVERITY_TEXT_CLASS[tone.severity]}`}
-                          >
-                            <ToneIcon className="h-3.5 w-3.5" strokeWidth={2.25} />
-                            {tone.label}
-                          </span>
+                  <div className="grid gap-3">
+                    {timelineRows.map(({ entry, trend, flagged, clear, tone }) => {
+                      const ToneIcon = SEVERITY_ICON[tone.severity];
+                      const canOpenReport = timelineEntryHasFullReport(entry);
+                      const cardClassName =
+                        "flex items-center gap-3 rounded-[24px] border border-border-subtle bg-surface-card p-3 shadow-[0_12px_32px_rgba(42,54,71,0.06)] transition-colors sm:gap-4 sm:p-3.5";
+
+                      const cardBody = (
+                        <>
+                          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-surface-page sm:h-20 sm:w-20">
+                            {entry.thumbnail ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={entry.thumbnail} alt="" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center text-ink-muted">
+                                <Camera className="h-5 w-5" strokeWidth={2.25} />
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="text-sm font-semibold text-ink-primary">{formatDate(entry.createdAt)}</p>
+                              <TrendBadge trend={trend} />
+                            </div>
+                            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                              <span className="text-xs text-ink-muted">
+                                {flagged.length} flagged · {clear.length} clear
+                              </span>
+                              <span
+                                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${SEVERITY_WASH_CLASS[tone.severity]} ${SEVERITY_TEXT_CLASS[tone.severity]}`}
+                              >
+                                <ToneIcon className="h-3 w-3" strokeWidth={2.25} />
+                                {tone.label}
+                              </span>
+                            </div>
+                            {!canOpenReport && (
+                              <p className="mt-1 text-[11px] text-ink-muted">
+                                Full report unavailable for this older save
+                              </p>
+                            )}
+                          </div>
+
                           {canOpenReport && (
-                            <span className="inline-flex items-center gap-1 text-xs font-medium text-accent">
-                              View report
-                              <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.25} />
-                            </span>
+                            <ChevronRight className="h-5 w-5 shrink-0 text-ink-muted" strokeWidth={2} />
                           )}
-                        </div>
-                      </div>
+                        </>
+                      );
 
-                      <p className="mt-3 text-sm leading-6 text-ink-secondary">{entry.result.overallSummary}</p>
-
-                      {flagged.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {flagged.slice(0, 4).map(({ key, label, finding }) => (
-                            <span
-                              key={key}
-                              className="rounded-full bg-surface-page px-2.5 py-1 text-xs font-medium text-ink-secondary"
-                            >
-                              {label}: {finding.locationLabel}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      <p className="mt-3 text-xs text-ink-muted">
-                        {canOpenReport
-                          ? trend.detail
-                          : "Full report unavailable for this older save. Run a new screening and save again."}
-                      </p>
-                    </div>
-                  </>
-                );
-
-                return canOpenReport ? (
-                  <Link
-                    key={entry.id}
-                    href={`/report?entry=${entry.id}`}
-                    className={`${cardClassName} hover:border-accent/40 hover:bg-surface-page/40`}
-                  >
-                    {cardBody}
-                  </Link>
-                ) : (
-                  <article key={entry.id} className={`${cardClassName} opacity-90`}>
-                    {cardBody}
-                  </article>
-                );
-              })}
-            </div>
-          </section>
+                      return canOpenReport ? (
+                        <Link
+                          key={entry.id}
+                          href={`/report?entry=${entry.id}`}
+                          className={`${cardClassName} hover:border-accent/40 hover:bg-surface-page/50`}
+                        >
+                          {cardBody}
+                        </Link>
+                      ) : (
+                        <article key={entry.id} className={`${cardClassName} opacity-90`}>
+                          {cardBody}
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              </>
+            )}
+          </>
         )}
       </main>
     </div>
