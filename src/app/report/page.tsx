@@ -19,6 +19,7 @@ import { AuthButton } from "@/components/auth/AuthButton";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { SignInRequiredModal } from "@/components/auth/SignInRequiredModal";
 import { TimelineNavButton } from "@/components/auth/TimelineNavButton";
+import type { CvAnalysis } from "@/lib/cv-schema";
 
 type Status = "loading" | "error" | "done";
 type AuthGateAction = "timeline" | "save" | null;
@@ -118,6 +119,7 @@ export default function ReportPage() {
   const [timelineStatus, setTimelineStatus] = useState<"idle" | "saved" | "error">("idle");
   const [exportError, setExportError] = useState<string | null>(null);
   const [authGate, setAuthGate] = useState<AuthGateAction>(null);
+  const [cv, setCv] = useState<CvAnalysis | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const isSavedView = Boolean(savedEntryId);
 
@@ -184,6 +186,35 @@ export default function ReportPage() {
       cancelled = true;
     };
   }, [photos, attempt, isSavedView]);
+
+  useEffect(() => {
+    if (!photos) return;
+
+    let cancelled = false;
+    setCv(null);
+    fetch("/api/cv", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ photos }),
+    })
+      .then(async (response) => {
+        const data = (await response.json()) as CvAnalysis;
+        if (cancelled) return;
+        setCv(data.available ? data : { available: false, models: data.models, photos: [] });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCv({
+          available: false,
+          models: { crowding: false, stain: false, wear: false },
+          photos: [],
+        });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [photos, attempt]);
 
   function handleRetry() {
     if (isSavedView) {
@@ -415,10 +446,10 @@ export default function ReportPage() {
                 <FindingsTab result={result} />
               </div>
               <div className={activeTab === "photos" ? "" : "hidden"}>
-                <PhotosTab result={result} photos={photos} />
+                <PhotosTab result={result} photos={photos} cv={cv} />
               </div>
               <div ref={exportRef} className={activeTab === "report" ? "" : "hidden"}>
-                <ReportTab result={result} photos={photos} />
+                <ReportTab result={result} photos={photos} cv={cv} />
               </div>
             </>
           )}

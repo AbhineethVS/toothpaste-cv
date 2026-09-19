@@ -40,3 +40,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local CV training
+/ml/.venv/
+/ml/data/
+/ml/runs/
+/ml/weights/*.pt
+/ml/weights/*.joblib
+/ml/__pycache__/
+/ml/**/__pycache__/
+*.pyc
+yolo*.pt
+/weights/
+/public/cv-demo/
+
+

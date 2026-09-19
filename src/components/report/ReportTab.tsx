@@ -1,4 +1,5 @@
 import type { AnalysisResult } from "@/lib/analysis-schema";
+import type { CvAnalysis } from "@/lib/cv-schema";
 import { CAPTURE_STEPS } from "@/lib/capture-steps";
 import { StatRow } from "@/components/StatRow";
 import { DentalMap } from "@/components/DentalMap";
@@ -31,7 +32,15 @@ function Panel({
  * also the PDF export target, so it stays independent of which tab the user
  * is actively viewing.
  */
-export function ReportTab({ result, photos }: { result: AnalysisResult; photos: string[] }) {
+export function ReportTab({
+  result,
+  photos,
+  cv,
+}: {
+  result: AnalysisResult;
+  photos: string[];
+  cv?: CvAnalysis | null;
+}) {
   return (
     <div>
       <div className="rounded-[24px] border border-border-subtle bg-surface-card p-5 shadow-[0_18px_50px_rgba(42,54,71,0.08)]">
@@ -54,7 +63,7 @@ export function ReportTab({ result, photos }: { result: AnalysisResult; photos: 
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
         <Panel title="Clinical images" subtitle={`${CAPTURE_STEPS.length} photos reviewed`}>
-          <ClinicalImages findings={result.findings} photos={photos} />
+          <ClinicalImages findings={result.findings} photos={photos} cv={cv} />
         </Panel>
 
         <Panel title="Quadrant summary" centered>

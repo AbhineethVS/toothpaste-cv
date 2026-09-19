@@ -1,0 +1,17 @@
+gdown
+huggingface_hub
+kagglehub
+opencv-python-headless
+pillow
+numpy
+scikit-learn
+joblib
+fastapi
+uvicorn
+python-multipart
+openai
+pydantic
+ultralytics
+open-clip-torch
+torch
+torchvision
