@@ -18,6 +18,7 @@
 
 - [Problem Statement](#problem-statement)
 - [Our Solution](#our-solution)
+- [What Makes It Different](#what-makes-it-different)
 - [Key Features](#key-features)
 - [Screenshots & Demo](#screenshots--demo)
 - [Tech Stack](#tech-stack)
@@ -50,10 +51,41 @@ It is not a diagnosis, not an X-ray, and not a treatment plan. It is a triage to
 
 ---
 
+## What Makes It Different
+
+toothpaste.cv has two differentiators: a multi-model vision report pipeline and a trained computer-vision evidence layer.
+
+### Multi-model screening report
+
+The written report is not produced from a single unchecked prompt. The five photos are reviewed with OpenAI vision and, when configured, Anthropic Claude vision using the same oral-health rubric.
+
+- **Parallel review** - GPT and Claude review the same five images against the same screening categories.
+- **Structured output** - Zod validates the report shape before it reaches the user.
+- **Conservative merge** - when both models are available, the app merges findings carefully and avoids over-calling.
+- **Polished patient language** - the final report turns model output into clear severity, location, evidence, and next-step text.
+
+This improves the report quality while keeping the product boundary clear: it is still screening, not diagnosis.
+
+### Trained CV evidence layer
+
+toothpaste.cv also does not stop at a generic AI writeup. We trained a local computer-vision sidecar to give visual evidence on top of the written screening report.
+
+- **Crowding detector** - YOLOv11n trained on OMNI intraoral boxes mapped to crooked or rotated teeth.
+- **Stain model** - CLIP image embeddings with a linear classifier trained on oral disease images, plus a Lab b* yellowness heatmap.
+- **Wear model** - CLIP-based wear classifier with the same severity scale used in the report.
+- **Visual overlays** - boxes, heatmaps, and CV scores shown beside the report so users can see what the system is reacting to.
+- **Conservative design** - the CV model supports the demo and photo evidence, while the final report stays screening-only and avoids diagnosis claims.
+
+This makes the product more than a prompt wrapper. The AI report explains the result, and the trained CV layer makes the visible evidence easier to inspect.
+
+---
+
 ## Key Features
 
 - **Five guided photos** - front bite, upper arch, lower arch, left side, and right side.
 - **Instant visual report** - summary, findings, severity labels, photo references, and mouth-region context.
+- **Multi-model vision review** - OpenAI and Claude can review the same photos for a more balanced report.
+- **Trained CV evidence layer** - custom YOLO and CLIP models add boxes, heatmaps, and scores for visible dental concerns.
 - **Nine screening categories** - crowding, wear, discoloration, gum health, plaque, bite alignment, spacing, chips, and possible decay.
 - **Dentist-ready summary** - report language users can save, export, and bring to a dental visit.
 - **Optional timeline** - signed-in users can save reports and compare later screenings.
@@ -85,7 +117,7 @@ It is not a diagnosis, not an X-ray, and not a treatment plan. It is a triage to
 | Backend | Next.js API routes | Keeps capture, report generation, and API calls in one app. |
 | Database / Auth | Supabase Auth, browser local storage | Optional sign-in and saved screening timeline without forcing accounts. |
 | ML / AI | OpenAI, Anthropic Claude, Zod schema validation | Structured visual screening report with a fixed rubric and safer output shape. |
-| Computer Vision | Python, FastAPI, YOLOv11n, OpenCLIP, OpenCV | Optional local overlays for crooked-tooth boxes and stain heatmaps. |
+| Computer Vision | Python, FastAPI, YOLOv11n, OpenCLIP, OpenCV | Trained local sidecar for crowding boxes, stain heatmaps, and wear or stain scoring. |
 | PDF / Export | html2canvas-pro, jsPDF | Lets users save and share a report. |
 | Hosting | Vercel | Simple public deployment for the demo. |
 
