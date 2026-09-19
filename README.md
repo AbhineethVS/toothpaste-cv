@@ -63,11 +63,17 @@ It is not a diagnosis, not an X-ray, and not a treatment plan. It is a triage to
 
 ## Screenshots & Demo
 
-| Item | Link | Description |
-| --- | --- | --- |
-| Live demo | [toothpaste-cv.vercel.app](https://toothpaste-cv.vercel.app/) | Working web app with the full screening flow. |
-| Pitch video | [LinkedIn pitch](https://lnkd.in/p/gRzzE49X) | Short product pitch and walkthrough. |
-| Example photo views | [`tooth-sides/`](tooth-sides/) | Five reference tooth views used for guided capture. |
+| Screenshot | Description |
+| --- | --- |
+| ![Landing page](assets/screenshots/screenshot-1-landing.png) | Landing page with the two-minute screening promise and clear not-a-diagnosis boundary. |
+| ![Photo capture](assets/screenshots/screenshot-2-capture.png) | Guided five-photo capture flow with framing cues and upload or camera options. |
+| ![Screening report](assets/screenshots/screenshot-3-report.png) | Visual report with summary, findings, dental map, and photo evidence. |
+| ![Oral health timeline](assets/screenshots/screenshot-4-timeline.png) | Saved screenings timeline for tracking changes over time. |
+
+| Item | Link |
+| --- | --- |
+| Live demo | [https://toothpaste-cv.vercel.app/](https://toothpaste-cv.vercel.app/) |
+| Pitch video | [https://lnkd.in/p/gRzzE49X](https://lnkd.in/p/gRzzE49X) |
 
 ---
 
