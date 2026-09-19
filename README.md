@@ -200,7 +200,7 @@ The project submission checklist is in [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CH
 
 | Name | Role(s) | GitHub | Email |
 | --- | --- | --- | --- |
-| Abhineeth V S | Full-stack, AI integration, product | [@AbhineethVS](https://github.com/AbhineethVS) |  |
+| Abhineeth V S | Full-stack, AI integration, product | [@AbhineethVS](https://github.com/AbhineethVS) | abhineethvs71@gmail.com |
 | Siddarth Narayan | Product, engineering | [@siddarthcet2007-glitch](https://github.com/siddarthcet2007-glitch) | siddarthcet2007@gmail.com |
 | Christta Ann Mathew | Product, research | [@ChristtaAnn](https://github.com/ChristtaAnn) | christtaannmathew@gmail.com |
 | Ham P R | Product, engineering | [@HAM-2K5](https://github.com/HAM-2K5) | hamplivingston1020@gmail.com |
