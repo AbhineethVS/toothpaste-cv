@@ -3,12 +3,30 @@
 import { useState } from "react";
 import { CAPTURE_STEPS, type CaptureStepId } from "@/lib/capture-steps";
 import { findingsForPhoto, photoStats, type Findings } from "@/lib/report-metrics";
-import { SEVERITY_BG_CLASS, SEVERITY_ICON, SEVERITY_TEXT_CLASS } from "@/lib/severity";
+import { SEVERITY_BG_CLASS, SEVERITY_ICON, SEVERITY_LABEL, SEVERITY_TEXT_CLASS } from "@/lib/severity";
+import { PhotoCvOverlay } from "@/components/report/PhotoCvOverlay";
+import { cvForPhoto, type CvAnalysis, type CvFindingKey } from "@/lib/cv-schema";
 
-export function ClinicalImages({ findings, photos }: { findings: Findings; photos: string[] }) {
+const CV_ROWS: { key: CvFindingKey; label: string }[] = [
+  { key: "crowding", label: "Crowding" },
+  { key: "discoloration", label: "Discoloration" },
+  { key: "wear", label: "Tooth wear" },
+];
+
+export function ClinicalImages({
+  findings,
+  photos,
+  cv,
+}: {
+  findings: Findings;
+  photos: string[];
+  cv?: CvAnalysis | null;
+}) {
   const [selected, setSelected] = useState<CaptureStepId>(CAPTURE_STEPS[0].id);
   const stats = photoStats(findings);
   const selectedFindings = findingsForPhoto(findings, selected);
+  const selectedIndex = CAPTURE_STEPS.findIndex((step) => step.id === selected);
+  const selectedCv = cvForPhoto(cv ?? null, selected);
 
   return (
     <div>
@@ -45,6 +63,54 @@ export function ClinicalImages({ findings, photos }: { findings: Findings; photo
           );
         })}
       </div>
+
+      <div className="mt-4">
+        {selectedCv ? (
+          <PhotoCvOverlay
+            photo={photos[selectedIndex]}
+            heatmap={selectedCv.heatmap}
+            boxes={selectedCv.boxes}
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={photos[selectedIndex]}
+            alt={CAPTURE_STEPS[selectedIndex]?.title ?? "Selected photo"}
+            className="w-full rounded-xl object-cover"
+          />
+        )}
+      </div>
+
+      {selectedCv ? (
+        <div className="mt-4 overflow-hidden rounded-xl border border-border-subtle">
+          <div className="grid grid-cols-3 bg-ink-primary/[0.04] px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-ink-muted">
+            <span>Finding</span>
+            <span>CV model</span>
+            <span>Report</span>
+          </div>
+          {CV_ROWS.map(({ key, label }) => {
+            const cvScore = selectedCv[key];
+            const llm = findings[key];
+            return (
+              <div
+                key={key}
+                className="grid grid-cols-3 items-start gap-2 border-t border-border-subtle px-3 py-2.5 text-xs"
+              >
+                <span className="font-medium text-ink-primary">{label}</span>
+                <span>
+                  <span className={SEVERITY_TEXT_CLASS[cvScore.severity]}>
+                    {SEVERITY_LABEL[cvScore.severity]}
+                  </span>
+                  <span className="mt-0.5 block text-[11px] leading-4 text-ink-muted">
+                    {cvScore.summary}
+                  </span>
+                </span>
+                <span className={SEVERITY_TEXT_CLASS[llm.severity]}>{SEVERITY_LABEL[llm.severity]}</span>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
 
       <div className="mt-4 rounded-xl bg-ink-primary/[0.04] p-3">
         {selectedFindings.length > 0 ? (
